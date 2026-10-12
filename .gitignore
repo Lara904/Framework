@@ -1,0 +1,94 @@
+# === Framework-only publication ===
+# Publish the REUSABLE FRAMEWORK only: .kiro/skills, the generic .kiro/steering, and the guides.
+# NEVER publish a real case (sources) nor any generated deliverable (they carry case content:
+# system names, architecture, threat scenarios). See PUBLISHING.md and the project-context steering
+# (data classification: threat/vuln details stay internal).
+
+# --- Real source material (confidential, read-only to the skills) ---
+sources/
+
+# --- Generated deliverables (per-project output folders) ---
+# Every skill writes its deliverables under output/${project_name}/ (see the output-convention
+# steering). These are real, project-specific outputs (system names, architecture, threat
+# scenarios) - never framework material, never published. Pattern-based, so it covers every
+# project's folder without naming any.
+output/
+
+# --- Agent scratch / transient work files ---
+.kiro/.temp_ai/
+
+# --- Frozen copy of any inherited third-party pattern (not ours to publish) ---
+reference/
+
+# --- Project-specific specs (describe a REAL case, not the generic framework) ---
+# A spec under .kiro/specs/ names a concrete application and carries project decisions, so it is
+# case material, not reusable framework. Exclude every spec by default (pattern, not by name).
+# If you ever author a spec that is genuinely GENERIC framework material, allow-list it explicitly
+# with a negation (e.g. `!.kiro/specs/<generic-spec>/`).
+.kiro/specs/*/
+
+# --- Personal / project pilotage steering (NOT reusable framework) ---
+# Any steering file that carries personal identity, team attribution, roadmap, undecided
+# governance choices or internal paths is pilotage, not framework. Keep it local, never publish.
+# Pattern-based so it catches any such file, whatever its exact name:
+#   - *.local.md / *.perso.md     -> explicit "do not publish" marker you can add to any steering
+#   - project-context*.md         -> the filled, case-specific context (the *.template.md stays)
+# The generic, publishable steering (command-execution, office-*, skill-authoring) is NOT matched.
+.kiro/steering/*.local.md
+.kiro/steering/*.perso.md
+.kiro/steering/project-context.md
+.kiro/steering/project-context.*.md
+# Keep the depersonalized template that ships WITH the framework:
+!.kiro/steering/project-context.template.md
+
+# --- Legacy deliverables left at the REPO ROOT (pre output/ convention) ---
+# New deliverables go under output/${project_name}/ (excluded above). Older ones may still sit at
+# the bare project root (the framework does not move existing files). The belts below keep those
+# out of the repo too, by file type and by optional prefix.
+# Optional prefix belt: uncomment and set it to your ${project_name} (the prefix every skill uses
+# for its outputs), e.g.:
+#   my-app_*
+# <project_name>_*
+
+# --- Belt-and-braces: exclude deliverable file types at the REPO ROOT only ---
+# (never ship a generated office doc / diagram / model json / produced deck from the root;
+#  real example-free framework assets live under .kiro/skills/.../assets, not at the root)
+/*.pptx
+/*.docx
+/*.xlsx
+/*.xlsm
+/*.drawio
+/*_README.md
+/*_model.json
+/*.model.json
+
+# --- OS / editor noise ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+*~
+*.tmp
+*.tmp_*
+
+# =============================================================================
+# OPTIONAL: PUBLIC-REPO MODE  (OFF by default - see PUBLISHING.md, decision R2)
+# =============================================================================
+# The skills bundle official, internal company templates/standards under
+# `.kiro/skills/**/assets/` (reference models, standard documents, architecture
+# patterns). Whether those binaries may leave an internal repo is a HUMAN decision
+# (public vs restricted). This block lets you switch to a "public-safe" tree WITHOUT
+# editing every skill: uncomment it to exclude the bundled binary assets, then follow
+# PUBLISHING.md to drop a placeholder README in each `assets/` folder explaining which
+# official file to obtain and where to put it. Leave commented for an internal/restricted
+# repo that ships everything.
+#
+# .kiro/skills/**/assets/templates/*.docx
+# .kiro/skills/**/assets/templates/*.xlsx
+# .kiro/skills/**/assets/templates/*.xlsm
+# .kiro/skills/**/assets/templates/*.pptx
+# .kiro/skills/**/assets/templates/*.pdf
+# .kiro/skills/**/assets/templates/*.drawio
+# .kiro/skills/**/assets/*.pdf
+# # Keep the placeholder READMEs that tell a cloner what to drop back in:
+# !.kiro/skills/**/assets/**/README.md
+Exemples/

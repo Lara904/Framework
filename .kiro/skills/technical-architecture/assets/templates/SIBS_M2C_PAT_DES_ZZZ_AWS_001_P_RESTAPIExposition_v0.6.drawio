@@ -1,0 +1,473 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" version="24.7.17">
+  <diagram id="9JauFLkRxC5nikcj6C2r" name="REST API">
+    <mxGraphModel dx="2555" dy="2099" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-3" value="groups" parent="0" />
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-9" value="STLA Data center" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;labelPosition=center;verticalLabelPosition=top;align=left;verticalAlign=bottom;" parent="wpx-xS0hVz5jo0oU1wxI-3" vertex="1">
+          <mxGeometry x="7" y="54" width="870" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-11" value="internet" style="outlineConnect=0;dashed=0;verticalLabelPosition=middle;verticalAlign=bottom;align=center;html=1;shape=mxgraph.aws3.internet;fillColor=#D2D3D3;gradientColor=none;horizontal=0;labelPosition=left;" parent="wpx-xS0hVz5jo0oU1wxI-3" vertex="1">
+          <mxGeometry x="357" y="147" width="79.5" height="79.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-13" value="VPC" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc2;strokeColor=#82b366;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;dashed=0;" parent="wpx-xS0hVz5jo0oU1wxI-3" vertex="1">
+          <mxGeometry x="267" y="654" width="250" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="_5mK_GGma-DrysqEat7p-1" value="Application Account" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#B9E0A5;fillColor=none;verticalAlign=bottom;align=left;spacingLeft=0;fontColor=#CD2264;dashed=0;labelPosition=center;verticalLabelPosition=top;" parent="wpx-xS0hVz5jo0oU1wxI-3" vertex="1">
+          <mxGeometry x="37" y="274" width="640" height="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="UBzdjML9-HTMLhCtGpSW-1" value="SFS LZ" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#6666ff;fillColor=none;verticalAlign=bottom;align=left;spacingLeft=0;fontColor=#232F3E;dashed=1;labelPosition=center;verticalLabelPosition=top;strokeWidth=4;" parent="wpx-xS0hVz5jo0oU1wxI-3" vertex="1">
+          <mxGeometry x="7" y="244" width="860" height="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="I56r9qXAP8U-XSgsRp1b-1" value="&lt;font color=&quot;#000000&quot; style=&quot;font-size: 8px;&quot;&gt;&lt;b&gt;PRIV SUBNET&lt;br&gt;&lt;/b&gt;&lt;/font&gt;" style="sketch=0;outlineConnect=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_subnet;strokeColor=#6c8ebf;fillColor=#dae8fc;verticalAlign=top;align=left;spacingLeft=30;dashed=0;" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="281" y="780" width="209" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-22" value="8" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="60" y="672" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-4" value="11" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="60" y="550" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-4" value="10" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="60" y="310" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-14" value="13" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="60" y="190" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-21" value="&lt;font color=&quot;#000000&quot; style=&quot;font-size: 8px;&quot;&gt;&lt;b&gt;PUBSUBNET&lt;br&gt;&lt;/b&gt;&lt;/font&gt;" style="sketch=0;outlineConnect=0;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_subnet;strokeColor=#6c8ebf;fillColor=#dae8fc;verticalAlign=top;align=left;spacingLeft=30;dashed=0;" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="280" y="470" width="209" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-15" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="300" y="170" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;curved=1;" parent="UBzdjML9-HTMLhCtGpSW-1" source="E5A-yFbZAl0c9uH3HFHe-1" target="O1lpKhGSZu71qgQ_a9Vs-28" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="492.5066391265859" y="219" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;endArrow=none;endFill=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="UBzdjML9-HTMLhCtGpSW-1" source="E5A-yFbZAl0c9uH3HFHe-12" target="E5A-yFbZAl0c9uH3HFHe-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="UBzdjML9-HTMLhCtGpSW-1" source="E5A-yFbZAl0c9uH3HFHe-4" target="O1lpKhGSZu71qgQ_a9Vs-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-18" value="12" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="588" y="300" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.043;entryY=0.597;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="UBzdjML9-HTMLhCtGpSW-1" source="E5A-yFbZAl0c9uH3HFHe-1" target="E5A-yFbZAl0c9uH3HFHe-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="219" />
+              <mxPoint x="460" y="353" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-29" value="Shared Services" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_account;strokeColor=#B9E0A5;fillColor=none;verticalAlign=bottom;align=left;spacingLeft=0;fontColor=#CD2264;dashed=0;labelPosition=center;verticalLabelPosition=top;" parent="UBzdjML9-HTMLhCtGpSW-1" vertex="1">
+          <mxGeometry x="680" y="270" width="150" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="O1lpKhGSZu71qgQ_a9Vs-29" source="O1lpKhGSZu71qgQ_a9Vs-30" target="O1lpKhGSZu71qgQ_a9Vs-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-33" value="14" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="O1lpKhGSZu71qgQ_a9Vs-29" vertex="1">
+          <mxGeometry x="97" y="40" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-34" value="15" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="O1lpKhGSZu71qgQ_a9Vs-29" vertex="1">
+          <mxGeometry x="97" y="180" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qQ92Vg_JtF6BG2kjJf7Z-1" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Known Limitations&lt;/h1&gt;&lt;div&gt;Solution is not covered by &quot;Shield Advanced&quot; and &quot;Palo&amp;nbsp; Alto firewall&quot; protections, but this is a trade off to achieve mTLS.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Terraform has limitation on automating attaching additional application specific rules to WebACL.&lt;/div&gt;&lt;div&gt;https://github.com/hashicorp/terraform-provider-aws/issues/39291&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#ffcc99;strokeColor=#36393d;align=left;" vertex="1" parent="wpx-xS0hVz5jo0oU1wxI-3">
+          <mxGeometry x="7" y="1440" width="810" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="qQ92Vg_JtF6BG2kjJf7Z-2" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Additional notes&lt;/h1&gt;&lt;div&gt;When the CAs in the trust store are rotated, API gateway will need to be redeployed with new trust store (new S3 file and/or version). Shared service team will need to update the bucket with new CAs and notify the ops for redeployment of applications.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Ensure proper tagging for proper attachment of WebACLs from the central Firewall Manager service.&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;ALB was a good choice as proxy with much less overhead but couldn&#39;t be utilized because the mTLS offered by ALB doesn&#39;t support whitelisting of specific certificates nor the ability to achieve it via a custom lambda authorizer.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;HTTP API couldn&#39;t be used for lack of support of WAF&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#fff2cc;strokeColor=#d6b656;align=left;" vertex="1" parent="wpx-xS0hVz5jo0oU1wxI-3">
+          <mxGeometry x="837" y="1440" width="780" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-1" value="Document Information" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;strokeColor=#9673a6;fontSize=16;fillColor=#e1d5e7;" vertex="1" parent="wpx-xS0hVz5jo0oU1wxI-3">
+          <mxGeometry x="910" y="-290" width="720" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-2" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="30" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-3" value="Version" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-2">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-4" value="0.6" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-2">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-6" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="70" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-7" value="Classification" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-6">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-8" value="&lt;div&gt;Stellantis Internal Usage&lt;/div&gt;C2 - Internal" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-6">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-10" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="110" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-11" value="M2C Pattern Manager" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-10">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-12" value="B4AL" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-10">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-17" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="150" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-18" value="Author" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-17">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-19" value="Cyon John (Eviden for B4AL)" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-17">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-48" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="190" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-49" value="Last updated on" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-48">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-50" value="10/08/2024" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-48">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-51" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-1">
+          <mxGeometry y="230" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-52" value="Storage source" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-51">
+          <mxGeometry width="190" height="40" as="geometry">
+            <mxRectangle width="190" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-53" value="http://docinfogroupe.inetpsa.com/ead/doc/ref.20373_24_04735/v.vc/fiche" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="iliA5C2DI3ht66igCjr4-51">
+          <mxGeometry x="190" width="530" height="40" as="geometry">
+            <mxRectangle width="530" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-20" value="" style="line;strokeWidth=4;rotatable=0;dashed=0;labelPosition=right;align=left;verticalAlign=middle;spacingTop=0;spacingLeft=6;points=[];portConstraint=eastwest;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="wpx-xS0hVz5jo0oU1wxI-3">
+          <mxGeometry x="7" y="13" width="1630" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="iliA5C2DI3ht66igCjr4-21" value="" style="line;strokeWidth=4;rotatable=0;dashed=0;labelPosition=right;align=left;verticalAlign=middle;spacingTop=0;spacingLeft=6;points=[];portConstraint=eastwest;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="wpx-xS0hVz5jo0oU1wxI-3">
+          <mxGeometry x="-3" y="1414" width="1630" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="1" parent="0" />
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="csXPsZ2xef7fjqbkAx94-2" target="E5A-yFbZAl0c9uH3HFHe-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-3" target="E5A-yFbZAl0c9uH3HFHe-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-1" target="Qi_sAsrP5YPHp-HeFYlL-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="267" y="464" />
+              <mxPoint x="267" y="463" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-2" target="E5A-yFbZAl0c9uH3HFHe-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-22" value="https" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;horizontal=0;" parent="E5A-yFbZAl0c9uH3HFHe-8" vertex="1" connectable="0">
+          <mxGeometry x="0.0141" y="-2" relative="1" as="geometry">
+            <mxPoint x="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-2" value="NLB (No public IP)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=middle;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.network_load_balancer;horizontal=0;labelPosition=right;" parent="1" vertex="1">
+          <mxGeometry x="357" y="756" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-3" target="E5A-yFbZAl0c9uH3HFHe-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-21" value="https" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;horizontal=0;" parent="E5A-yFbZAl0c9uH3HFHe-11" vertex="1" connectable="0">
+          <mxGeometry x="0.1177" y="-2" relative="1" as="geometry">
+            <mxPoint x="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-3" value="ALB (No Public IP)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=middle;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.application_load_balancer;horizontal=0;labelPosition=right;" parent="1" vertex="1">
+          <mxGeometry x="357" y="915" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-1" target="E5A-yFbZAl0c9uH3HFHe-16" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="357" y="464" />
+              <mxPoint x="267" y="464" />
+              <mxPoint x="267" y="314" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-5" value="APIC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="335.99" y="69" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-5" target="E5A-yFbZAl0c9uH3HFHe-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-9" value="mTLS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];rotation=-90;labelBackgroundColor=none;" parent="E5A-yFbZAl0c9uH3HFHe-6" vertex="1" connectable="0">
+          <mxGeometry x="0.0087" relative="1" as="geometry">
+            <mxPoint x="-9" y="44" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-10" value="ECS Service" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.ecs_service;" parent="1" vertex="1">
+          <mxGeometry x="359.435" y="1094" width="73.13" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-1" target="csXPsZ2xef7fjqbkAx94-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="396" y="522" as="sourcePoint" />
+            <mxPoint x="396" y="756" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-2" value="VPC Link" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=middle;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpc_privatelink;labelPosition=right;horizontal=0;" parent="1" vertex="1">
+          <mxGeometry x="357" y="604" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-3" target="E5A-yFbZAl0c9uH3HFHe-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="257" y="954" />
+              <mxPoint x="257" y="835" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-13" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="287" y="69" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-14" value="7" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="67" y="284" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-20" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="307" y="604" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-21" value="4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="307" y="756" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-23" value="5" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="307" y="909" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-24" value="6" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="307" y="1094" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="csXPsZ2xef7fjqbkAx94-19" value="9" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="595" y="284" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-10" value="Ping Federate" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="597" y="69" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-1" target="Qi_sAsrP5YPHp-HeFYlL-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="357" y="464" />
+              <mxPoint x="267" y="464" />
+              <mxPoint x="267" y="574" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-3" target="Qi_sAsrP5YPHp-HeFYlL-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="257" y="954" />
+              <mxPoint x="257" y="613" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-13" value="Cloudwatch Logs" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.cloudwatch_logs;" parent="1" vertex="1">
+          <mxGeometry x="133" y="434" width="78" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-16" value="Public Hosted Zone&lt;div&gt;PRD-xxxx.lzb.aws-stla.net&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.hosted_zone;" parent="1" vertex="1">
+          <mxGeometry x="133" y="284" width="78" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-3" value="ACM" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.certificate_manager_3;" parent="1" vertex="1">
+          <mxGeometry x="133" y="554" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-13" value="" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.waf;" parent="1" vertex="1">
+          <mxGeometry x="133" y="796" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-17" value="Private Hosted Zone&lt;div&gt;PRD-xxxx.lzb.aws-stla.net&lt;/div&gt;" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.hosted_zone;" parent="1" vertex="1">
+          <mxGeometry x="133" y="916" width="78" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-23" value="internet" style="outlineConnect=0;dashed=0;verticalLabelPosition=middle;verticalAlign=bottom;align=center;html=1;shape=mxgraph.aws3.internet;fillColor=#D2D3D3;gradientColor=none;horizontal=0;labelPosition=left;" parent="1" vertex="1">
+          <mxGeometry x="617" y="157" width="79.5" height="79.5" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-28" value="CA/CRL" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.bucket;labelPosition=center;" parent="1" vertex="1">
+          <mxGeometry x="702" y="551" width="75" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-30" value="CRL refresher" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="705" y="692" width="69" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-4" value="Authorizer" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="502.5" y="554" width="69" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-12" value="WAF" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.waf;" parent="1" vertex="1">
+          <mxGeometry x="498" y="284" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="E5A-yFbZAl0c9uH3HFHe-1" value="Regional REST API Gateway" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" parent="1" vertex="1">
+          <mxGeometry x="357" y="424" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;" parent="1" source="E5A-yFbZAl0c9uH3HFHe-10" target="O1lpKhGSZu71qgQ_a9Vs-10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="657" y="1144" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-12" value="JWT validation" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="O1lpKhGSZu71qgQ_a9Vs-11" vertex="1" connectable="0">
+          <mxGeometry x="-0.8071" y="-4" relative="1" as="geometry">
+            <mxPoint x="4" y="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-38" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="927" y="1147" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-39" value="Cloudwatch log group to keep the logs from API gateway. It is recommended to keep at least error logs in production. Higher levels could be configured on the basis of traceability levels or troubleshooting needs." style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="O1lpKhGSZu71qgQ_a9Vs-38" vertex="1">
+          <mxGeometry x="56" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-40" value="13" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="O1lpKhGSZu71qgQ_a9Vs-38" vertex="1">
+          <mxGeometry x="-4" y="10" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-41" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="927" y="1301" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-42" value="Lambda periodically fetches the CRL from PKI and updates the S3 bucket. This is in the shared account as well doesn&#39;t need to be managed as part of the application, this is just for information." style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="O1lpKhGSZu71qgQ_a9Vs-41" vertex="1">
+          <mxGeometry x="56" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-43" value="15" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="O1lpKhGSZu71qgQ_a9Vs-41" vertex="1">
+          <mxGeometry x="-4" y="10" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-44" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SFS REST API Exposition pattern&lt;/h1&gt;&lt;div&gt;Expose REST APIs from applications running in SFS AWS LZ accounts to other applications (with in LZ, On-Prem or Partners).&amp;nbsp;&lt;/div&gt;&lt;div&gt;The pattern uses APIC as the APIM solution and gateway, the components in AWS is acting like a proxy providing a secure connectivity from APIC (on-prem) to application (cloud)&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;" parent="1" vertex="1">
+          <mxGeometry x="11" y="-140" width="869" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-25" value="Notes" parent="0" />
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-25" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="927" y="1034" width="689" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-11" value="The role of the Authorizer Lambda is to ensure only APIC can make requests to the API gateway. It is achieved by validating the &quot;Subject&quot; of the certificate presented by the client against the know subject name APIC client certificate. The lambda is also responsible for ensuring the presented client certificate is not revoked by checking it against a certificate revocation list (CRL).&amp;nbsp;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-25" vertex="1">
+          <mxGeometry x="60" width="629" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-12" value="12" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-25" vertex="1">
+          <mxGeometry width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-27" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="929" y="944" width="689" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-23" value="WAF with WebACL rules protecting private ALB endpoint. Standard rules are provided by Firewall manager, but applications should have the option to additional rule groups if needed. Please note that WebACL used with WAF for private and public endpoints are different." style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-27" vertex="1">
+          <mxGeometry x="58" width="629" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-24" value="11" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-27" vertex="1">
+          <mxGeometry x="-2" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-28" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="929" y="874" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-19" value="ACM provides publicly trusted certificates for API gateway and ALB" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-28" vertex="1">
+          <mxGeometry x="58" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-20" value="10" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-28" vertex="1">
+          <mxGeometry x="-2" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-29" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="929" y="804" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-17" value="WAF with WebACL rules protecting public gateway endpoint. Standard rules are provided by Firewall manager, but applications should have the option to additional rule groups if needed." style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-29" vertex="1">
+          <mxGeometry x="58" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-18" value="9" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-29" vertex="1">
+          <mxGeometry x="-2" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-30" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="929" y="694" width="690" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-5" value="Private hosted zone provides DNS names for the ALB. Note that the domain is used in &quot;split-dns&quot; mode and this is the private part. Split-DNS is required because API gateway requires the backend to have a certificate from a publicly verifiable CA, and to use ACM for certificate we need a public domain. We don&#39;t use the public hosted zone with private A records&amp;nbsp; to avoid unecessary leaking of IP address" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-30" vertex="1">
+          <mxGeometry x="58" width="630" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-6" value="8" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-30" vertex="1">
+          <mxGeometry x="-2" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-31" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="929" y="614" width="690" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-1" value="Public Hosted zone provides custom domain name required for the API Gateway. Hosts the DNS records for the API gateway and ownership verification records for ACM certificates needed for API gateway and ALB (c.f 5). Note that the domain is used in &quot;split-dns&quot; mode and this is the public part.&amp;nbsp;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-31" vertex="1">
+          <mxGeometry x="58" width="630" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-2" value="7" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-31" vertex="1">
+          <mxGeometry x="-2" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-32" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="930" y="544" width="690" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-22" value="ECS service providing the API. Application is expected to do validations on JWT and API keys as required by the APIC.&amp;nbsp;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-32" vertex="1">
+          <mxGeometry x="57" width="630" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-23" value="6" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-32" vertex="1">
+          <mxGeometry x="-3" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-33" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="930" y="454" width="690" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-20" value="Private ALB marks the begining of actual application layer. The ALB provides load balancing and request routing services to the application. ALB will route the request to the actual ECS service that provides the API. ALB could also be used for accessing the API internally within the application. ALB uses ACM certificate signed by AWS (not imported)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-33" vertex="1">
+          <mxGeometry x="57" width="630" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-21" value="5" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-33" vertex="1">
+          <mxGeometry x="-3" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-34" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="931" y="384" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-18" value="Private NLB supports the VPC link being the other end of the bridge. NLB is configured to route all traffic towards the application ALB" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-34" vertex="1">
+          <mxGeometry x="56" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-19" value="4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-34" vertex="1">
+          <mxGeometry x="-4" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-35" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="930" y="314" width="689" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-16" value="VPC Link allows API gateway to connect to resources inside application VPC. Acts as bridge between API gateway and application VPC" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-35" vertex="1">
+          <mxGeometry x="57" width="629" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-17" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-35" vertex="1">
+          <mxGeometry x="-3" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-37" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="931" y="54" width="690" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-6" value="APIC is the official API management solution for stellantis. All the APIs are published here and this is the entry point for all API consumers. The rest of the components in the architecture are meant for providing a secure connection between the APIC and application in SFS LZ. For details on publishing API in&amp;nbsp;https://shiftup.sharepoint.com/sites/COEAPI/SitePages/Publish-APIs-all-Lifecycle.aspx" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-37" vertex="1">
+          <mxGeometry x="56" width="630" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-7" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-37" vertex="1">
+          <mxGeometry x="-4" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-38" value="" style="group" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1" connectable="0">
+          <mxGeometry x="927" y="1218" width="689" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-39" value="S3 buckets holding the trust store and CRL. This is in a shared account made accessible to all accounts in SFS LZ. This way authorizer lambda need not contact the actual PKI for getting the CRL.&lt;div&gt;Bucket name:&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;s3://s3-lzb-prod-s3crlca/ (Obtain the S3 key and versions to be used from the shared services team)&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="Qi_sAsrP5YPHp-HeFYlL-38" vertex="1">
+          <mxGeometry x="56" width="629" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="Qi_sAsrP5YPHp-HeFYlL-40" value="14" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="Qi_sAsrP5YPHp-HeFYlL-38" vertex="1">
+          <mxGeometry x="-4" y="12" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-14" value="An AWS API gateway (Regional, REST) is used as the API provider for APIC. This API gateway acts as e&lt;span style=&quot;background-color: initial;&quot;&gt;ntry point into the SFS LZ and provide&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Security features - WAF, mTLS, custom authorization. Since the actual APIM functionalities are handled in APIC, the application may choose to use a simple HTTP PROXY integration to the ALB without managing the OpenAPI schema in AWS gateway. Gateway authorizer&amp;nbsp; cache could be enabled for performance (use certificate serial number as principal/key for cache). The gateway should be configured to disable access via default domain to ensure proper mTLS connectivity.&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=14;" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1">
+          <mxGeometry x="987" y="154" width="629" height="150.00000000000003" as="geometry" />
+        </mxCell>
+        <mxCell id="wpx-xS0hVz5jo0oU1wxI-15" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" parent="wpx-xS0hVz5jo0oU1wxI-25" vertex="1">
+          <mxGeometry x="927" y="154" width="36" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="O1lpKhGSZu71qgQ_a9Vs-6" value="comments" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,55 @@
+{
+  "title": "Functional Architecture Dossier",
+  "subtitle": "<Project name>",
+  "version": "1.0",
+  "author": "<name>",
+  "date": "YYYY-MM-DD",
+  "objectOfDocument": "This document presents the functional architecture to answer the needs of the <project> transformation project.",
+  "audience": "TCC and CO, functional architects, project team, impacted BIS",
+  "relatedDocuments": [
+    { "title": "Validated statement of needs", "reference": "<link or TBC>" },
+    { "title": "Functional architecture diagram", "reference": "<project>_functional_architecture_diagram.drawio" },
+    { "title": "Functional architecture README", "reference": "<project>_functional_architecture_README.md" }
+  ],
+  "revisions": [
+    { "version": "1.0", "date": "YYYY-MM-DD", "chapters": "All", "motives": "Initial creation of the FAD", "authors": "<name>" }
+  ],
+  "body": [
+    { "type": "h1", "text": "The scope of the transformation project" },
+    { "type": "h2", "text": "Positioning of project plan" },
+    { "type": "p", "text": "TBC - position the subject in the wider set (Project Plan, Program, IT master plan)." },
+    { "type": "h2", "text": "Business perimeter and / or business processes addressed" },
+    { "type": "p", "text": "TBC - present the subject with a business view (business processes / user journey / user flow)." },
+    { "type": "h2", "text": "The IT situation of the impacted functional perimeter" },
+    { "type": "table", "header": ["Application", "Company", "State", "Description"], "rows": [
+      ["<app>", "ICT / SFS", "New / Update / Existing", "<one line>"]
+    ] },
+    { "type": "h2", "text": "The situation of data useful in the project" },
+    { "type": "p", "text": "TBC - useful reference/enterprise data and how it is accessed." },
+    { "type": "h2", "text": "The entities and functional architects involved" },
+    { "type": "table", "header": ["Impacted BIS", "Involved architect (incl. responsible DAF)", "Remark"], "rows": [
+      ["<BIS>", "<architect>", "<remark>"]
+    ] },
+
+    { "type": "h1", "text": "The scope of the functional architecture" },
+    { "type": "h2", "text": "The structuring elements to take into account" },
+    { "type": "p", "text": "TBC - elements from the business needs analysis that drive the chosen architecture." },
+    { "type": "h2", "text": "The functional architecture chosen - Master plan" },
+    { "type": "p", "text": "See the functional architecture diagram (<project>_functional_architecture_diagram.drawio) for the applicative view." },
+    { "type": "table", "header": ["From (initiator)", "To", "Exchange (business content)", "Notes"], "rows": [
+      ["<app A>", "<app B>", "<what flows>", "<sync/async, constraint>"]
+    ] },
+    { "type": "h2", "text": "The construction permit of the new IT application (for each new IT application)" },
+    { "type": "p", "text": "TBC - precise presentation of each new application." },
+    { "type": "h2", "text": "The progressive implementation of the functional architecture (if bundles needed)" },
+    { "type": "p", "text": "Not applicable." },
+
+    { "type": "h1", "text": "Appendix: elements of the IT Urbanisation study" },
+    { "type": "h2", "text": "Detailed elements of guidance (if the topic requires it)" },
+    { "type": "p", "text": "Not applicable." },
+    { "type": "h2", "text": "Alternative functional architecture not chosen (if clarification needed)" },
+    { "type": "p", "text": "Not applicable." },
+    { "type": "h2", "text": "Alternative IT application not chosen (if clarification needed)" },
+    { "type": "p", "text": "Not applicable." }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Data flow mapping",
+  "subtitle": "<Application / Project name>",
+  "author": "M. Cadoche",
+  "date": "YYYY-MM-DD",
+  "purpose": "The purpose of this spreadsheet is to give a list of dependencies between the applications of our Information System.",
+  "objective": "The objective of this spreadsheet is to provide the flow map with the DCP indicator. At this stage the flow map is constituted with the dependencies from our CMDB.",
+  "sources": [
+    { "type": "CMDB", "sheet": "Dependencies", "extractionDate": "YYYY-MM-DD", "url": "<CMDB extract URL>" },
+    { "type": "ARIS", "sheet": "Aris Repository", "extractionDate": "YYYY-MM-DD", "url": "<ARIS repository URL>" },
+    { "type": "GDPR", "sheet": "GDPR_global", "extractionDate": "YYYY-MM-DD", "url": "<GDPR files URL>" }
+  ],
+  "assumptions": [
+    "By default the applications related to wholesale activity are tagged at DCP=No.",
+    "If the 2 apps carry DCPs then the flow carries DCP.",
+    "If one of the 2 does not carry a DCP then the flow does not carry DCP.",
+    "If DCP is Yes for the source app and DCP for the destination app is missing then the flow DCP is Yes."
+  ],
+  "method": [
+    "If DCP=Yes in GDPR files and DCP=Yes in ARIS file then DCP reviewed = Yes.",
+    "If DCP in GDPR files differs from DCP in ARIS files then DCP reviewed = 'to be confirmed by an expert'.",
+    "If DCP in GDPR files is missing then DCP reviewed = DCP in ARIS files.",
+    "If DCP in ARIS files is missing then DCP reviewed = DCP in GDPR files.",
+    "If DCP in GDPR files and DCP in ARIS files are both missing then DCP reviewed = 'to be confirmed by an expert'."
+  ],
+  "versions": [
+    { "version": "0.1", "type": "flow map", "updatedDate": "YYYY-MM-DD", "updatedBy": "M. Cadoche", "owners": "", "comments": "Document creation" }
+  ],
+  "functionalFlows": [
+    { "name": "<Functional flow name>", "treatment": "Web Service", "source": "<Source Service/App>", "destination": "<Destination Service/App>", "frequency": "on api call", "confidentiality": "C3", "dcp": "No", "party": "No", "partyIdentification": "No", "bankingInformation": "No", "sensitiveData": "No", "dataType": "<Type of data with DCP>" }
+  ],
+  "technicalFlows": [
+    { "functionalName": "<Functional flow name>", "name": "<Technical flow name>", "type": "api resource", "source": "<Source Service/App>", "hostnameSource": "<https://source-host>", "destination": "<Destination Service/App>", "hostnameDestination": "<destination host>", "frequency": "on api call", "confidentiality": "C3", "dcp": "No", "port": "443", "protocol": "https", "tokenSupplier": "<token supplier if API>", "endpoint": "<exposition end point>", "apicProduct": "<APIC product>" }
+  ]
+}

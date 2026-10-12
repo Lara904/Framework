@@ -1,0 +1,167 @@
+{
+  "title": "Technical Architecture File",
+  "subtitle": "<Application / Project name>",
+  "version": "0.1",
+  "author": "<author>",
+  "date": "YYYY-MM-DD",
+  "distributionList": [
+    { "recipient": "Technical Architects", "entity": "SFS" },
+    { "recipient": "Cloud Architects", "entity": "SFS" },
+    { "recipient": "Security Architects", "entity": "SFS" },
+    { "recipient": "Technical Leads", "entity": "<partner company>" }
+  ],
+  "approval": [
+    { "role": "Editor", "function": "Solution Architect", "name": "LEMSADDEK Reda", "entity": "<partner company>" },
+    { "role": "Editor", "function": "Cloud Architect", "name": "BERRADA Badr", "entity": "<partner company>" },
+    { "role": "Validator", "function": "Technical Architect", "name": "HARTMANN Nicolas", "entity": "SFS" },
+    { "role": "Validator", "function": "Security Architect", "name": "DARBOIS Tomas", "entity": "SFS" },
+    { "role": "Validator", "function": "Solution Lead", "name": "OZADANIR Evin", "entity": "SFS" },
+    { "role": "Validator", "function": "Move2Cloud Leader", "name": "Dany Salman", "entity": "SFS" }
+  ],
+  "referencedDocuments": [
+    { "n": "[1]", "title": "Technical architecture diagram", "reference": "<project>_technical_architecture_diagram.drawio" },
+    { "n": "[2]", "title": "Technical architecture README", "reference": "<project>_technical_architecture_README.md" },
+    { "n": "[3]", "title": "Data flow diagram", "reference": "<project>_technical_architecture_dataflow.drawio" },
+    { "n": "[4]", "title": "Data flow mapping (ARIS/CMDB/GDPR flow inventory)", "reference": "<project>_technical_architecture_dataflow_mapping.xlsx" },
+    { "n": "[5]", "title": "SIBS M2C pattern", "reference": "SIBS_M2C_PAT_DES_ZZZ_AWS_00x" }
+  ],
+  "documentEvolution": [
+    { "date": "YYYY-MM-DD", "version": "0.1", "chapter": "All", "changes": "Document creation", "editors": "<author>" }
+  ],
+  "body": [
+    { "type": "h1", "text": "Context" },
+    { "type": "h2", "text": "Purpose of the document" },
+    { "type": "p", "text": "This document describes the technical architecture of <application>. Replace this placeholder with the purpose and audience of the DAT." },
+    { "type": "h2", "text": "Presentation and scope of the project" },
+    { "type": "p", "text": "Describe the application, the delivering company (ICT / SFS), and the scope covered by this DAT. Reference the diagrams and the data flow mapping below." },
+    { "type": "table", "header": ["Ref", "Document"], "rows": [
+      ["[1]", "Technical architecture diagram - <project>_technical_architecture_diagram.drawio"],
+      ["[2]", "Data flow diagram - <project>_technical_architecture_dataflow.drawio"],
+      ["[3]", "Data flow mapping (ARIS/CMDB/GDPR)"]
+    ] },
+    { "type": "h2", "text": "Requirements" },
+    { "type": "h3", "text": "Functional requirements" },
+    { "type": "p", "text": "List the functional requirements of the application (TBC)." },
+    { "type": "h3", "text": "Technical requirements" },
+    { "type": "h4", "text": "Synthesis" },
+    { "type": "p", "text": "Summarize the technical requirements and the target pattern (TBC)." },
+    { "type": "h4", "text": "Volumetry" },
+    { "type": "p", "text": "Expected volumes / throughput / storage (TBC with the business)." },
+    { "type": "h4", "text": "Security" },
+    { "type": "p", "text": "Key security requirements (encryption, authentication, exposure) (TBC)." },
+    { "type": "h4", "text": "Compatibility" },
+    { "type": "p", "text": "Compatibility constraints (browsers, clients, integrations) (TBC)." },
+
+    { "type": "h1", "text": "Target Architecture" },
+    { "type": "h2", "text": "Applicative Architecture" },
+    { "type": "h3", "text": "Overview" },
+    { "type": "p", "text": "Describe the applicative architecture (components / microservices / front) (TBC)." },
+    { "type": "h3", "text": "Applicative components" },
+    { "type": "h4", "text": "<Component 1>" },
+    { "type": "p", "text": "Role and responsibility of the component (TBC)." },
+    { "type": "h3", "text": "External systems integration" },
+    { "type": "h4", "text": "<External system 1 (e.g. Ping Federate / APIC)>" },
+    { "type": "p", "text": "Describe the integration and its authentication (TBC). 'None' if truly none." },
+
+    { "type": "h2", "text": "Data Architecture" },
+    { "type": "h3", "text": "Overview" },
+    { "type": "p", "text": "Describe how data is handled (TBC)." },
+    { "type": "h3", "text": "Data Sources" },
+    { "type": "p", "text": "List the data sources with their confidentiality (C1/C2/C3/C4) and DCP flag (TBC)." },
+    { "type": "h3", "text": "Enterprise API Management" },
+    { "type": "p", "text": "APIC products exposed/consumed (TBC / Not applicable)." },
+    { "type": "h3", "text": "Data Storage Layer" },
+    { "type": "p", "text": "Stores and their encryption (TBC / Not applicable)." },
+    { "type": "h3", "text": "Data Processing Layer" },
+    { "type": "p", "text": "Processing tier (TBC / Not applicable)." },
+    { "type": "h3", "text": "Platform Private API" },
+    { "type": "p", "text": "Private APIs (TBC / Not applicable)." },
+    { "type": "h3", "text": "Data Visualization Layer" },
+    { "type": "p", "text": "Reporting / BI (TBC / Not applicable)." },
+    { "type": "h3", "text": "Data Security Layer" },
+    { "type": "p", "text": "Encryption at rest / in transit and personal-data (DCP) handling; reference the data flow diagram and Data flow mapping (TBC)." },
+    { "type": "h3", "text": "Data Monitoring Layer" },
+    { "type": "p", "text": "Metrics and logging (TBC)." },
+
+    { "type": "h2", "text": "Technical Architecture" },
+    { "type": "h3", "text": "Overview" },
+    { "type": "p", "text": "Reference the technical diagram and the SIBS M2C pattern(s) used (TBC)." },
+    { "type": "h3", "text": "Infrastructure services" },
+    { "type": "h4", "text": "AWS Services" },
+    { "type": "table", "header": ["Service", "Account / Region", "Role"], "rows": [
+      ["<Service>", "<Account> / <Region>", "<Role>"]
+    ] },
+    { "type": "h4", "text": "AWS services and resources provided by the Landing Zone" },
+    { "type": "p", "text": "Landing Zone provided resources (log account, KMS, guardrails) (TBC)." },
+    { "type": "h4", "text": "Deployment pattern" },
+    { "type": "p", "text": "Describe the deployment pattern (TBC)." },
+    { "type": "h4", "text": "Recommended server resources" },
+    { "type": "table", "header": ["Component", "Description", "Resources"], "rows": [
+      ["<Component>", "<Description>", "<vCPU / RAM / instances> (TBC)"]
+    ] },
+
+    { "type": "h2", "text": "Flows Matrix" },
+    { "type": "p", "text": "This matrix is the tabular twin of the data flow diagram and the synthetic extract of the Data flow mapping. Criticality uses the official C1/C2/C3/C4 scale; DCP flags personal data (Yes/No)." },
+    { "type": "table", "header": ["Source", "Destination", "Protocol", "Port", "Criticality", "DCP", "Description"], "rows": [
+      ["<Source>", "<Destination>", "HTTPS", "443", "C?", "No", "<Description> (TBC)"]
+    ] },
+
+    { "type": "h2", "text": "Continuous Integration" },
+    { "type": "h3", "text": "Environments" },
+    { "type": "p", "text": "dev / staging / prod environments and account organization (TBC)." },
+    { "type": "h3", "text": "DevOps tools" },
+    { "type": "p", "text": "External Stellantis stack: GitHub + TeamCity + Artifactory + Terraform. AWS CodePipeline/CodeBuild/CodeCommit/CodeDeploy are NOT used." },
+    { "type": "h3", "text": "Deployment process" },
+    { "type": "p", "text": "Describe the deployment process (TBC)." },
+    { "type": "h3", "text": "Release Management" },
+    { "type": "h4", "text": "Git Flow" },
+    { "type": "p", "text": "Branching model (TBC)." },
+    { "type": "h4", "text": "Release Name" },
+    { "type": "p", "text": "Versioning convention (TBC)." },
+    { "type": "h4", "text": "Release Deployment" },
+    { "type": "p", "text": "Promotion across environments (TBC)." },
+
+    { "type": "h2", "text": "Platform Maintenance" },
+    { "type": "h3", "text": "Release update" },
+    { "type": "p", "text": "How new versions are deployed and rolled back (TBC)." },
+    { "type": "h3", "text": "Security Patch and Vulnerability Detection" },
+    { "type": "p", "text": "Patching and vulnerability scanning (TBC)." },
+
+    { "type": "h2", "text": "Security" },
+    { "type": "h3", "text": "Roles and Access" },
+    { "type": "p", "text": "IAM roles and least-privilege access (TBC)." },
+    { "type": "h3", "text": "Access restriction" },
+    { "type": "p", "text": "Network / edge restrictions (TBC)." },
+    { "type": "h3", "text": "Domain Name" },
+    { "type": "p", "text": "Public domain/subdomain and certificate (TBC)." },
+    { "type": "h3", "text": "Data Anonymization and Resources Security" },
+    { "type": "p", "text": "Anonymization and resource security (TBC)." },
+    { "type": "h3", "text": "Antivirus Detection" },
+    { "type": "p", "text": "Antivirus / file scanning (TBC / Not applicable)." },
+
+    { "type": "h2", "text": "Supervision" },
+    { "type": "h3", "text": "Health Check" },
+    { "type": "p", "text": "Health monitoring (TBC)." },
+    { "type": "h3", "text": "Logs monitoring" },
+    { "type": "p", "text": "Log centralization and alerting (TBC)." },
+
+    { "type": "h2", "text": "Backup / Restoration management" },
+    { "type": "h3", "text": "Backup policy and Restoration process" },
+    { "type": "p", "text": "Backup and restoration (TBC / Not applicable for a stateless app)." },
+
+    { "type": "h2", "text": "FinOps" },
+    { "type": "p", "text": "Main cost drivers and estimate (TBC)." },
+
+    { "type": "h2", "text": "Appendices" },
+    { "type": "h3", "text": "Glossary" },
+    { "type": "table", "header": ["Term", "Definition"], "rows": [
+      ["<Term>", "<Definition>"]
+    ] },
+    { "type": "h3", "text": "Acronyms" },
+    { "type": "table", "header": ["Acronym", "Meaning"], "rows": [
+      ["DAT", "Document d'Architecture Technique (Technical Architecture Document)."],
+      ["DCP", "Donnee a Caractere Personnel - personal data (GDPR)."],
+      ["C1/C2/C3/C4", "Official Stellantis data-confidentiality scale."]
+    ] }
+  ]
+}

@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9">
+  <diagram id="biDB-PWhonz2JInNnVjQ" name="Framework">
+    <mxGraphModel dx="1242" dy="2076" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="eyQeFtQ7wlrM4R18Zuha-0" />
+        <mxCell id="eyQeFtQ7wlrM4R18Zuha-1" parent="eyQeFtQ7wlrM4R18Zuha-0" />
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-0" value="SECURITE:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Spring Security ( Ldap, Oidc, ... )&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;Dependency-check-owasp&lt;br&gt;spring-security-oauth2-resource-server&lt;br&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="719" y="116" width="240" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-1" value="CORE:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Spring Core 7.0&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;Spring Boot 4.0&lt;br&gt;&lt;span&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="121" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-3" value="Logging:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Spring Logging ( Logback )&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;logstash-logback-encoder&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;sl4j&lt;br&gt;micrometer-tracing-bridge-brave&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="719" y="221" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-4" value="Supervision:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;Spring Actuator&lt;br&gt;Micrometer-registry-cloudwatch2&lt;span&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="719" y="331" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-5" value="CLOUD READY:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Spring Cloud AWS 4.0&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="389" y="121" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-6" value="Messaging:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;N / A&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="389" y="221" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-7" value="Data pipeline&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span&gt;Spring Batch 6.0&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left ; font-size: 11px&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="389" y="331" width="280" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-8" value="OpenJDK 21 - Corretto distribution" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="41" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-9" value="WEB:&lt;br&gt;&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;Spring Web 7.0&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="221" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-10" value="UTILS :&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;Apache Commons&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;Lombok, mapstruct&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="331" width="280" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-11" value="DATA LAYER&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;Spring Data JPA 4.0&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Spring Cloud AWS 4.0&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="415.5" width="280" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1Zp1WKXmqXb-tYgQ0rxO-12" value="&lt;b&gt;&lt;i&gt;&lt;font style=&quot;font-size: 19px&quot;&gt;Frameworks to be upgrades &lt;u&gt;at least&lt;/u&gt; yearly - recommanded half-yearly&lt;br&gt;use&amp;nbsp;https://start.spring.io/&lt;br&gt;Define your maven bom to manage versions&lt;br&gt;&lt;/font&gt;&lt;/i&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fontSize=13;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="224" y="683.5" width="650" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l0XRUOX3I0ptrnyhMSww-0" value="DOCUMENTATION&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;spring-doc-openapi-ui&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="389" y="415.5" width="280" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l0XRUOX3I0ptrnyhMSww-1" value="QUALITY&lt;br&gt;sonar-maven-plugin&lt;br&gt;checkmarx report" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="719" y="415.5" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l0XRUOX3I0ptrnyhMSww-2" value="pom PSA ciq-java-parent 4.0.0- for release and SonarQube raise" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="59" y="81" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KuxYKMxznbgRHd8X9CKF-0" value="&lt;div&gt;Container base image&lt;/div&gt;&lt;div&gt;&lt;a href=&quot;https://github.com/paketo-buildpacks/builder-noble-java-tiny&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;https://github.com/paketo-buildpacks/builder-noble-java-tiny&lt;/span&gt;&lt;br&gt;&lt;/a&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Layers&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-weight: normal; background-color: initial;&quot;&gt;&lt;a href=&quot;https://github.com/paketo-buildpacks/ca-certificates&quot;&gt;https://github.com/paketo-buildpacks/ca-certificates&lt;/a&gt;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;&lt;a href=&quot;https://github.com/paketo-buildpacks/amazon-corretto&quot;&gt;https://github.com/paketo-buildpacks/amazon-corretto&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;&lt;a href=&quot;https://github.com/paketo-buildpacks/java&quot;&gt;https://github.com/paketo-buildpacks/java&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=#9673a6;fillColor=#e1d5e7;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="239" y="763.5" width="590" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="fq5DIAwxJsXJjstx2SbK-2" value="Cloud best practice&lt;br&gt;use in priority BOM of Spring Cloud relative to the Cloud provider (example: &lt;a href=&quot;https://docs.spring.io/spring-cloud-aws/docs&quot;&gt;spring Cloud AWS&lt;/a&gt;)" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#ffe6cc;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="69" y="618" width="900" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ImnC1oLWods8HKzLe3G_-0" value="TESTING&lt;br&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;spring-boot-starter-test&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;spring-security-test&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;spring-batch-test&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;h2&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;wiremock-standalone&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=10;strokeColor=none;fillColor=#DBDBDB;gradientColor=none;fontStyle=3;verticalAlign=top;align=center;html=1;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="389" y="507" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Ckgsdn96ip33Ft6gQFfl-0" value="Front End - Angular 21 LTS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="66" y="-59" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ckgsdn96ip33Ft6gQFfl-1" value="&lt;i&gt;&lt;b style=&quot;&quot;&gt;@ngx-translate (i18n)&lt;/b&gt;&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="66" y="-9" width="380" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Ckgsdn96ip33Ft6gQFfl-2" value="ts (typescript)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="698" y="-19" width="258" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Ckgsdn96ip33Ft6gQFfl-3" value="&lt;b&gt;style &amp;amp; layout: &lt;/b&gt;&lt;b style=&quot;&quot;&gt;@angular-material&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="466" y="-19" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Ckgsdn96ip33Ft6gQFfl-4" value="&lt;b&gt;date formatting:&lt;/b&gt; &lt;font color=&quot;#ff9933&quot;&gt;luxon&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="eyQeFtQ7wlrM4R18Zuha-1" vertex="1">
+          <mxGeometry x="698" y="11" width="258" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

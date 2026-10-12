@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "description": "Single source of truth for deliverable-detection. Maps each expected ARB deliverable category to its consumer skill and the signals used to detect it. Read by assets/scripts/detect-deliverables.ps1 AND cited by any generated doc/README. Never duplicate this table into a .md or hard-code it in a script.",
+  "confidence": {
+    "levels": ["High", "Medium", "Low"],
+    "rule": "High = category name or an unambiguous signal present in the file name/extension/path; Medium = plausible by one weak signal (keyword, folder) needing a content check; Low = only a loose hint. Never emit High without a clear, cited piece of evidence (name, extension or path). An ambiguous file (two categories at Medium or below) is reported as an open question, never silently classified."
+  },
+  "categories": [
+    {
+      "id": "functional-architecture",
+      "label": "Functional architecture / backlog / statement of needs / user journey / business process",
+      "consumerSkill": "functional-architecture",
+      "required": true,
+      "nameKeywords": ["functional", "fonctionnelle", "backlog", "user journey", "user story", "statement of needs", "besoin", "process", "workflow", "use case", "cas d'usage"],
+      "pathKeywords": ["functional architecture", "fonctionnelle"],
+      "extensions": [".docx", ".drawio", ".png", ".svg", ".md", ".xlsx"],
+      "notes": "Business functional view, application interactions, user profiles/localization/access mode. Diagrams count when they live under a functional-architecture folder."
+    },
+    {
+      "id": "technical-architecture",
+      "label": "Technical architecture / stack / documented patterns",
+      "consumerSkill": "technical-architecture",
+      "required": true,
+      "nameKeywords": ["technical", "technique", "architecture", "stack", "infrastructure", "infra", "deployment", "framework", "fmk", "pattern"],
+      "pathKeywords": ["technical architecture", "technical architecture & stack", "stack"],
+      "extensions": [".docx", ".drawio", ".png", ".svg", ".md"],
+      "notes": "Target technical architecture, AWS/landing-zone design, stack with versions, deployment steps. The DAT itself (a .docx) is the primary artefact."
+    },
+    {
+      "id": "dataflow-mapping",
+      "label": "Dataflow / already-mapped flows",
+      "consumerSkill": "technical-architecture",
+      "subDeliverable": "Data Flow Mapping",
+      "required": true,
+      "nameKeywords": ["dataflow", "data flow", "data-flow", "flow mapping", "flux", "flow", "acquisition", "pipeline"],
+      "pathKeywords": ["dataflow", "flow", "acquisition"],
+      "extensions": [".drawio", ".png", ".svg", ".xlsx", ".docx"],
+      "notes": "Flow/pipeline diagrams and flow-mapping tables. Feeds the technical-architecture skill's Data Flow Mapping deliverable. Distinct from the generic technical-architecture diagram; disambiguate by the 'flow/acquisition/pipeline' signal."
+    },
+    {
+      "id": "dict-assessment",
+      "label": "Data classification / GDPR notes / sensitivity",
+      "consumerSkill": "dict-assessment",
+      "required": false,
+      "nameKeywords": ["dict", "ciat", "classification", "gdpr", "rgpd", "privacy", "personal data", "sensitivity", "confidential", "dpia", "pia"],
+      "pathKeywords": ["privacy", "gdpr", "rgpd", "classification"],
+      "extensions": [".docx", ".xlsx", ".pdf", ".md"],
+      "notes": "Any pre-existing data classification, DICT/CIAT rating, GDPR/privacy note. Also mined from NFR or architecture docs when no dedicated file exists."
+    },
+    {
+      "id": "cost-estimation",
+      "label": "Cost-estimable backlog / AWS Calculator exports / received quotes",
+      "consumerSkill": "cost-estimation",
+      "required": false,
+      "nameKeywords": ["cost", "cout", "couts", "pricing", "estimate", "estimation", "aws calculator", "calculator", "quote", "devis", "budget", "finops"],
+      "pathKeywords": ["cost", "pricing", "finops"],
+      "extensions": [".xlsx", ".csv", ".pdf", ".docx", ".json"],
+      "notes": "AWS Calculator exports, supplier quotes, any cost sheet. May also derive from a sizeable technical stack + environments list."
+    },
+    {
+      "id": "access-right-matrix",
+      "label": "Already-assigned PRD/REFLEX codes",
+      "consumerSkill": "access-right-matrix",
+      "required": false,
+      "nameKeywords": ["access", "right", "role", "matrix", "matrice", "prd", "reflex", "rbac", "permission", "habilitation"],
+      "pathKeywords": ["access", "rights", "roles"],
+      "extensions": [".xlsx", ".csv", ".docx"],
+      "notes": "Application role matrices and already-attributed PRD/REFLEX codes. A PRD/REFLEX code may also appear inside another document."
+    },
+    {
+      "id": "nfr-requirements",
+      "label": "Non-Functional Requirements document",
+      "consumerSkill": "nfr-requirements",
+      "required": true,
+      "nameKeywords": ["nfr", "non functional", "non-functional", "non fonctionnelle", "exigences", "requirements"],
+      "pathKeywords": ["nfr", "requirements"],
+      "extensions": [".xlsm", ".xlsx", ".docx"],
+      "notes": "The NFR workbook (prefer .xlsm/.xlsx). Mandatory for Gate 2 (template slide 18)."
+    },
+    {
+      "id": "presentation-gates",
+      "label": "ARB/TCC deck already started by the project owner",
+      "consumerSkill": "presentation-gates",
+      "role": "base-to-complete",
+      "required": false,
+      "nameKeywords": ["arb", "tcc", "architecture review board", "architecture gates", "gate", "deck", "presentation"],
+      "pathKeywords": [],
+      "extensions": [".pptx"],
+      "notes": "An existing ARB/TCC .pptx is a base to COMPLETE, never to rebuild from scratch (presentation-gates reuses it)."
+    },
+    {
+      "id": "threat-modeling-prefill",
+      "label": "Any existing threat / vulnerability data",
+      "consumerSkill": "threat-modeling-prefill",
+      "required": false,
+      "nameKeywords": ["threat", "menace", "stride", "stride-lm", "vulnerability", "vulnerabilite", "tm", "risk assessment", "pentest", "security assessment"],
+      "pathKeywords": ["threat", "security", "risk"],
+      "extensions": [".xlsx", ".docx", ".pdf", ".md"],
+      "notes": "Pre-existing threat scenarios, STRIDE-LM tables or vulnerability notes. Classified data: keep internal, never route to an unvalidated external tool."
+    }
+  ]
+}

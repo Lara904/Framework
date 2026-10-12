@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "description": "Single source of truth for threat-modeling-prefill. Holds (a) the pre-fill rules that map architecture signals (from the DAT + dataflow) to candidate STRIDE-LM scenarios, (b) the STRIDE-LM category reference, (c) the risk scales, and (d) the STRIDE-LM -> NIST SP 800-53 family mapping. Read by assets/scripts/build-threatmodel.ps1 AND cited by any generated doc/README. Never duplicate this table into a .md or hard-code it in a script. All generated scenarios are CANDIDATES to validate with the security team - never acquired.",
+  "engine": {
+    "default": "AWS Bedrock (direct call)",
+    "note": "The module embeds no intelligence of its own: scenario wording is produced by an explicit model call (Bedrock by default; SFS Assist only as an optional conversational layer if a dialog need is confirmed). The deterministic part (signal detection, risk scale, NIST mapping) lives here."
+  },
+  "strideLm": [
+    { "code": "S",  "name": "Spoofing",              "property": "Authentication" },
+    { "code": "T",  "name": "Tampering",             "property": "Integrity" },
+    { "code": "R",  "name": "Repudiation",           "property": "Non-repudiation" },
+    { "code": "I",  "name": "Information Disclosure", "property": "Confidentiality" },
+    { "code": "D",  "name": "Denial of Service",      "property": "Availability" },
+    { "code": "E",  "name": "Elevation of Privilege", "property": "Authorization" },
+    { "code": "L",  "name": "Lateral Movement",       "property": "Containment / segmentation (LM extension)" }
+  ],
+  "scales": {
+    "occurrence": [
+      { "level": 1, "label": "Rare" },
+      { "level": 2, "label": "Unlikely" },
+      { "level": 3, "label": "Possible" },
+      { "level": 4, "label": "Likely" }
+    ],
+    "impact": [
+      { "level": 1, "label": "Negligible" },
+      { "level": 2, "label": "Moderate" },
+      { "level": 3, "label": "Serious" },
+      { "level": 4, "label": "Severe" }
+    ],
+    "riskLevel": {
+      "formula": "risk = occurrence x impact (1..16)",
+      "bands": [
+        { "band": "Low",      "min": 1,  "max": 3 },
+        { "band": "Medium",   "min": 4,  "max": 7 },
+        { "band": "High",     "min": 8,  "max": 11 },
+        { "band": "Critical", "min": 12, "max": 16 }
+      ]
+    },
+    "countermeasureEffectiveness": [
+      { "score": 0, "label": "None - no countermeasure" },
+      { "score": 1, "label": "Weak - partial / manual" },
+      { "score": 2, "label": "Moderate - standard control in place" },
+      { "score": 3, "label": "Strong - defense in depth, enforced and monitored" }
+    ]
+  },
+  "prefillRules": [
+    {
+      "id": "api-exposure",
+      "signal": "An API / edge endpoint is exposed (API gateway, public or partner-facing endpoint, REST/HTTP exposure).",
+      "stride": ["S", "T", "E"],
+      "candidateScenarios": [
+        "Spoofing of a client / token at the API edge (stolen or forged credential).",
+        "Tampering of a request in transit or broken access control at the edge (parameter/authorization bypass)."
+      ],
+      "typicalCountermeasures": ["mTLS / strong auth at the edge", "input validation + schema enforcement", "fine-grained authorization checks", "WAF / rate limiting"],
+      "nist": ["AC", "IA", "SC"]
+    },
+    {
+      "id": "file-batch-exchange",
+      "signal": "File-based or batch exchanges (SFTP, object drops, scheduled jobs, backup copy/restore between accounts).",
+      "stride": ["R", "D"],
+      "candidateScenarios": [
+        "Repudiation of a file transfer / batch action (no tamper-evident log of who moved what, when).",
+        "Denial of Service via oversized / malformed / flooding batch input or dependency unavailability."
+      ],
+      "typicalCountermeasures": ["signed + hashed transfers (integrity + non-repudiation)", "tamper-evident audit logging", "quotas / backpressure / timeouts", "schema + size validation"],
+      "nist": ["AU", "SC", "SI", "CP"]
+    },
+    {
+      "id": "personal-data",
+      "signal": "Personal / sensitive data (PII) is identified in the flows or stored data (DCP = Yes, or evidence/logs that can contain PII).",
+      "stride": ["I"],
+      "candidateScenarios": [
+        "Information Disclosure of personal data (unauthorized read, over-broad access, data left unencrypted or exported insecurely)."
+      ],
+      "typicalCountermeasures": ["encryption at rest + in transit", "least-privilege access + need-to-know", "data minimization / masking", "retention + secure disposal"],
+      "nist": ["AC", "SC", "MP", "PT"],
+      "linkedRequirement": "Data Privacy requirement (GDPR) - cross-check with dict-assessment DICT=C and the DPO."
+    },
+    {
+      "id": "infra-landing-zone-coupling",
+      "signal": "Tight coupling to the shared infrastructure / Landing Zone (cross-account roles, shared services, trust relationships, SCP-governed access).",
+      "stride": ["E", "L"],
+      "candidateScenarios": [
+        "Elevation of Privilege through an over-permissive cross-account role or trust path.",
+        "Lateral Movement from a compromised component into the Landing Zone or into other accounts."
+      ],
+      "typicalCountermeasures": ["least-privilege IAM + scoped assume-role", "SCP boundaries", "network segmentation / isolated subnets", "no internet egress + private endpoints"],
+      "nist": ["AC", "SC", "CA"],
+      "note": "DEDICATED ALERT: infra/Landing-Zone coupling is a recurrent ARB refusal motive - always surface this scenario explicitly and flag it high for the security review."
+    }
+  ],
+  "nistReference": {
+    "catalog": "NIST SP 800-53 Rev.5 control families",
+    "families": {
+      "AC": "Access Control",
+      "AU": "Audit and Accountability",
+      "CA": "Assessment, Authorization, and Monitoring",
+      "CP": "Contingency Planning",
+      "IA": "Identification and Authentication",
+      "MP": "Media Protection",
+      "PT": "PII Processing and Transparency",
+      "SC": "System and Communications Protection",
+      "SI": "System and Information Integrity"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+Reference	Status	Comment
+NFR-6002	Accepted	Example: source-code analysis / SAST applies to the delivered code. One row per RELEVANT NFR you want to give a project Status; Relevant is computed automatically from the system context, so do NOT put a Relevant column here.
+NFR-5204	Verified	Example: hosting on one of the 3 main cloud providers - IT-PM Verified dispensation. For a computed-NOT-relevant NFR the script forces Status = Not relevant; a comment row is still applied if you want to record why.
