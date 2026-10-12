@@ -176,7 +176,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    See `references/gates-readme.md`. (An `agentStop` hook automates the regeneration.)
 10. **Always validate before delivery** with `assets/scripts/validate-deck.ps1` (well-formed
     parts, consistent slide counts, no re-serialization artifact, all required gate slides
-    present). Do not hand over a deck that fails validation.
+    present, **plus leftover-highlight and leftover-template-instruction-text checks on every
+    visible, non-SKIP slide**). Do not hand over a deck that fails validation. A real delivered
+    deck once shipped 420 unstripped highlight runs and several literal "Insert here..." /
+    "[PROJECT NAME]" slides because nothing enforced rules 4 and 8 - `validate-deck.ps1` now
+    FAILS on exactly that, so there is no "I'll remember to strip it" step left to skip. If it
+    fails: for highlight, call `Remove-PptxHighlight` on the reported slides; for leftover
+    instruction text, actually replace or delete it (rule 8) - never hide the slide to dodge
+    the check unless it is genuinely not applicable (then hide it per rule 5, which excludes it
+    from the check entirely).
 11. **Output** is a new .pptx saved to the per-project output folder `output/${project_name}/`
     (create it if missing - see the `output-convention.md` steering, single source of truth for
     output location; or a path the user gives), e.g. `${project_name}_Architecture_Gates_G<n>.pptx`,

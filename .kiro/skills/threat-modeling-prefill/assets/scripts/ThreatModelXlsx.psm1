@@ -10,11 +10,16 @@
 
   The workbook has three sheets:
     1. "Cover" - project, engine, the mandatory "TO BE VALIDATED BY THE SECURITY TEAM" banner,
-       scenario count, and the risk/effectiveness scales.
-    2. "Threat Scenarios" - one row per STRIDE-LM scenario (ID, element, scope, scenario,
-       STRIDE-LM, occurrence, impact, risk level, countermeasures, effectiveness, NIST,
+       scenario count, and the real risk/efficiency scales (see references/prefill-logic.json).
+    2. "Threat Scenarios" - one row per STRIDE-LM scenario, selected from the real 176-scenario
+       catalog (references/threat-catalog.json) or marked custom (ID, element, scope, scenario,
+       STRIDE-LM, occurrence, impact, risk level, countermeasures, efficiency, NIST,
        validation status).
     3. "NIST Mapping" - scenario id -> NIST SP 800-53 families touched.
+
+  This module only renders a JSON model into a workbook; it does not itself select scenarios from
+  the catalog or compute efficiency - that logic lives in references/prefill-logic.json and is
+  applied before the model is assembled (see references/model-schema.md).
 
   Public function:
     New-ThreatModelXlsx -Model <hashtable|pscustomobject> -OutFile <path>
@@ -249,21 +254,22 @@ function New-ThreatModelXlsx {
   $disclaimer = Get-Prop $Model 'disclaimer' 'This threat model is a PRE-FILL produced to accelerate preparation. Every scenario, score and countermeasure is a CANDIDATE to be reviewed, corrected and validated by the SFES Cybersecurity team before use. It does not replace the security risk analysis.'
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Disclaimer') -StyleId 2)); $r++
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @($disclaimer) -StyleId 0)); $r += 2
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Scales') -StyleId 2)); $r++
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Occurrence', '1 Rare / 2 Unlikely / 3 Possible / 4 Likely') -StyleId 0)); $r++
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Impact', '1 Negligible / 2 Moderate / 3 Serious / 4 Severe') -StyleId 0)); $r++
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Risk level', 'occurrence x impact: 1-3 Low / 4-7 Medium / 8-11 High / 12-16 Critical') -StyleId 0)); $r++
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Countermeasure effectiveness', '0 None / 1 Weak / 2 Moderate / 3 Strong') -StyleId 0)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Scales (real SFS scale - see prefill-logic.json)') -StyleId 2)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Occurrence', '1-3 (bare scale; the source tool labels only the resulting risk level, not each level)') -StyleId 0)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Impact', '1-3 (bare scale; the source tool labels only the resulting risk level, not each level)') -StyleId 0)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Risk level', 'matrix lookup (occurrence, impact): very low / low / average / above average / high / extreme - NOT occurrence x impact as a number') -StyleId 0)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Countermeasure efficiency', 'occurrenceMitigation x impactMitigation x easeOfImplementation x bandWeight(highest risk level it mitigates) - see countermeasure-library.json') -StyleId 0)); $r++
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Scenario catalog', 'Selected from the real 176-scenario SFS catalog (threat-catalog.json); a scenario with no catalog match is marked custom') -StyleId 0)); $r++
   $coverXml = Get-XlsxWorksheetXml -SheetData $coverSb.ToString() -ColCount 2
 
   # ---- Sheet 2: Threat Scenarios ----
-  $sHeader = @('ID','Element / asset','Scope','Threat scenario','STRIDE-LM','Occurrence (1-4)','Impact (1-4)','Risk level','Countermeasures','Effectiveness (0-3)','NIST families','Validation status')
+  $sHeader = @('ID','Element / asset','Scope','Threat scenario','STRIDE-LM','Occurrence (1-3)','Impact (1-3)','Risk level','Countermeasures','Efficiency','NIST families','Validation status')
   $sRows = @()
   foreach ($s in $scenarios) {
     $sRows += ,@(
       (Get-Prop $s 'id'), (Get-Prop $s 'element'), (Get-Prop $s 'scope'), (Get-Prop $s 'scenario'),
       (Get-Prop $s 'stride'), (Get-Prop $s 'occurrence'), (Get-Prop $s 'impact'), (Get-Prop $s 'riskLevel'),
-      (Get-Prop $s 'countermeasures'), (Get-Prop $s 'effectiveness'), (Get-Prop $s 'nist'),
+      (Get-Prop $s 'countermeasures'), (Get-Prop $s 'efficiency'), (Get-Prop $s 'nist'),
       (Get-Prop $s 'validationStatus' 'To be validated by the security team')
     )
   }

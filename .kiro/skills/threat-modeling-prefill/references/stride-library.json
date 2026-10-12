@@ -1,0 +1,65 @@
+[
+  {
+    "code": "S",
+    "attackVector": "Spoofing",
+    "officialDefinition": "Impersonating another user or system component to obtain its access to the system",
+    "defenceObjective": "Authentification",
+    "explanationFr": "Garantir que l'utilisateur ou le système est bien le correspondant identifié",
+    "cloudExampleFr": "Vol de credentials API par un tiers permettant de s'authentifier aux API de l'application\nAPI exposée sur Internet sans mode d'authentification",
+    "mitigationConceptFr": "mTLS, basic auth, OIDC, secret rotation"
+  },
+  {
+    "code": "T",
+    "attackVector": "Tampering",
+    "officialDefinition": "Altering the system or data in some way that makes it less useful to the intended users",
+    "defenceObjective": "Intégrité",
+    "explanationFr": "Garantir que les informations ne puissent être modifiées lors de leur stockage ou de leur transport et qu'elles soient exactes, authentiques et protégées contre tout accès non-autorisé",
+    "cloudExampleFr": "Altération de données sur la BDD applicative via un privilège d'écriture sur les objets",
+    "mitigationConceptFr": "Data-at-rest protection via chiffrement du contenant/contenu, data-in-transit protection (secure protocol), subnet protected, network security (SG, NACL)"
+  },
+  {
+    "code": "R",
+    "attackVector": "Repudiation",
+    "officialDefinition": "Plausible deniability of actions taken under a given user or process",
+    "defenceObjective": "Non-répudiation",
+    "explanationFr": "Garantir que l'on peut prouver qui ou quoi a effectué quelle(s) action(s) de façon certaine",
+    "cloudExampleFr": "Suppression des traces Cloudtrail à travers une modification de policy",
+    "mitigationConceptFr": "Log management coverage (generation, storage, protection, monitoring)\nEncryption and fingerprinting logs, protection of the storage"
+  },
+  {
+    "code": "I",
+    "attackVector": "Information Disclosure",
+    "officialDefinition": "Release of information to unauthorized parties",
+    "defenceObjective": "Confidentialité",
+    "explanationFr": "Garantir la protection et l'accessibilité des informations sensibles uniquement aux personnes autorisées",
+    "cloudExampleFr": "Configuration du service ou de la solution exposant les formulaires applicatifs qui se retrouvent dès lors indexés en tant que SEO (Search Engine Optimisation) sur les moteurs de recherche. Conduit à un data leak",
+    "mitigationConceptFr": "Encryption solution, \"hardening\" AWS services (e.g BPF Security cards), IAM management, network security (SG, NACL, ...)"
+  },
+  {
+    "code": "D",
+    "attackVector": "Denial of Service",
+    "officialDefinition": "Making the system unavailable to the intended users",
+    "defenceObjective": "Disponibilité",
+    "explanationFr": "Garantir que les informations soient facilement accessibles en fonction des besoins, au moment et à l'endroit requis, ainsi qu'à la personne qui les requiert",
+    "cloudExampleFr": "Attaque DDoS à l'encontre de l'application exposée sur Internet pour lequel le SLA est perturbé par une démultiplication de requêtes utilisateurs auxquelles le service ne sait pas répondre. \nAttaque DoS à l'encontre de l'application à travers un partenaire via l'envoi de requête de traitement de fichier trop volumineux pour lequel l'application n'est pas capacitaire.",
+    "mitigationConceptFr": "Solution anti-DDoS (Shield Advanced + AWS WAF), rate limiting requests or size body, SYN cookie"
+  },
+  {
+    "code": "E",
+    "attackVector": "Elevation of Privilege",
+    "officialDefinition": "Granting a user or process additional access to the system without authorization",
+    "defenceObjective": "Moindre privilège",
+    "explanationFr": "Garantir que les autorisations accordées à un utilisateur ou à un processus sont strictement liées aux activités devant être réalisées ",
+    "cloudExampleFr": "Création d'un \"shared service\" d'échange de données entre l'application et ses partenaires pour lequel la configuration n'a pas été correctement réalisée et permet à un des partenaires d'accéder à l'intégralité des données échangés au sein du \"shared service\"",
+    "mitigationConceptFr": "RBAC, S3 resource policies, API segregation and rights matrix model (update, delete, …)"
+  },
+  {
+    "code": "LM",
+    "attackVector": "Lateral Movement",
+    "officialDefinition": "Expanding control over the target network beyond the initial point of compromise",
+    "defenceObjective": "Confinement",
+    "explanationFr": "Garantir que l'utilisateur ou le processus reste confiné au seul écosystème applicatif initial",
+    "cloudExampleFr": "Débordement depuis un pod Kubernetes compromis vers un S3 backend permettant de directement interroger le bucket à partir des metadata collectées et rôle IAM disponibles",
+    "mitigationConceptFr": "\"Hardening\" configuration of OS/Docker/K8s, network microsegmentation strategy, etc…"
+  }
+]

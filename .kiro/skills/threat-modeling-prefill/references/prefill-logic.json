@@ -1,96 +1,61 @@
 {
-  "version": "1.0",
-  "description": "Single source of truth for threat-modeling-prefill. Holds (a) the pre-fill rules that map architecture signals (from the DAT + dataflow) to candidate STRIDE-LM scenarios, (b) the STRIDE-LM category reference, (c) the risk scales, and (d) the STRIDE-LM -> NIST SP 800-53 family mapping. Read by assets/scripts/build-threatmodel.ps1 AND cited by any generated doc/README. Never duplicate this table into a .md or hard-code it in a script. All generated scenarios are CANDIDATES to validate with the security team - never acquired.",
-  "engine": {
-    "default": "AWS Bedrock (direct call)",
-    "note": "The module embeds no intelligence of its own: scenario wording is produced by an explicit model call (Bedrock by default; SFS Assist only as an optional conversational layer if a dialog need is confirmed). The deterministic part (signal detection, risk scale, NIST mapping) lives here."
+  "version": "2.0",
+  "description": "Single source of truth for threat-modeling-prefill. Holds (a) the risk-scoring rules (the real SFS occurrence x impact matrix and the real countermeasure-efficiency formula), (b) the STRIDE-LM category reference, and (c) the selection logic that maps an application's architecture signals to a subset of the bundled real scenario catalog. Read by assets/scripts/build-threatmodel.ps1 AND cited by any generated doc/README. Never duplicate this table into a .md or hard-code it in a script. All generated scenarios are CANDIDATES to validate with the security team - never acquired.",
+  "catalogSource": {
+    "note": "v1.0 of this skill shipped only 4 generic, hand-written prefillRules - far thinner than the real SFS catalog and the real cause of a reported defect ('Le threat modeling ne va pas du tout'). v2.0 bundles the ACTUAL SFS STRIDE-LM scenario catalog and countermeasure library, supplied by the user from the live Cybersecurity TM tool, instead of a few invented heuristics.",
+    "threatCatalog": "references/threat-catalog.json - 176 real scenarios (id TM1..TM176), extracted verbatim from TM_Threat_portfolio.csv. Each has: category, scope[], element, threat, atRest/inTransit/inUse, stride[] (S/T/R/I/D/E/LM), description, examples, realExampleLink, counterMeasureIds[], counterMeasureTitles[], priority. 47 of them (category=Applicative) also carry sampleOccurrence/sampleImpact/sampleRiskLevel taken from a real, security-team-rated project workbook - these are an ILLUSTRATIVE starting point only, never a default to apply silently; every project rates its own occurrence/impact with the project + security team.",
+    "countermeasureLibrary": "references/countermeasure-library.json - 97 real countermeasures (CM.xxx), extracted verbatim from the 'Controls and CM' sheet of Applicative_Model_with_new_Risk_module_threat_modelling.xlsx. Each has: type (Preventive/Detective/Corrective/Recovery/Deterrent), category (Technical/Administrative/Physical), description, occurrenceMitigation (1-3), impactMitigation (1-3), easeOfImplementation (1-3).",
+    "strideLibrary": "references/stride-library.json - the official STRIDE-LM definitions, defence objective, explanation, a cloud example and a mitigation-concept note per code, extracted verbatim from the 'Library' sheet of the same workbook."
   },
   "strideLm": [
-    { "code": "S",  "name": "Spoofing",              "property": "Authentication" },
-    { "code": "T",  "name": "Tampering",             "property": "Integrity" },
-    { "code": "R",  "name": "Repudiation",           "property": "Non-repudiation" },
-    { "code": "I",  "name": "Information Disclosure", "property": "Confidentiality" },
-    { "code": "D",  "name": "Denial of Service",      "property": "Availability" },
-    { "code": "E",  "name": "Elevation of Privilege", "property": "Authorization" },
-    { "code": "L",  "name": "Lateral Movement",       "property": "Containment / segmentation (LM extension)" }
+    { "code": "S",  "name": "Spoofing",               "property": "Authentication" },
+    { "code": "T",  "name": "Tampering",               "property": "Integrity" },
+    { "code": "R",  "name": "Repudiation",             "property": "Non-repudiation" },
+    { "code": "I",  "name": "Information Disclosure",  "property": "Confidentiality" },
+    { "code": "D",  "name": "Denial of Service",       "property": "Availability" },
+    { "code": "E",  "name": "Elevation of Privilege",  "property": "Authorization / least privilege" },
+    { "code": "LM", "name": "Lateral Movement",        "property": "Containment / segmentation (LM extension)" }
   ],
+  "engine": {
+    "default": "AWS Bedrock (direct call)",
+    "note": "The module embeds no intelligence of its own. For a scenario taken from references/threat-catalog.json, its wording is the catalog's own real text - never re-generated or paraphrased by a model call. A model call (Bedrock by default; SFS Assist only as an optional conversational layer if a dialog need is confirmed) is used ONLY to word a genuinely CUSTOM scenario that the project team raises and that has no match in the catalog (mark it 'custom': true - see model-schema.md)."
+  },
   "scales": {
-    "occurrence": [
-      { "level": 1, "label": "Rare" },
-      { "level": 2, "label": "Unlikely" },
-      { "level": 3, "label": "Possible" },
-      { "level": 4, "label": "Likely" }
-    ],
-    "impact": [
-      { "level": 1, "label": "Negligible" },
-      { "level": 2, "label": "Moderate" },
-      { "level": 3, "label": "Serious" },
-      { "level": 4, "label": "Severe" }
-    ],
+    "note": "This is the REAL SFS scale (occurrence 1-3 x impact 1-3), not the previously invented 1-4/1-16 scale. Do not relabel 1/2/3 beyond what the source workbook defines: it names only the resulting riskLevel band, not each individual occurrence/impact level - leave occurrence/impact as bare integers 1-3 and let riskLevel carry the label.",
+    "occurrence": { "range": [1, 2, 3] },
+    "impact": { "range": [1, 2, 3] },
     "riskLevel": {
-      "formula": "risk = occurrence x impact (1..16)",
-      "bands": [
-        { "band": "Low",      "min": 1,  "max": 3 },
-        { "band": "Medium",   "min": 4,  "max": 7 },
-        { "band": "High",     "min": 8,  "max": 11 },
-        { "band": "Critical", "min": 12, "max": 16 }
-      ]
+      "source": "Threat_modeling sheet, column S formula, of the real SFS TM workbook - reproduced exactly, do not alter.",
+      "formula": "riskLevel = matrix[occurrence][impact], occurrence and impact each in {1,2,3}",
+      "matrix": {
+        "1": { "1": "very low", "2": "low",           "3": "average" },
+        "2": { "1": "low",      "2": "above average", "3": "high" },
+        "3": { "1": "average",  "2": "high",           "3": "extreme" }
+      },
+      "bandWeights": {
+        "note": "Used only to compute countermeasure efficiency below (MAX across the threats a countermeasure addresses) - not a second risk scale.",
+        "very low": 1, "low": 2, "average": 3, "above average": 4, "high": 6, "extreme": 9
+      }
     },
-    "countermeasureEffectiveness": [
-      { "score": 0, "label": "None - no countermeasure" },
-      { "score": 1, "label": "Weak - partial / manual" },
-      { "score": 2, "label": "Moderate - standard control in place" },
-      { "score": 3, "label": "Strong - defense in depth, enforced and monitored" }
+    "countermeasureEfficiency": {
+      "source": "Controls and CM sheet, column H formula, of the real SFS TM workbook - reproduced exactly, do not alter.",
+      "formula": "efficiency = occurrenceMitigation x impactMitigation x easeOfImplementation x bandWeight(threatLevel)",
+      "threatLevel": "threatLevel = the HIGHEST riskLevel band (by bandWeight) among every scenario this countermeasure is linked to via counterMeasureIds in threat-catalog.json (or countermeasures explicitly listed for a custom scenario). Recompute threatLevel/efficiency per project from the project's own occurrence/impact ratings - never reuse another project's efficiency number.",
+      "note": "This REPLACES the previously invented 0-3 'countermeasure effectiveness' scale, which had no basis in the real tool. A countermeasure is not rated in isolation; its value depends on which rated threats it mitigates."
+    }
+  },
+  "scenarioSelection": {
+    "note": "REPLACES the 4 generic v1.0 prefillRules. Select candidate scenarios from references/threat-catalog.json by matching the application's real architecture signals against category/scope/element - do not hand-pick a handful of 'representative' scenarios and do not silently drop a category that applies.",
+    "steps": [
+      "1. From the DAT + dataflow + questionnaire, determine which catalog categories apply: 'Applicative' (almost always, any application has a Data-flow/Data store/Process/External entity/Trust boundary), 'CI/CD' (if the project has its own pipeline/supply chain, not only the shared SFS chain), 'Infra cloud' (AWS Landing Zone / account-level signals), 'EKS' (if Kubernetes/EKS is used), 'SaaS' (if a third-party SaaS is integrated), 'LLM IA' (if the application calls or embeds an LLM / GenAI component).",
+      "2. Within each applicable category, keep every catalog entry whose scope[] intersects the application's real scope (Application / Infrastructure / Network / External / Management / Physical / Supply Chain) - do not filter by element unless the project team confirms an element type genuinely does not exist in this architecture (e.g. no 'Data store' because the app is stateless).",
+      "3. For a signal that genuinely has no match in the catalog, raise it as a CUSTOM scenario: word it via the model call (engine.default), mark 'custom': true, and still score it with the real occurrence/impact/riskLevel scale above - never skip scoring a custom scenario.",
+      "4. Never silently narrow the catalog to a 'representative sample' to keep the deliverable short - a real past delivery did exactly that (7 hand-picked scenarios instead of covering the real catalog) and was rejected. If the full applicable subset is large, that is expected; list it in full and let the project + security team triage priority, rather than Claude/Kiro pre-triaging by omission.",
+      "5. For every kept scenario, carry its real counterMeasureIds/counterMeasureTitles from the catalog as the starting countermeasures column; look up each CM.xxx's occurrenceMitigation/impactMitigation/easeOfImplementation in references/countermeasure-library.json to compute efficiency once occurrence/impact are rated (step below)."
     ]
   },
-  "prefillRules": [
-    {
-      "id": "api-exposure",
-      "signal": "An API / edge endpoint is exposed (API gateway, public or partner-facing endpoint, REST/HTTP exposure).",
-      "stride": ["S", "T", "E"],
-      "candidateScenarios": [
-        "Spoofing of a client / token at the API edge (stolen or forged credential).",
-        "Tampering of a request in transit or broken access control at the edge (parameter/authorization bypass)."
-      ],
-      "typicalCountermeasures": ["mTLS / strong auth at the edge", "input validation + schema enforcement", "fine-grained authorization checks", "WAF / rate limiting"],
-      "nist": ["AC", "IA", "SC"]
-    },
-    {
-      "id": "file-batch-exchange",
-      "signal": "File-based or batch exchanges (SFTP, object drops, scheduled jobs, backup copy/restore between accounts).",
-      "stride": ["R", "D"],
-      "candidateScenarios": [
-        "Repudiation of a file transfer / batch action (no tamper-evident log of who moved what, when).",
-        "Denial of Service via oversized / malformed / flooding batch input or dependency unavailability."
-      ],
-      "typicalCountermeasures": ["signed + hashed transfers (integrity + non-repudiation)", "tamper-evident audit logging", "quotas / backpressure / timeouts", "schema + size validation"],
-      "nist": ["AU", "SC", "SI", "CP"]
-    },
-    {
-      "id": "personal-data",
-      "signal": "Personal / sensitive data (PII) is identified in the flows or stored data (DCP = Yes, or evidence/logs that can contain PII).",
-      "stride": ["I"],
-      "candidateScenarios": [
-        "Information Disclosure of personal data (unauthorized read, over-broad access, data left unencrypted or exported insecurely)."
-      ],
-      "typicalCountermeasures": ["encryption at rest + in transit", "least-privilege access + need-to-know", "data minimization / masking", "retention + secure disposal"],
-      "nist": ["AC", "SC", "MP", "PT"],
-      "linkedRequirement": "Data Privacy requirement (GDPR) - cross-check with dict-assessment DICT=C and the DPO."
-    },
-    {
-      "id": "infra-landing-zone-coupling",
-      "signal": "Tight coupling to the shared infrastructure / Landing Zone (cross-account roles, shared services, trust relationships, SCP-governed access).",
-      "stride": ["E", "L"],
-      "candidateScenarios": [
-        "Elevation of Privilege through an over-permissive cross-account role or trust path.",
-        "Lateral Movement from a compromised component into the Landing Zone or into other accounts."
-      ],
-      "typicalCountermeasures": ["least-privilege IAM + scoped assume-role", "SCP boundaries", "network segmentation / isolated subnets", "no internet egress + private endpoints"],
-      "nist": ["AC", "SC", "CA"],
-      "note": "DEDICATED ALERT: infra/Landing-Zone coupling is a recurrent ARB refusal motive - always surface this scenario explicitly and flag it high for the security review."
-    }
-  ],
   "nistReference": {
+    "note": "This mapping is an SFS/ARB-reporting addition layered on top of the real catalog (the source TM tool does not include a NIST mapping) - treat it as a starting point for the security team, never as part of the catalog's own authority, and never let it replace or relabel a catalog scenario's real STRIDE-LM flags.",
     "catalog": "NIST SP 800-53 Rev.5 control families",
     "families": {
       "AC": "Access Control",
@@ -102,6 +67,15 @@
       "PT": "PII Processing and Transparency",
       "SC": "System and Communications Protection",
       "SI": "System and Information Integrity"
+    },
+    "strideToFamilyHint": {
+      "S": ["IA", "AC"],
+      "T": ["SC", "SI"],
+      "R": ["AU"],
+      "I": ["AC", "SC", "MP", "PT"],
+      "D": ["CP", "SC"],
+      "E": ["AC", "CA"],
+      "LM": ["AC", "SC", "CA"]
     }
   }
 }

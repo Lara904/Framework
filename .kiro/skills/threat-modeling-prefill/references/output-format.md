@@ -12,14 +12,17 @@ area `.kiro/.temp_ai/`):
 Three sheets, in order:
 
 1. **Cover** - project / author / date, AI engine (Bedrock by default), inputs (DAT + dataflow),
-   scenario count, the risk/effectiveness scales, and - mandatory - the banner
+   scenario count, the real risk/countermeasure-efficiency scales, and - mandatory - the banner
    **"STATUS: TO BE VALIDATED BY THE SECURITY TEAM - NOT ACQUIRED"** plus the disclaimer.
-2. **Threat Scenarios** - one row per candidate scenario, columns:
-   `ID | Element / asset | Scope | Threat scenario | STRIDE-LM | Occurrence (1-4) | Impact (1-4) |
-   Risk level | Countermeasures | Effectiveness (0-3) | NIST families | Validation status`.
+2. **Threat Scenarios** - one row per candidate scenario (selected from the real 176-scenario
+   catalog `references/threat-catalog.json` per `prefill-logic.json`'s `scenarioSelection`, plus
+   any genuinely custom scenario), columns:
+   `ID | Element / asset | Scope | Threat scenario | STRIDE-LM | Occurrence (1-3) | Impact (1-3) |
+   Risk level | Countermeasures | Efficiency | NIST families | Validation status`.
    This is the qualification table required by M3 (ID, element, scope, scenario, STRIDE-LM,
-   occurrence, impact, risk level, countermeasures) plus the countermeasure-effectiveness score
-   and the NIST mapping.
+   occurrence, impact, risk level, countermeasures) plus the real countermeasure-efficiency score
+   (`references/countermeasure-library.json` + the formula in `prefill-logic.json` - NOT the old
+   invented 0-3 "effectiveness" scale) and the NIST mapping.
 3. **NIST Mapping** - `Scenario ID | STRIDE-LM | NIST SP 800-53 families | Family names`.
 
 ## Encoding / OPC rules
@@ -29,7 +32,9 @@ Three sheets, in order:
 - Always run `assets/scripts/validate-threatmodel.ps1` after building; it must print
   `THREAT MODEL VALIDATION OK` and exit 0 before delivery.
 
-## Risk / effectiveness values
-All scores (occurrence, impact, risk level, effectiveness) use the scales in
-`prefill-logic.json`. They are PROPOSED; `Validation status` stays "To be validated by the
-security team" until the SFES Cybersecurity team signs off.
+## Risk / efficiency values
+All scores (occurrence, impact, risk level, countermeasure efficiency) use the REAL scales in
+`prefill-logic.json` (occurrence/impact 1-3, riskLevel via the matrix lookup, efficiency via the
+occurrenceMitigation x impactMitigation x easeOfImplementation x bandWeight formula). They are
+PROPOSED; `Validation status` stays "To be validated by the security team" until the SFES
+Cybersecurity team signs off.

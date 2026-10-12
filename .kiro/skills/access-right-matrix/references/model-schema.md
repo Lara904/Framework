@@ -43,7 +43,9 @@ The values below are a filled **exemple fictif** (replace with the real applicat
   "functionalDescription": "One-line functional description of the application.",
   "reflexNameDev": "",
   "reflexNamePre": "",
-  "reflexNameProd": ""
+  "reflexNameProd": "",
+  "businessProfiles": "none",
+  "businessProfilesList": []
 }
 ```
 
@@ -55,7 +57,37 @@ The values below are a filled **exemple fictif** (replace with the real applicat
 - `prdCode` and `prdCodeField` are normally identical; keep both in sync.
 - `dict` should match the project DICT deliverable (`*_DICT_README.md`) - format like
   `D3 I3 C3 T2` (Disponibilite / Integrite / Confidentialite / Tracabilite).
-- The model does NOT decide which profiles apply. The 15 technical profiles are a
-  fixed catalogue in the template; profile applicability / scoping is documented in the
-  companion README, not by removing columns.
+- The model does NOT decide which TECHNICAL profiles apply. The 15 technical profiles
+  are a fixed catalogue in the template; their applicability / scoping is documented in
+  the companion README, not by removing columns.
+
+### `businessProfiles` / `businessProfilesList` - MANDATORY, no silent skip
+
+Questionnaire item 10 ("Matrix of BUSINESS rights" sheet) is not optional and is not a
+README-only note: the answer MUST be written into the `.xlsx` itself, because that
+sheet is what a reviewer actually opens - a README note nobody reads at that point does
+not fix a blank "Profile 1...19" sheet. `businessProfiles` MUST be present and set to
+exactly one of:
+
+- `"none"` - no business profile for this scope. The generator writes a single visible
+  marker in the sheet (`Label` row, first column: `N/A - no business profile for this
+  scope (see README)`) so the sheet is never left at its blank template state with no
+  trace of a decision having been made.
+- `"defined"` - business profiles exist. Then `businessProfilesList` is a non-empty
+  array (max 19 - the fixed column count), each item:
+  ```json
+  { "label": "...", "description": "...", "userType": "...", "assignmentMethod": "...",
+    "accessServiceCode": "...", "delegationLevel": "...", "confidentiality": "...",
+    "integrity": "...", "features": ["..."] }
+  ```
+  Each item fills one `Profile N` column (Label/Description/User type/Assignment
+  method/Access service code/Level of delegation/Confidentiality/Integrity rows +
+  `Feature 1..N` rows under "Application functionalities"). Unused columns beyond the
+  list length are left as the template's `Profile N` header with no data below -
+  unambiguous at a glance vs. a filled column, so never pad with fake rows.
+- Any other value (missing, empty string, `"tbd"`) is a **build-time error** - the
+  generator refuses to produce the `.xlsx` rather than silently leaving the sheet blank.
+  This is the one deliberate exception to "never invent a value": the ABSENCE of a
+  decision is itself the thing that must never be invented/assumed, so the build stops
+  and asks instead of defaulting to "none".
 - Values are XML-escaped by the generator; write plain UTF-8 text in the model.

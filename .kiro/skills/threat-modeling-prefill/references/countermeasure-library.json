@@ -1,0 +1,880 @@
+{
+  "version": "1.0",
+  "source": "Applicative_Model_with_new_Risk_module_threat_modelling.xlsx - 'Controls and CM' sheet",
+  "count": 97,
+  "countermeasures": [
+    {
+      "id": "CM.010",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Detect and handle wrong data",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.025.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement input and output filtering",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.025.002",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Define and validate expected input/output formats",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.025.003",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement data sanitization",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.025",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "I/O validation and filtering",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.016.001",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Realise pentest",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.002",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Configure properly SAST tool on CI/CD",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.024.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use source code repository",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.024.002",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.005",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Implement two men rule or human control",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.012",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.009.008",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Remove demo configuration from open-source solution",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.007",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Realize user acceptance tests",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.010",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Conduct regular security audits specifically focused on the testing processes to identify gaps or weaknesses in the testing approach",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.017",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Define clear business user story or use case",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.018.002",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Trace user actions",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.020.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Set up encryption at rest",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement access controls on storage",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.009",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use secure component configuration",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.009.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Apply security card for bucket S3",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.018.001",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Trace application connection",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.002",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Activate multi factor authentication",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.018.004",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Ensure log are protected against alteration",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.018.005",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Configure log rotation based on delays an not on log size",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.005",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Realize stress test",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.027",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Activate protective appliance",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.027.001",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Activate firewall",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.027.002",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Activate inbound and outbound Web Application Firewall",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.027.003",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Activate AWS Shield Advanced",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.006.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Automaticaly remove obsolete data",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.008",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement a backup Strategy",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.008.001",
+      "type": "Recovery",
+      "category": "Technical",
+      "description": "Implement an automatic process to reconstruct lost data",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.008.002",
+      "type": "Recovery",
+      "category": "Technical",
+      "description": "Configure backup for the cache management system",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.008.003",
+      "type": "Recovery",
+      "category": "Technical",
+      "description": "Configure backup for the S3 bucket",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.008.004",
+      "type": "Recovery",
+      "category": "Technical",
+      "description": "Configure backup for the database",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.033",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "design a Disaster recovery plan",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.033.001",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Conduct DRP tests following SFS ISSP requirements",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.033.002",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "conduct Backup integrity tests following SFS ISSP requirements",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.004.001",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Cybersecurity Training",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.004.002",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Cybersecurity Awarness",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.004.007",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": " Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.004.008",
+      "type": "Deterrent",
+      "category": "Administrative",
+      "description": "Phishing awarness",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.032.001",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Preferentially use subdomains from already known Stellantis domains rather than using a new domain ",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.002",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Manage Third-Party Service Provider and Vendor",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.026",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Evaluate the provider",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.002.001",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Require DDOS protection",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.001.001 ",
+      "type": "Corrective",
+      "category": "Administrative",
+      "description": "Formal study of the application behavior when a component is not present / available.",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.002.002",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Use asynchronous messaging",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.002.003",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Implement replay mechanism",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.003.007",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use client side certificat",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.009",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use OIDC",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.020.002",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Set up encryption in transit",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.020.004",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Sign messages with proper algorithm",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.020.005",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Seal messages with proper algorithm",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.003",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.003",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Realize autorization review",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.004",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Implement separation of duty",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.006",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use ping federate",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.008",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement least privilege access",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.006.004",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Don't reuse production data on insecure environement",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.006.006",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Anonymize bank  data",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.012",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use IaC",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.012.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use ORF or other recommended IaC framework",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.005",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Implement Monitoring",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.005.002",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.005.004",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Implement alerting  and reflex sheet based on SOC scenario",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.005.005",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Implement request status monitoring and alerting",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.005.001",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Monitor resources consumption",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.016.009",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Set up automated notifications for developers to alert them about new releases or security patches for third-party dependencies",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 1,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.031.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Lock down specific versions of third-party dependencies to ensure consistency and prevent unexpected updates that may introduce vulnerabilities",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.031.002",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": " Perform periodic audits of dependencies to identify and remove unnecessary or unused third-party libraries",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.004",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Realize code review",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.008",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Configure properly SCA tool on CI/CD",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.014",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use a centralized IAM for application user",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.017",
+      "type": "Corrective",
+      "category": "Technical",
+      "description": "Implement account / credentials deactivation mechanism",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.013",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Ensure that each credential purpose is unique",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.029.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Activate CORS and CSP",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.003.020",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Implement SOC scenario based on vault secret access",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.009.015",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use appropriate vault solutions validated by architects to store secrets",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.024.003",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Don't use secret or hardcoded credential in the source code or configuration files.",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.010",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Write a process describing the credential renewal for a third party",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.009.003",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Apply security card for KMS",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.009.004",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Apply security card for Secret Manager",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.016",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Realize tests",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.023.001",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Ensure that runtimes (VM, containers, lambda,...) are executed in an isolated network",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.027.011",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Implement least privilege indound and outbound network firewall",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.031.005",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Adopt a zero-trust security model, where every component and user is treated as untrusted until verified",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.003.011",
+      "type": "Corrective",
+      "category": "Administrative",
+      "description": "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.003.019",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Segregate environments (dev, staging, prod,...)",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.016.006",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Evaluate license risks",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.020.007",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use PGP encryption for any data transiting through MTS2",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 2,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.034.001",
+      "type": "Detective",
+      "category": "Technical",
+      "description": "Setup whitestation mechanism",
+      "occurrenceMitigation": 1,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.034.002",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Adjust presigned URL expire delay to the required minimum.",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 1,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.032.003",
+      "type": "Deterrent",
+      "category": "Technical",
+      "description": "Ensure that email sender domain is using SPF, DMARC and DKIM with a state of the art configuration",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 1
+    },
+    {
+      "id": "CM.007.004",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use corporate mailbox only",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    },
+    {
+      "id": "CM.007.005",
+      "type": "Preventive",
+      "category": "Administrative",
+      "description": "Prefer transmitting information through personal web space rather than directly by email",
+      "occurrenceMitigation": 3,
+      "impactMitigation": 3,
+      "easeOfImplementation": 2
+    },
+    {
+      "id": "CM.003.026",
+      "type": "Preventive",
+      "category": "Technical",
+      "description": "Use a dedicated and unprivileged technical account as owner of the container process",
+      "occurrenceMitigation": 2,
+      "impactMitigation": 2,
+      "easeOfImplementation": 3
+    }
+  ]
+}

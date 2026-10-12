@@ -109,6 +109,13 @@ REFLEX/PRD references). Anything still unknown becomes a visible placeholder in 
 3. **Never invent a value.** PRD code, REFLEX names, DICT, description come from the
    user / MOA / the DICT deliverable. Any unknown stays as its template placeholder
    (`<PRD>`, `<REFLEX_NAME ...>`) and is listed as an Open question in the README.
+3b. **The "Matrix of BUSINESS rights" decision is mandatory and lives in the `.xlsx`,
+   not only the README.** Set the model's `businessProfiles` field to `"none"` or
+   `"defined"` (never skip this) - `build-rightmatrix.ps1` throws rather than produce a
+   file with that sheet silently left at its blank template state ("Profile 1".."Profile
+   19" with nothing under them). A past real deliverable shipped exactly that blank
+   sheet; `validate-rightmatrix.ps1` now FAILS (not warns) if it detects this state, so
+   never deliver a matrix that fails validation here.
 4. **The PRD code substitutes `<PRD>` everywhere** (access-service codes, LDAP targets,
    CIQ env codes, GitHub rows). Keep `prdCode` and the `PRD Code` cell (`prdCodeField`)
    in sync.

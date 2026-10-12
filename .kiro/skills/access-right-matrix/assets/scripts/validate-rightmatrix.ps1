@@ -35,6 +35,7 @@ try {
 
 # 2) Every XML part must be well-formed; workbook.xml must declare the 6 expected sheets
 $sharedStrings = ''
+$sheet4 = ''
 try {
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $zip = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $Xlsx).Path)
@@ -49,11 +50,25 @@ try {
           $fail += "xl/workbook.xml is missing the expected 'AWS NG - TECHNICAL rights' sheet"
         }
         if ($e.FullName -eq 'xl/sharedStrings.xml') { $sharedStrings = $content }
+        if ($e.FullName -eq 'xl/worksheets/sheet4.xml') { $sheet4 = $content }
       }
     }
   } finally { $zip.Dispose() }
 } catch {
   $fail += "Could not read archive: $($_.Exception.Message)"
+}
+
+# 2b) "Matrix of BUSINESS rights" (sheet4) must carry an explicit decision - either real
+# profile data or the "N/A - no business profile" marker. A sheet with NEITHER (still at
+# its blank template state: headers "Profile 1".."Profile 19" but no inlineStr content in
+# the Label/Description/etc. rows) means nobody actually decided anything - FAIL, not a
+# warning, because this is exactly the defect that shipped a blank matrix in a real TCC.
+if ($sheet4 -ne '') {
+  $hasMarker = $sharedStrings -match 'N/A - no business profile for this scope' -or $sheet4 -match 'N/A - no business profile for this scope'
+  $hasInlineData = ([regex]::Matches($sheet4, 't="inlineStr"')).Count -gt 0
+  if (-not $hasMarker -and -not $hasInlineData) {
+    $fail += "Matrix of BUSINESS rights (sheet4) has no decision recorded: no profile data and no 'N/A - no business profile' marker. The model's 'businessProfiles' field was not applied - regenerate with build-rightmatrix.ps1 using a model that sets businessProfiles to 'none' or 'defined' (see model-schema.md). Do not hand this file over as-is."
+  }
 }
 
 if ($fail.Count -gt 0) {

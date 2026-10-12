@@ -36,8 +36,15 @@ per DEV/PRE/PRD) and a 19-column BUSINESS profile skeleton. Do not add/remove co
    used** (e.g. no ApplicationLead) in the README rather than deleting it.
 10. Are there **business profiles** to define (onglet "Matrix of BUSINESS rights"), and
     if so, for each: label, description, user type, assignment method, access service
-    code, delegation level, DICT, and application features? If none for the MVP, record
-    "No business profile for this scope" in the README.
+    code, delegation level, DICT, and application features (max 2 features/profile -
+    the template has only 2 feature rows)?
+    **This answer is MANDATORY and goes into the model, not only the README** - set
+    `businessProfiles` to `"none"` (+ nothing else) or `"defined"` (+ `businessProfilesList`
+    with the profiles) in `${project_name}_access_right_matrix.model.json`
+    (`references/model-schema.md`). `build-rightmatrix.ps1` refuses to generate the
+    `.xlsx` if this field is missing - do not skip the question or leave it for later,
+    and do not consider the deliverable done from a README note alone: the sheet itself
+    must show either the real profiles or the explicit "N/A" marker.
 11. Any **derogation** to declare (e.g. the DEV+OPS cumulative derogation from Cloud
     Center Tools flagged at the top of the technical sheet)?
 

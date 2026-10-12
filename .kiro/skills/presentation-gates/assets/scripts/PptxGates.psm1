@@ -841,6 +841,32 @@ function Get-MissingMarkers {
     $hits
 }
 
+# --- Hard-fail subset of $script:MissingPatterns (SINGLE SOURCE OF TRUTH) ------------------
+# Rule 8 of SKILL.md explicitly ALLOWS some markers to survive as a deliberate, visible
+# placeholder for a genuinely unknown value (TBD, TODO, a Yes/No still to decide, a date not
+# yet set, an #id not yet issued, an "XX*" version). Those are fine on a delivered slide.
+# The labels below are never acceptable on a delivered slide: they are leftover TEMPLATE
+# INSTRUCTION TEXT ("Insert here...", "add here the link...", an unremoved "Example" row, a
+# literal "<<...>>" or "xxx" filler) that must always be replaced or removed, never shipped -
+# this is what let slides like "Insert here your data flow..." and "[PROJECT NAME]" ship
+# untouched in a real deck. validate-deck.ps1 treats a hit from this subset as an ERROR.
+$script:HardFailLabels = @(
+    'xxx placeholder', 'Xxx amount', '<<...>> placeholder',
+    "'add here'", "'See slide note(s)'", "'Describe ...'", "'List ...'", "'Insert ...'",
+    "'Mention here'", "'Example' left in", "'Complete for ...'"
+)
+
+function Get-HardFailMarkers {
+    <#
+        Return the subset of Get-MissingMarkers hits that are NEVER an acceptable leftover
+        (see $script:HardFailLabels) - i.e. leftover template guidance, not a legitimately
+        marked unknown value. Used by validate-deck.ps1 to hard-fail; find-missing.ps1 keeps
+        reporting the full set (including TBD/TODO) for the checklist.
+    #>
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Text)
+    @(Get-MissingMarkers -Text $Text | Where-Object { $script:HardFailLabels -contains $_ })
+}
+
 # --- Output validation (maximise PowerPoint compatibility) ---------------------------------
 function Test-PptxIntegrity {
     <#
@@ -987,6 +1013,72 @@ function Test-GateSlidesPresent {
     }
 }
 
+function Test-PptxRunIsLightText {
+    <#
+        Shared test: does this <a:r>...</a:r> run's XML set a light font colour (scheme
+        bg1/bg2/lt1/lt2, or a near-white srgb >= 220/220/220)? Such runs keep their yellow
+        highlight as the readable background behind light text (e.g. slide 9's One Pager
+        section labels) - stripping it would leave white-on-white, invisible text.
+        SINGLE SOURCE OF TRUTH: used by Remove-PptxHighlight (what is safe to strip) AND by
+        Test-PptxLeftoverHighlight / validate-deck.ps1 (what counts as a genuine leftover
+        highlight defect vs. an intentional light-text exception).
+    #>
+    param([Parameter(Mandatory)][string]$RunXml)
+    $lightScheme = @('bg1', 'bg2', 'lt1', 'lt2')
+    $sc = [regex]::Match($RunXml, '<a:solidFill><a:schemeClr val="([^"]+)"')
+    if ($sc.Success -and ($lightScheme -contains $sc.Groups[1].Value)) { return $true }
+    $sr = [regex]::Match($RunXml, '<a:solidFill><a:srgbClr val="([0-9A-Fa-f]{6})"')
+    if ($sr.Success) {
+        $hex = $sr.Groups[1].Value
+        $r = [Convert]::ToInt32($hex.Substring(0, 2), 16)
+        $g = [Convert]::ToInt32($hex.Substring(2, 2), 16)
+        $b = [Convert]::ToInt32($hex.Substring(4, 2), 16)
+        if ($r -ge 220 -and $g -ge 220 -and $b -ge 220) { return $true }  # near-white
+    }
+    return $false
+}
+
+function Get-PptxSlideXml {
+    <#
+        Return the raw slide XML for one display position, read-only. Exported so calling
+        scripts (e.g. validate-deck.ps1) can run content checks like Get-PptxLeftoverHighlightCount
+        without reaching into the module's internal zip helpers (Get-PptxSlideOrderFromArchive /
+        Read-ZipEntryText are not exported - this is the supported way to get a slide's XML).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][int]$Position
+    )
+    if (-not (Test-Path $Pptx)) { throw "File not found: $Pptx" }
+    $full = (Resolve-Path $Pptx).Path
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
+    try {
+        $order = Get-PptxSlideOrderFromArchive -Archive $zip
+        if ($Position -lt 1 -or $Position -gt $order.Count) { throw "Position out of range (1..$($order.Count))." }
+        Read-ZipEntryText -Archive $zip -EntryName $order[$Position - 1]
+    } finally { $zip.Dispose() }
+}
+
+function Get-PptxLeftoverHighlightCount {
+    <#
+        Count <a:highlight> runs in a slide's XML that are GENUINE leftover (i.e. not one of
+        the intentional light-text exceptions Remove-PptxHighlight skips). Used by
+        validate-deck.ps1 to HARD-FAIL a deck that still has unstripped template highlight on
+        content that was supposed to be validated - this is the exact defect (420 leftover
+        highlight runs) found in a real delivered deck. Does not distinguish "never filled"
+        from "filled but never de-highlighted"; either way the slide is not ready to ship.
+    #>
+    param([Parameter(Mandatory)][string]$SlideXml)
+    $count = 0
+    foreach ($m in [regex]::Matches($SlideXml, '<a:r>[\s\S]*?</a:r>')) {
+        $run = $m.Value
+        if ($run -notmatch '<a:highlight>') { continue }
+        if (Test-PptxRunIsLightText -RunXml $run) { continue }
+        $count++
+    }
+    $count
+}
+
 function Remove-PptxHighlight {
     <#
         Remove text highlight (the template's yellow guidance highlight, <a:highlight>...</a:highlight>)
@@ -1009,21 +1101,6 @@ function Remove-PptxHighlight {
     Assert-NotTemplate -Path $Pptx
     $full = (Resolve-Path $Pptx).Path
 
-    $lightScheme = @('bg1', 'bg2', 'lt1', 'lt2')
-    function Test-LightRun([string]$runXml) {
-        $sc = [regex]::Match($runXml, '<a:solidFill><a:schemeClr val="([^"]+)"')
-        if ($sc.Success -and ($lightScheme -contains $sc.Groups[1].Value)) { return $true }
-        $sr = [regex]::Match($runXml, '<a:solidFill><a:srgbClr val="([0-9A-Fa-f]{6})"')
-        if ($sr.Success) {
-            $hex = $sr.Groups[1].Value
-            $r = [Convert]::ToInt32($hex.Substring(0, 2), 16)
-            $g = [Convert]::ToInt32($hex.Substring(2, 2), 16)
-            $b = [Convert]::ToInt32($hex.Substring(4, 2), 16)
-            if ($r -ge 220 -and $g -ge 220 -and $b -ge 220) { return $true }  # near-white
-        }
-        return $false
-    }
-
     $edits = @{}
     $results = @()
     $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
@@ -1042,7 +1119,7 @@ function Remove-PptxHighlight {
                     param($m)
                     $run = $m.Value
                     if ($run -notmatch '<a:highlight>') { return $run }
-                    if (-not $Force -and (Test-LightRun $run)) { $script:__hlSkip++; return $run }
+                    if (-not $Force -and (Test-PptxRunIsLightText -RunXml $run)) { $script:__hlSkip++; return $run }
                     $script:__hlRem++
                     return [regex]::Replace($run, '<a:highlight>.*?</a:highlight>', '', [System.Text.RegularExpressions.RegexOptions]::Singleline)
                 })
@@ -1534,4 +1611,5 @@ Export-ModuleMember -Function `
     Add-PptxImageToSlide, Remove-PptxImagesFromSlide, Copy-PptxSlideFromDeck, `
     Get-SlideMap, Get-SlideTitle, Get-SlideGateTags, Find-SlidesByTitleRole, `
     Get-Deliverables, Resolve-DeliverableSlide, Get-MissingPatterns, Get-MissingMarkers, `
+    Get-HardFailMarkers, Test-PptxRunIsLightText, Get-PptxLeftoverHighlightCount, Get-PptxSlideXml, `
     Test-PptxIntegrity, Test-GateSlidesPresent

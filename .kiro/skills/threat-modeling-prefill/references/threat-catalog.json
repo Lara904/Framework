@@ -1,0 +1,5904 @@
+{
+  "version": "1.0",
+  "source": "TM_Threat_portfolio.csv (real SFS STRIDE-LM scenario catalog)",
+  "count": 176,
+  "scenarios": [
+    {
+      "id": "TM1",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "* A threat agent sends invalid data to the application.\n* The threat agent sends data to the system in the correct format but that is out of date, late, or related to the wrong context. \n* The application displays or operates the wrong data.",
+      "examples": "* Character strings are sent instead of integers.\n* PNG files are sent instead PDF…\n* User's birth date is treated instead of user B's\n* A batch file received contains obsolete data or it is received too late.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.010",
+        "CM.025.001",
+        "CM.025.002",
+        "CM.025.003"
+      ],
+      "counterMeasureTitles": [
+        "Detect and handle wrong data",
+        "Implement input and output filtering",
+        "Define and validate expected input/output formats",
+        "Implement data sanitization"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 2,
+      "sampleImpact": 3,
+      "sampleRiskLevel": "high"
+    },
+    {
+      "id": "TM2",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Code injection",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A malicious agent sends to the application a specifically forged data or malware in order to cause a behaviour change in the application or to gain access to the server",
+      "examples": "A malicious agent exploits SQLi, LOG4Shell, XSS, webshell, etc.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.025",
+        "CM.025.001",
+        "CM.025.002",
+        "CM.025.003",
+        "CM.016.001",
+        "CM.016.002"
+      ],
+      "counterMeasureTitles": [
+        "I/O validation and filtering",
+        "Implement input and output filtering",
+        "Define and validate expected input/output formats",
+        "Implement data sanitization",
+        "Realise pentest",
+        "Configure properly SAST tool on CI/CD"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 3,
+      "sampleRiskLevel": "average"
+    },
+    {
+      "id": "TM3",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Obsolete/deprecated function abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A malicious agent uses outdated features that have not been removed",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.016.002",
+        "CM.024.001",
+        "CM.024.002"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Configure properly SAST tool on CI/CD",
+        "Use source code repository",
+        "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 2,
+      "sampleImpact": 2,
+      "sampleRiskLevel": "above average"
+    },
+    {
+      "id": "TM4",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Abuse of inadequate functional control",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A malicious agent uses business logic flaw in the functionnal workflow or the way the controls are implemented in order to change the behavior of the application",
+      "examples": "A threat agent creates a loan with negative value, for an invalid period, with a wrong VAT, etc.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.005",
+        "CM.003.012",
+        "CM.009.008",
+        "CM.016.001",
+        "CM.016.007",
+        "CM.016.010",
+        "CM.017",
+        "CM.018.002"
+      ],
+      "counterMeasureTitles": [
+        "Implement two men rule or human control",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Remove demo configuration from open-source solution",
+        "Realise pentest",
+        "Realize user acceptance tests",
+        "Conduct regular security audits specifically focused on the testing processes to identify gaps or weaknesses in the testing approach",
+        "Define clear business user story or use case",
+        "Trace user actions"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 2,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "low"
+    },
+    {
+      "id": "TM5",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A malicious agent retrieves data displayed or stored outside the expected context.",
+      "examples": "A threat agent retrieves sensitive data in the URL, in a filename, in a log, in a too verbose error message, from a too verbose API.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.001",
+        "CM.003.001",
+        "CM.009",
+        "CM.009.001"
+      ],
+      "counterMeasureTitles": [
+        "Set up encryption at rest",
+        "Implement access controls on storage",
+        "Use secure component configuration",
+        "Apply security card for bucket S3"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 2,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "low"
+    },
+    {
+      "id": "TM6",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Operation repudiation",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "R"
+      ],
+      "description": "A threat agent repudiates an action and the system doesn't have the evidence of the operation",
+      "examples": "The threat agent The application doesn't store the user consent properly. Misuse of cryptographic system for signature or data exchange.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018.001",
+        "CM.018.002"
+      ],
+      "counterMeasureTitles": [
+        "Trace application connection",
+        "Trace user actions"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 3,
+      "sampleImpact": 3,
+      "sampleRiskLevel": "extreme"
+    },
+    {
+      "id": "TM7",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Authorization or authentication abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S",
+        "E"
+      ],
+      "description": "The threat agent exploits a weakness in the identification,  authentication or the authorization mechanism of the application",
+      "examples": "Lack of identification and authentication. Use of obsolete method (basic auth). Lack of authorization. Misuse of cryptographic algorithm for storing secret. Reuse of OTP",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 2,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "low"
+    },
+    {
+      "id": "TM8",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Application trace alteration",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "A threath agent send a lot of request or forge some requests in order to modify traces",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018.004",
+        "CM.018.005"
+      ],
+      "counterMeasureTitles": [
+        "Ensure log are protected against alteration",
+        "Configure log rotation based on delays an not on log size"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 2,
+      "sampleImpact": 2,
+      "sampleRiskLevel": "above average"
+    },
+    {
+      "id": "TM9",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Application resource exhaustion",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Threat agent is depleting one or more application resources such as memory, storage, sequence number, database connection, etc.",
+      "examples": "* A threat agent push too much files or heavy files on a filesytem storage.\n * A threat agent sends to much \"long\" request in order to depleting database connection.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.005",
+        "CM.027",
+        "CM.027.001",
+        "CM.027.002",
+        "CM.027.003"
+      ],
+      "counterMeasureTitles": [
+        "Realize stress test",
+        "Activate protective appliance",
+        "Activate firewall",
+        "Activate inbound and outbound Web Application Firewall",
+        "Activate AWS Shield Advanced"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM10",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Compliance issues",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "The application doesn't store properly compliance record, doesn't purge data properly, or doesn't sent apropriate compliance data.",
+      "examples": "A regulatory file is not send within the legal delay to the appropriate regulator. Records are loss or incomplet. Data is retained beyond the regulatory duration",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.006.001"
+      ],
+      "counterMeasureTitles": [
+        "Automaticaly remove obsolete data"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM11",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Data loss",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent destroys some data",
+      "examples": "A ransomware encrypts the data, making them unavailable.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.008",
+        "CM.008.001",
+        "CM.008.002",
+        "CM.008.003",
+        "CM.008.004",
+        "CM.033",
+        "CM.033.001",
+        "CM.033.002"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Implement a backup Strategy",
+        "Implement an automatic process to reconstruct lost data",
+        "Configure backup for the cache management system",
+        "Configure backup for the S3 bucket",
+        "Configure backup for the database",
+        "design a Disaster recovery plan",
+        "Conduct DRP tests following SFS ISSP requirements",
+        "conduct Backup integrity tests following SFS ISSP requirements"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM12",
+      "category": "Applicative",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Malevolent site mirroring",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent creates a mirror site to steal user credential",
+      "examples": "A malevolent agent lures users into filling their credentials on a phishing website impersonating the application.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.004.001",
+        "CM.004.002",
+        "CM.004.007",
+        "CM.004.008",
+        "CM.032.001"
+      ],
+      "counterMeasureTitles": [
+        "Cybersecurity Training",
+        "Cybersecurity Awarness",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+        "Phishing awarness",
+        "Preferentially use subdomains from already known Stellantis domains rather than using a new domain"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM13",
+      "category": "Applicative",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Third party  exposure",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A third party application exposes data or function",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002",
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Manage Third-Party Service Provider and Vendor",
+        "Evaluate the provider"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM14",
+      "category": "Applicative",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Third party service outage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A third party component is unavailable",
+      "examples": "ex Snowflake, codeweaver, etc.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002",
+        "CM.002.001",
+        "CM.001.001",
+        "CM.002.002",
+        "CM.002.003"
+      ],
+      "counterMeasureTitles": [
+        "Manage Third-Party Service Provider and Vendor",
+        "Require DDOS protection",
+        "Formal study of the application behavior when a component is not present / available.",
+        "Use asynchronous messaging",
+        "Implement replay mechanism"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM15",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure",
+        "External"
+      ],
+      "element": "Data-flow",
+      "threat": "Infrastructure resource spoofing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "A user agent impersonates an infrastructure component",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.007",
+        "CM.003.009",
+        "CM.020.002",
+        "CM.020.004",
+        "CM.020.005"
+      ],
+      "counterMeasureTitles": [
+        "Use client side certificat",
+        "Use OIDC",
+        "Set up encryption in transit",
+        "Sign messages with proper algorithm",
+        "Seal messages with proper algorithm"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM16",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Unprotected storage",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A bucket S3, a database, a cache system are publicaly available. Someone can modify the stored data",
+      "examples": "A bucket S3 is publicly available",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.003.001",
+        "CM.003.002",
+        "CM.003.003",
+        "CM.003.004",
+        "CM.003.006",
+        "CM.003.008",
+        "CM.009.001"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Implement access controls on storage",
+        "Activate multi factor authentication",
+        "Realize autorization review",
+        "Implement separation of duty",
+        "Use ping federate",
+        "Implement least privilege access",
+        "Apply security card for bucket S3"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM17",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Application secret exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Any Application side secret, especially hardcoded one",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.002"
+      ],
+      "counterMeasureTitles": [
+        "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM18",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Data leakage",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "",
+      "examples": "USB Key etc.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM19",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Sensitive data on wrong environment",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A threat agent access PII data through a non production environnement.",
+      "examples": "PII data in dev, unused data replicated",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.006.004",
+        "CM.006.006"
+      ],
+      "counterMeasureTitles": [
+        "Don't reuse production data on insecure environement",
+        "Anonymize bank  data"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM20",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Component misconfiguration",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Other than database, cache, FS or any other storage",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009",
+        "CM.012",
+        "CM.012.001"
+      ],
+      "counterMeasureTitles": [
+        "Use secure component configuration",
+        "Use IaC",
+        "Use ORF or other recommended IaC framework"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM21",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Malevolent component installation",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.005",
+        "CM.005.002",
+        "CM.005.004",
+        "CM.005.005",
+        "CM.005.001"
+      ],
+      "counterMeasureTitles": [
+        "Implement Monitoring",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Implement request status monitoring and alerting",
+        "Monitor resources consumption"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM22",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Third party component with flaws",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.016.009",
+        "CM.031.001",
+        "CM.031.002",
+        "CM.016.004",
+        "CM.016.008",
+        "CM.016.002"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Set up automated notifications for developers to alert them about new releases or security patches for third-party dependencies",
+        "Lock down specific versions of third-party dependencies to ensure consistency and prevent unexpected updates that may introduce vulnerabilities",
+        "Perform periodic audits of dependencies to identify and remove unnecessary or unused third-party libraries",
+        "Realize code review",
+        "Configure properly SCA tool on CI/CD",
+        "Configure properly SAST tool on CI/CD"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM23",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Malevolent account creation or modification",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E",
+        "LM"
+      ],
+      "description": "A malevolent agent creates an account in order to persist access on the solution.",
+      "examples": "A malevolent agent creates and uses a service account with privileges to make fraudulent payments.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.006",
+        "CM.003.012",
+        "CM.003.003",
+        "CM.003.008",
+        "CM.003.014",
+        "CM.003.017",
+        "CM.003.013"
+      ],
+      "counterMeasureTitles": [
+        "Use ping federate",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Realize autorization review",
+        "Implement least privilege access",
+        "Use a centralized IAM for application user",
+        "Implement account / credentials deactivation mechanism",
+        "Ensure that each credential purpose is unique"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM24",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Application trace modification or deletion",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "R"
+      ],
+      "description": "Deleting traces or audit logs in the AWS project ecosystem\nAfter penetrating the AWS ecosystem, the threat agent carries out malicious actions and erases the traces and/or audit logs of API calls made to AWS service(s)",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009.001"
+      ],
+      "counterMeasureTitles": [
+        "Apply security card for bucket S3"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM25",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Supply chain Backdooring or Attack",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "LM"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002",
+        "CM.003.003"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication",
+        "Realize autorization review"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM26",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Source code leakage",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Exfiltration of the application code or reverse engineering",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002",
+        "CM.003.003"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication",
+        "Realize autorization review"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM27",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Credential thief",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "A malevolent agent stole credentials to access the application.",
+      "examples": "A malevolent agent stole credentials using spear phising to access the application.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002",
+        "CM.003.006",
+        "CM.020.002",
+        "CM.029.001",
+        "CM.004.002"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication",
+        "Use ping federate",
+        "Set up encryption in transit",
+        "Activate CORS and CSP",
+        "Cybersecurity Awarness"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM28",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Infrastructure secret exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Leak of CI/CD credential or other secret",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.020",
+        "CM.009.015",
+        "CM.024.003",
+        "CM.016.002",
+        "CM.024.002"
+      ],
+      "counterMeasureTitles": [
+        "Implement SOC scenario based on vault secret access",
+        "Use appropriate vault solutions validated by architects to store secrets",
+        "Don't use secret or hardcoded credential in the source code or configuration files.",
+        "Configure properly SAST tool on CI/CD",
+        "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM29",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Process",
+      "threat": "Uncontrolled credential renewal or revocation",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "An accidental or malevolent renewal causes an application outage",
+      "examples": "A certificate change prevents another application from consuming APIs provided by the application.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.010",
+        "CM.009.003",
+        "CM.009.004"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Write a process describing the credential renewal for a third party",
+        "Apply security card for KMS",
+        "Apply security card for Secret Manager"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM30",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Infrastructure service outage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Ex KMS, kafka, CI/CD, websphere MQ or any message queue, etc.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.001.001",
+        "CM.005",
+        "CM.005.005",
+        "CM.033"
+      ],
+      "counterMeasureTitles": [
+        "Formal study of the application behavior when a component is not present / available.",
+        "Implement Monitoring",
+        "Implement request status monitoring and alerting",
+        "design a Disaster recovery plan"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM31",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "AZ or Region outage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.001.001",
+        "CM.005",
+        "CM.005.005",
+        "CM.033",
+        "CM.033.001"
+      ],
+      "counterMeasureTitles": [
+        "Formal study of the application behavior when a component is not present / available.",
+        "Implement Monitoring",
+        "Implement request status monitoring and alerting",
+        "design a Disaster recovery plan",
+        "Conduct DRP tests following SFS ISSP requirements"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM32",
+      "category": "Applicative",
+      "scope": [
+        "Management"
+      ],
+      "element": "Data-flow",
+      "threat": "Insufficient administrative controls",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "S",
+        "T",
+        "R",
+        "I",
+        "D",
+        "E",
+        "LM"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.031.001"
+      ],
+      "counterMeasureTitles": [
+        "Lock down specific versions of third-party dependencies to ensure consistency and prevent unexpected updates that may introduce vulnerabilities"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM33",
+      "category": "Applicative",
+      "scope": [
+        "Management"
+      ],
+      "element": "Data-flow",
+      "threat": "Incomplete Testing",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "S",
+        "T",
+        "R",
+        "I",
+        "D",
+        "E",
+        "LM"
+      ],
+      "description": "An audit reveals some non conformities regarding testing required by the regulation.",
+      "examples": "Pentests, User acceptance tests,... d'ont comply with DORA regulation",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.031.002",
+        "CM.016",
+        "CM.016.001",
+        "CM.016.005",
+        "CM.016.007",
+        "CM.033.001",
+        "CM.033.002"
+      ],
+      "counterMeasureTitles": [
+        "Perform periodic audits of dependencies to identify and remove unnecessary or unused third-party libraries",
+        "Realize tests",
+        "Realise pentest",
+        "Realize stress test",
+        "Realize user acceptance tests",
+        "Conduct DRP tests following SFS ISSP requirements",
+        "conduct Backup integrity tests following SFS ISSP requirements"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM34",
+      "category": "Applicative",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Network resource exhaustion",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "A threat agent consumes too much network resources, preventing the legitimate use of the application",
+      "examples": "DDOS attack.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.001",
+        "CM.027.003"
+      ],
+      "counterMeasureTitles": [
+        "Activate firewall",
+        "Activate AWS Shield Advanced"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM35",
+      "category": "Applicative",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "insider eavesdropping",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "",
+      "examples": "AWS internet communication eavesdropping",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009",
+        "CM.020.002",
+        "CM.029.001"
+      ],
+      "counterMeasureTitles": [
+        "Use secure component configuration",
+        "Set up encryption in transit",
+        "Activate CORS and CSP"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM36",
+      "category": "Applicative",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Untrusted zone eavesdrooping / adversary in the middle",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "T",
+        "I"
+      ],
+      "description": "A malevolent agent sniffs non secure HTTP communication.",
+      "examples": "A malevolent agent intercepts the communication between the application and any kind of clients.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.007",
+        "CM.003.009",
+        "CM.020.002",
+        "CM.020.004",
+        "CM.020.005"
+      ],
+      "counterMeasureTitles": [
+        "Use client side certificat",
+        "Use OIDC",
+        "Set up encryption in transit",
+        "Sign messages with proper algorithm",
+        "Seal messages with proper algorithm"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM38",
+      "category": "Applicative",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "unsufficient network segregation",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "LM"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.023.001",
+        "CM.027.011"
+      ],
+      "counterMeasureTitles": [
+        "Ensure that runtimes (VM, containers, lambda,...) are executed in an isolated network",
+        "Implement least privilege indound and outbound network firewall"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM39",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "usage of an unauthorized component",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A project member uses or include an unauthorized component in the application",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.005",
+        "CM.005.002",
+        "CM.005.004",
+        "CM.005.005",
+        "CM.005.001",
+        "CM.031.005"
+      ],
+      "counterMeasureTitles": [
+        "Implement Monitoring",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Implement request status monitoring and alerting",
+        "Monitor resources consumption",
+        "Adopt a zero-trust security model, where every component and user is treated as untrusted until verified"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM40",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Unable to adapte to the environment",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A component, application, appliance cannot run properly or cannot be adpated to SFS environnement",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002"
+      ],
+      "counterMeasureTitles": [
+        "Manage Third-Party Service Provider and Vendor"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM41",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Unauthorized access to an environement",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "A treath agent accesses to the dev, the preproduction or the production environment",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.003.001",
+        "CM.003.002",
+        "CM.003.003",
+        "CM.003.004",
+        "CM.003.006",
+        "CM.003.008",
+        "CM.003.011",
+        "CM.003.012",
+        "CM.003.013",
+        "CM.003.014",
+        "CM.003.019"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Implement access controls on storage",
+        "Activate multi factor authentication",
+        "Realize autorization review",
+        "Implement separation of duty",
+        "Use ping federate",
+        "Implement least privilege access",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Ensure that each credential purpose is unique",
+        "Use a centralized IAM for application user",
+        "Segregate environments (dev, staging, prod,...)"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM42",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Licensing Risks",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A component of the project need the acceptance of  an inapropriate license or need a commercial/contractual agreement.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.006",
+        "CM.016.008"
+      ],
+      "counterMeasureTitles": [
+        "Evaluate license risks",
+        "Configure properly SCA tool on CI/CD"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM43",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Unclear T&Cs and Data Privacy Policies",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Unclear T&Cs and data privacy policies of the model operators lead to the application's sensitive data being used for model training and subsequent sensitive information exposure. This may also apply to risks from using copyrighted material by the model supplier",
+      "examples": "An agreement is signed with a provider that stores SFS data in an inadequate country.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Evaluate the provider"
+      ],
+      "priority": "3",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM44",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Natural Adversarial Examples",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Without attacker perturbations, the ML system fails owing to hard negative mining",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021"
+      ],
+      "counterMeasureTitles": [
+        "AI specific controls"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM45",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Authorization or authentication abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "A threat agent realize an unwanted authorization modification.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.003",
+        "CM.003.002",
+        "CM.003.008",
+        "CM.025.001"
+      ],
+      "counterMeasureTitles": [
+        "Realize autorization review",
+        "Activate multi factor authentication",
+        "Implement least privilege access",
+        "Implement input and output filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM46",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "A threat agent gains access to none-authorized data using regular prompt.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.025.001"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Implement input and output filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM47",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Handling of invalid or wrong data",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "The LLM is  trained with wrong or obsolete data",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.006.001",
+        "CM.016"
+      ],
+      "counterMeasureTitles": [
+        "Automaticaly remove obsolete data",
+        "Realize tests"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM48",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Authorization or authentication abuse",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent modifies the LLM training without having appropriate authorization",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM49",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "The LLM halucinates a wrong response",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.017",
+        "CM.018",
+        "CM.019",
+        "CM.004.004"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Define clear business user story or use case",
+        "Implement tracability",
+        "Administrative controls",
+        "AI Awarness"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM50",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Code injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent compromises the backend components using regular code injection attack",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.015.001",
+        "CM.016",
+        "CM.011",
+        "CM.011.001",
+        "CM.009"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Configure containers to be immutable",
+        "Realize tests",
+        "Detect configuration change",
+        "Detect public exposition change",
+        "Use secure component configuration"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM51",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker manipulates client side data.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.007.001",
+        "CM.007.002",
+        "CM.006.003",
+        "CM.004.002",
+        "CM.004.004"
+      ],
+      "counterMeasureTitles": [
+        "Don't use cookie to store sensitive information",
+        "Use  local storage related to the domain name",
+        "Restrict data sources to the strict minimum",
+        "Cybersecurity Awarness",
+        "AI Awarness"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM52",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Direct prompt Injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker injects a prompt into a customer support chatbot, instructing it to ignore previous guidelines, query private data stores, and send emails, leading to unauthorized access and privilege escalation",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "Implement input and output filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM53",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Intentional Model Influence",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker modifies a document in a repository used by a Retrieval-Augmented Generation (RAG) application. When a user's query returns the modified content, the malicious instructions alter the LLM's output, generating misleading results.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009",
+        "CM.024"
+      ],
+      "counterMeasureTitles": [
+        "Use secure component configuration",
+        "Use CI/CD"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM54",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure / Model Inversion",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "The attackers recovers the secret features used in the model through carefully crafted queries",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.021.006",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Conceal System Preamble",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM55",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure / Model Stealing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "The treat agent recover the model through carefully-crafted queries",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "I/O validation and filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM56",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Code injection / Reprogramming ML system",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent repurpose the ML system to perform an activity it was not programmed for.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.021.001"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Conduct adversarial testing and attack simulations"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM57",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data  / Reward Hacking",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "The reinforcement Learning (RL) systems act in unintended ways because of mismatch between stated reward and true reward",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.002",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Activate reinforcement learning only when it's needed",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM58",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Abuse of inadequate functional control  / Side Effects",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "The reinforcement Learning  system disrupts the environment as it tries to attain its goal",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.002",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Activate reinforcement learning only when it's needed",
+        "Realise pentest"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM59",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data  / Common Corruption",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "The system is not able to handle common corruptions and perturbations such as tilting, zooming, or noisy images.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.016.001",
+        "CM.025"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Realise pentest",
+        "I/O validation and filtering"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM60",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T",
+        "I"
+      ],
+      "description": "The treath agent uses the LLM to realize Social Engineering attacks",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Realise pentest"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM61",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Code injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "The treath agent uses the LLM to leverage cybersecurity attacks",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM62",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The treath agent uses the LLM to retrieve vast amounts of nonpublic information",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.016.001",
+        "CM.006.003",
+        "CM.004.004",
+        "CM.021.001"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Realise pentest",
+        "Restrict data sources to the strict minimum",
+        "AI Awarness",
+        "Conduct adversarial testing and attack simulations"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM63",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Membership Inference",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The attacker can infer if a given data record was part of the model’s training dataset or not",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "AI specific controls",
+        "Realise pentest"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM64",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Unable to adapte to the environment / Distributional shifts",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "The system is tested in one kind of environment, but is unable to adapt to changes in other kinds of environment",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.012",
+        "CM.016",
+        "CM.024"
+      ],
+      "counterMeasureTitles": [
+        "Use IaC",
+        "Realize tests",
+        "Use CI/CD"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM65",
+      "category": "LLM IA",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Authorization or authentication abuse",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent spoofs SFS identity for third party service",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.005.001",
+        "CM.020.002",
+        "CM.022",
+        "CM.023"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Monitor resources consumption",
+        "Set up encryption in transit",
+        "Set up rate limit",
+        "Network isolation"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM66",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Trust boundary",
+      "threat": "Third party component with flaws",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "LM"
+      ],
+      "description": "A threat agent use the LLM for a non validated usage.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.014.001"
+      ],
+      "counterMeasureTitles": [
+        "Implement whitelisting of third party service URLs"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM67",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Third party component with flaws / Indirect data exposure  / Malicious ML provider recovering training data",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "A malicious ML provider can query the model used by customer and recover customer’s training data",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM68",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Attacking the ML supply chain",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "Threat agent compromises the ML models as it is being downloaded for use.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "AI specific controls",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM69",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Third party component with flaws / Backdoor ML",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "A malicious ML provider backdoors algorithm to activate with a specific trigger",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM70",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Third party component with flaws / Exploit Software Dependencies",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent uses traditional software exploits like buffer overflow to confuse/control ML systems",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM71",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Third party component with flaws",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "S",
+        "T",
+        "R",
+        "I",
+        "D",
+        "E",
+        "LM"
+      ],
+      "description": "A threat agent exploits a third party vulnerability",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM72",
+      "category": "LLM IA",
+      "scope": [
+        "Management"
+      ],
+      "element": "Data-flow",
+      "threat": "Incomplete Testing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [],
+      "description": "The ML system is not tested in the realistic conditions that it is meant to operate in.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM73",
+      "category": "LLM IA",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Man in the middle",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "An insider attacks beetween two intenal components.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002",
+        "CM.003.003",
+        "CM.003.006",
+        "CM.003.007",
+        "CM.020.002"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication",
+        "Realize autorization review",
+        "Use ping federate",
+        "Use client side certificat",
+        "Set up encryption in transit"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM74",
+      "category": "LLM IA",
+      "scope": [
+        "Physical"
+      ],
+      "element": "Data-flow",
+      "threat": "Adversarial Example in Physical Domain",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The threat agent brings adversarial examples into physical domain to subvert ML system",
+      "examples": "3d printing and special eyewear to fool facial recognition system",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "AI specific controls",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM75",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure",
+        "External"
+      ],
+      "element": "Data-flow",
+      "threat": "Infrastructure resource spoofing",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent impersonates an infrastructure components",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.013.001",
+        "CM.013.002",
+        "CM.012",
+        "CM.012.001"
+      ],
+      "counterMeasureTitles": [
+        "Implement SCP to detect configuration change",
+        "Implement SCP to prevent configuration change",
+        "Use IaC",
+        "Use ORF or other recommended IaC framework"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM76",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Unprotected storage",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A threat agent gains access to an unsuficiently protected storage containing application information.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.001",
+        "CM.008.001",
+        "CM.008.002",
+        "CM.009",
+        "CM.010",
+        "CM.011",
+        "CM.011.001",
+        "CM.021.006"
+      ],
+      "counterMeasureTitles": [
+        "Implement access controls on storage",
+        "Implement an automatic process to reconstruct lost data",
+        "Configure backup for the cache management system",
+        "Use secure component configuration",
+        "Detect and handle wrong data",
+        "Detect configuration change",
+        "Detect public exposition change",
+        "Conceal System Preamble"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM77",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Trust boundary",
+      "threat": "Supply chain Backdooring or Attack",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent compromises the supply chain.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM78",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Trust boundary",
+      "threat": "Unauthorized access to an environement",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "LM"
+      ],
+      "description": "threat agent gains access to devlopment environnement and tools.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.003"
+      ],
+      "counterMeasureTitles": [
+        "Realize autorization review"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM79",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect prompt injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A user employs an LLM to summarize a webpage containing hidden instructions that cause the LLM to insert an image linking to a URL, leading to exfiltration of the the private conversation.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "Implement input and output filtering"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM80",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Payload Splitting",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker modifies some input data used for a rating. When an LLM is used to evaluate the candidate, the combined prompts manipulate the model's response, resulting in a positive rating despite the actual contents.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025.001"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "Implement input and output filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM81",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Multimodal Injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker embeds a malicious prompt within an image that accompanies benign text. When a multimodal AI processes the image and text concurrently, the hidden prompt alters the model's behavior, potentially leading to unauthorized actions or disclosure of sensitive information.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "I/O validation and filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM82",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Adversarial Suffix",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker appends a seemingly meaningless string of characters to a prompt, which influences the LLM's output in a malicious way, bypassing safety measures.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "I/O validation and filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM83",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Multilingual/Obfuscated Attack",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker uses multiple languages or encodes malicious instructions (e.g., using Base64 or emojis) to evade filters and manipulate the LLM's behavior",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.021.001",
+        "CM.016.001",
+        "CM.025"
+      ],
+      "counterMeasureTitles": [
+        "Conduct adversarial testing and attack simulations",
+        "Realise pentest",
+        "I/O validation and filtering"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM84",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Unintentional Data Exposure",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "A user receives a response containing another user's personal data due to inadequate data sanitization",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.025",
+        "CM.004.004"
+      ],
+      "counterMeasureTitles": [
+        "I/O validation and filtering",
+        "AI Awarness"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM85",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Targeted Prompt Injection",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "An attacker bypasses input filters to extract sensitive information.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.025",
+        "CM.006.003",
+        "CM.021.006"
+      ],
+      "counterMeasureTitles": [
+        "I/O validation and filtering",
+        "Restrict data sources to the strict minimum",
+        "Conceal System Preamble"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM86",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Process",
+      "threat": "Data Leak via Training Data",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Negligent data inclusion in training leads to sensitive information disclosure.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.006.003",
+        "CM.004.004"
+      ],
+      "counterMeasureTitles": [
+        "Restrict data sources to the strict minimum",
+        "AI Awarness"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM87",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "External entity",
+      "threat": "Licensing Risks",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "A component of the project needs the acceptance of  an inapropriate license or need a commercial/contractual agreement.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.016.006"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Evaluate license risks"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM88",
+      "category": "LLM IA",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Obsolete/deprecated function abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Using outdated or deprecated models that are no longer maintained leads to security issues.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "[]"
+      ],
+      "counterMeasureTitles": [],
+      "priority": "1"
+    },
+    {
+      "id": "TM89",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Vulnerable Pre-Trained Model",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "Models are binary black boxes and unlike open source, static inspection can offer little to no security insurances. Vulnerable pre-trained models can contain hidden biases, backdoors, or other malicious features that have not been identified through the safety evaluations of model repository. Vulnerable models can be created by both poisoned datasets and direct model tampering using tehcniques such as ROME also known as lobotomisation.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Evaluate the provider"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM90",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Weak Model Provenance",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "Currently there are no strong provenance insurances in published models. Model Cards and associated documentation provide model information and relied upon users, but they offer no guarantees on the origin of the model. An attacker can compromise supplier account on a model repository or create a similar one and combine it with social engineering techniques to compromise the supply-chain of an LLM application",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Evaluate the provider"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM91",
+      "category": "LLM IA",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Vulnerable LoRA adapters",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "LoRA is a popular fine-tuning technique that enhances modularity by allowing pre-trained layers to be bolted onto an existing LLM. The method increases efficiency but creates new risks, where a malicious LorA adapter compromises the integrity and security of the pretrained base model. This can happen both in collaborative model merge environments but also exploiting the support for LoRA from popular inference deployment platforms such as vLMM and OpenLLM where adapters can be downloaded and applied to a deployed model.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "[]"
+      ],
+      "counterMeasureTitles": [],
+      "priority": ""
+    },
+    {
+      "id": "TM92",
+      "category": "LLM IA",
+      "scope": [
+        "Management"
+      ],
+      "element": "External entity",
+      "threat": "Unclear T&Cs and Data Privacy Policies",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "Unclear T&Cs and data privacy policies of the model operators lead to the application's sensitive data being used for model training and subsequent sensitive information exposure.\nThis may also apply to risks from using copyrighted material by the model supplier.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Evaluate the provider"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM93",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Internal supply chain backdooring  (CI)",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S",
+        "T"
+      ],
+      "description": "Attackers may attempt to inject malicious code into the source code repository during the CI stage, introducing backdoors or vulnerabilities.",
+      "examples": "In a security incident, an attacker with authenticated access to a project's version control system managed to inject malicious code into the source code repository.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.002",
+        "CM.016.005",
+        "CM.003.002",
+        "CM.018",
+        "CM.024.001",
+        "CM.024.004",
+        "CM.024.005"
+      ],
+      "counterMeasureTitles": [
+        "Configure properly SAST tool on CI/CD",
+        "Realize stress test",
+        "Activate multi factor authentication",
+        "Implement tracability",
+        "Use source code repository",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Establish procedures for restoring the repository to a known good state"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM94",
+      "category": "CI/CD",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Credential Exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "If sensitive credentials (e.g., API keys, access tokens) are stored in the source code repository, attackers might gain unauthorized access to external services or systems.",
+      "examples": "In a security lapse, sensitive credentials were inadvertently stored in a company's source code repository. Exploiting this oversight, attackers gained unauthorized access to external services or systems connected to the compromised credentials.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.002",
+        "CM.016.005",
+        "CM.024.006",
+        "CM.018",
+        "CM.024.001",
+        "CM.003.011",
+        "CM.024.004",
+        "CM.024.005",
+        "CM.003.008"
+      ],
+      "counterMeasureTitles": [
+        "Configure properly SAST tool on CI/CD",
+        "Realize stress test",
+        "Implement Git hooks to enforce policies on commit actions, including checks for sensitive information.",
+        "Implement tracability",
+        "Use source code repository",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement least privilege access"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM95",
+      "category": "CI/CD",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Insecure Dependencies",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T",
+        "I",
+        "E",
+        "LM"
+      ],
+      "description": "Attackers may exploit vulnerabilities in third-party dependencies on test environment. If the project relies on outdated or insecure libraries, it could introduce security weaknesses.",
+      "examples": "In a security incident, threat actors identified and exploited vulnerabilities in outdated or insecure third-party dependencies used by a project. This exploitation enabled unauthorized access or compromise.",
+      "realExampleLink": "https://www.csoonline.com/article/567833/equifax-data-breach-faq-what-happened-who-was-affected-what-was-the-impact.html",
+      "counterMeasureIds": [
+        "CM.016.008",
+        "CM.030.001",
+        "CM.031.001",
+        "CM.016.009",
+        "CM.008.005",
+        "CM.003.004"
+      ],
+      "counterMeasureTitles": [
+        "Configure properly SCA tool on CI/CD",
+        "Establish and enforce policies that mandate the use of secure and actively maintained libraries",
+        "Lock down specific versions of third-party dependencies to ensure consistency and prevent unexpected updates that may introduce vulnerabilities",
+        "Set up automated notifications for developers to alert them about new releases or security patches for third-party dependencies",
+        "Regularly backup your CI/CD configuration, including dependency specifications",
+        "Implement separation of duty"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM96",
+      "category": "CI/CD",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Inadequate Testing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "If the testing process is not thorough, it may miss critical security vulnerabilities, allowing attackers to exploit weaknesses in the application.",
+      "examples": "In a security oversight, a project's testing process lacked thoroughness, resulting in the oversight of critical security vulnerabilities. Exploiting these weaknesses, attackers gained unauthorized access or compromised the application.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.031.003",
+        "CM.016.002",
+        "CM.016.010",
+        "CM.016.001",
+        "CM.031.004"
+      ],
+      "counterMeasureTitles": [
+        "Enforce security-focused coding standards to proactively reduce the likelihood of introducing vulnerabilities during the development phase",
+        "Configure properly SAST tool on CI/CD",
+        "Conduct regular security audits specifically focused on the testing processes to identify gaps or weaknesses in the testing approach",
+        "Realise pentest",
+        "Designate security champions within development teams to champion security best practices, including thorough testing"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM97",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Misconfigured Build Scripts",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "Incorrectly configured build scripts may expose sensitive information or introduce vulnerabilities during the build process.",
+      "examples": "In a security lapse, a project's build scripts were incorrectly configured, unintentionally exposing sensitive information or introducing vulnerabilities during the build process. Exploiting these misconfigurations, attackers gained unauthorized access or compromised the integrity of the build process.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.012.001",
+        "CM.016.002",
+        "CM.016.004",
+        "CM.024.007",
+        "CM.008.006",
+        "CM.003.008"
+      ],
+      "counterMeasureTitles": [
+        "Use ORF or other recommended IaC framework",
+        "Configure properly SAST tool on CI/CD",
+        "Realize code review",
+        "Implement continuous monitoring of build scripts and their execution during the CI/CD pipeline",
+        "Establish procedures for restoring the build environment to a known good state in the event of compromised configurations during the build process",
+        "Implement least privilege access"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM98",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Unauthorized Release Access",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "Attackers may attempt to gain unauthorized access to the release process, allowing them to deploy malicious code or manipulate the release pipeline.",
+      "examples": "In a security incident, threat actors targeted the release process, exploiting vulnerabilities to gain unauthorized access. Once inside, the attackers had the potential to deploy malicious code during the release pipeline or manipulate the process itself.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.012",
+        "CM.003.002",
+        "CM.027.005",
+        "CM.016.001.001",
+        "CM.024.007",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.024.004",
+        "CM.004.007"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Activate multi factor authentication",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Realize penetration testing on the CI/CD tools",
+        "Implement continuous monitoring of build scripts and their execution during the CI/CD pipeline",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM99",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Tampering with Release Artifacts",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "Internal attackers (e.g. dev or ops) might attempt to modify or replace release artifacts during the deployment process, introducing malicious code into the production environment or delete code.",
+      "examples": "In a security incident, threat actors sought to compromise the deployment process by attempting to modify or replace release artifacts. Their goal was to introduce malicious code into the production environment, potentially compromising the integrity of the software.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.010",
+        "CM.003.008",
+        "CM.020.002",
+        "CM.024.011",
+        "CM.005.002",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.007",
+        "CM.004.007"
+      ],
+      "counterMeasureTitles": [
+        "Implement cryptographic signing of release artifacts to ensure their authenticity",
+        "Implement least privilege access",
+        "Set up encryption in transit",
+        "Check artifacts signature during deployment process",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement a backup strategy for artifacts",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM100",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Insecure Configuration in CD Pipelines",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Misconfigured CD pipelines may expose sensitive information or provide opportunities for attackers to manipulate the deployment process.",
+      "examples": "In a security oversight, a company's CD pipelines were misconfigured, unintentionally exposing sensitive information. Exploiting this misconfiguration, attackers gained unauthorized access or manipulated the deployment process.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.012",
+        "CM.012.001",
+        "CM.024.012",
+        "CM.003.008",
+        "CM.018",
+        "CM.024.005",
+        "CM.024.004",
+        "CM.030.002",
+        "CM.008.007"
+      ],
+      "counterMeasureTitles": [
+        "Use IaC",
+        "Use ORF or other recommended IaC framework",
+        "Encrypt sensitive information within CD pipeline configurations, such as API keys and credentials",
+        "Implement least privilege access",
+        "Implement tracability",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement a backup strategy for artifacts"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM101",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Rollback Abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "If rollback mechanisms are not adequately secured, attackers may abuse them to revert to vulnerable versions of the application.",
+      "examples": "In a potential security scenario, inadequate security measures around rollback mechanisms could enable attackers to abuse them, reverting the application to vulnerable versions. Even if not exploited directly, insecure rollback procedures might lead to unintended consequences, disrupting services or reintroducing vulnerabilities.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.002",
+        "CM.016.001.001",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.024.004",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005",
+        "CM.008",
+        "CM.004"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Activate multi factor authentication",
+        "Realize penetration testing on the CI/CD tools",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications",
+        "Implement a backup Strategy",
+        "Schedule training and awarness"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM102",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Process",
+      "threat": "Inadequate Post-Deployment Testing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "If post-deployment testing is insufficient, vulnerabilities or issues introduced during the deployment may go unnoticed, allowing attackers to exploit them.",
+      "examples": "In a security scenario, inadequate post-deployment testing left vulnerabilities or issues unnoticed after a deployment. Exploiting these weaknesses, attackers were able to compromise the system.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016",
+        "CM.031.003",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.024.004",
+        "CM.004"
+      ],
+      "counterMeasureTitles": [
+        "Realize tests",
+        "Enforce security-focused coding standards to proactively reduce the likelihood of introducing vulnerabilities during the development phase",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Schedule training and awarness"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM103",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Trust boundary",
+      "threat": "Unauthorized Access to CI Server",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "Attackers may attempt to gain unauthorized access to the CI server to manipulate build processes, inject malicious code, or compromise build artifacts.",
+      "examples": "In a security breach, threat actors exploited vulnerabilities in the CI server's security. Through weak credentials and insecure configurations, unauthorized access was gained. Once inside, the attackers manipulated the build processes, introducing malicious code into the software builds. Additionally, they compromised build artifacts, deploying unauthorized elements that could range from malware to cryptocurrency miners.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.002",
+        "CM.003.013",
+        "CM.023",
+        "CM.016.001.001",
+        "CM.024.012",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005",
+        "CM.004"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Activate multi factor authentication",
+        "Ensure that each credential purpose is unique",
+        "Network isolation",
+        "Realize penetration testing on the CI/CD tools",
+        "Encrypt sensitive information within CD pipeline configurations, such as API keys and credentials",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications",
+        "Schedule training and awarness"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM104",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of Service (DoS) Attacks",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Attackers may launch DoS attacks against the CI server, disrupting the build process and potentially causing delays in software delivery.",
+      "examples": "In a security incident, threat actors initiated a DoS attack against a CI server, deliberately disrupting the build process. This not only caused operational disruptions but also led to potential delays in software delivery.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.001",
+        "CM.027.004",
+        "CM.027.005",
+        "CM.027.006",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.027.007",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Activate firewall",
+        "Implement rate limiting",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Implement cache mechanism such as CDN",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Use load balancing",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM105",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Compromised Build Agents",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "Build agents that execute build processes may be compromised, allowing attackers to inject malicious code into the build artifacts.",
+      "examples": "In a security incident, build agents responsible for executing build processes were compromised, enabling attackers to inject malicious code into the resulting build artifacts. This compromise could have serious consequences, as the tainted artifacts may be distributed and used, putting end-users at risk.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.024.013",
+        "CM.024.014",
+        "CM.024.010",
+        "CM.023",
+        "CM.024.011",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.024.015"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Apply patches regularly on CI/CD infrastructure",
+        "Set up Enhanced Detection and Response (EDR) solution on CI/CD infrastructure",
+        "Implement cryptographic signing of release artifacts to ensure their authenticity",
+        "Network isolation",
+        "Check artifacts signature during deployment process",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement versionning/taging strategy for source code and artifacts during releases"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM106",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data store",
+      "threat": "Insecure Artifact Storage",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Inadequately secured artifact repositories may expose build artifacts to unauthorized access or tampering.",
+      "examples": "In a security lapse, inadequately secured artifact repositories faced unauthorized access or tampering, potentially exposing build artifacts to compromise.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.020.001",
+        "CM.024.013",
+        "CM.023",
+        "CM.024.011",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Set up encryption at rest",
+        "Apply patches regularly on CI/CD infrastructure",
+        "Network isolation",
+        "Check artifacts signature during deployment process",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM107",
+      "category": "CI/CD",
+      "scope": [
+        "Network"
+      ],
+      "element": "Trust boundary",
+      "threat": "Lack of Network Segmentation",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "LM"
+      ],
+      "description": "Inadequate network segmentation may allow attackers who gain access to one part of the CI infrastructure to move laterally and compromise other components.",
+      "examples": "In a security scenario, insufficient network segmentation within the CI infrastructure enabled attackers who gained initial access to move laterally across different components.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.001",
+        "CM.023",
+        "CM.031.005",
+        "CM.003.008",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Activate firewall",
+        "Network isolation",
+        "Adopt a zero-trust security model, where every component and user is treated as untrusted until verified",
+        "Implement least privilege access",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM108",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Trust boundary",
+      "threat": "Unauthorized Access to CD Environment",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "Attackers may attempt to gain unauthorized access to the CD environment, allowing them to manipulate deployment configurations or compromise the infrastructure.",
+      "examples": "In a security breach, threat actors exploited vulnerabilities, gaining unauthorized access to a company's CD environment. With this access, the attackers could manipulate deployment configurations or compromise the underlying infrastructure.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.002",
+        "CM.027.005",
+        "CM.027",
+        "CM.024.013",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Activate multi factor authentication",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Activate protective appliance",
+        "Apply patches regularly on CI/CD infrastructure",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM109",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Trust boundary",
+      "threat": "Compromised Deployment Pipeline",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "T",
+        "LM"
+      ],
+      "description": "The deployment pipeline itself may be compromised, enabling attackers to inject malicious code into the deployment process or manipulate configurations.",
+      "examples": "In a security scenario, the deployment pipeline was compromised, giving attackers the ability to inject malicious code into the deployment process or manipulate configurations. This compromise could lead to the distribution of compromised software.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.003.002",
+        "CM.024.010",
+        "CM.024.012",
+        "CM.024.013",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Activate multi factor authentication",
+        "Implement cryptographic signing of release artifacts to ensure their authenticity",
+        "Encrypt sensitive information within CD pipeline configurations, such as API keys and credentials",
+        "Apply patches regularly on CI/CD infrastructure",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM110",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of Service (DoS) on CD Servers",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Attackers may launch DoS attacks against CD servers (multiplication of delivery requests), disrupting the deployment process and potentially delaying software releases.",
+      "examples": "In a security incident, threat actors initiated a DoS attack against CD servers, intentionally disrupting the deployment process. This not only caused operational disruptions but also led to potential delays in software releases.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.001",
+        "CM.027.004",
+        "CM.027.006",
+        "CM.027.005",
+        "CM.027",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.027.007",
+        "CM.005.004",
+        "CM.008.005",
+        "CM.016.005"
+      ],
+      "counterMeasureTitles": [
+        "Activate firewall",
+        "Implement rate limiting",
+        "Implement cache mechanism such as CDN",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Activate protective appliance",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Use load balancing",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Regularly backup your CI/CD configuration, including dependency specifications",
+        "Realize stress test"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM111",
+      "category": "CI/CD",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Data Breach during Deployment",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Sensitive data may be exposed during the deployment process, leading to potential data breaches if the process is not adequately secured.",
+      "examples": "In a security scenario, sensitive data became exposed during the deployment process due to inadequate security measures. Exploiting this exposure, attackers gained access to the sensitive information, potentially leading to a data breach. (CD data infrastructure or Project data using CD)",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.008",
+        "CM.023",
+        "CM.024.012",
+        "CM.020.002",
+        "CM.024.016",
+        "CM.024.005",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.030.002",
+        "CM.008.005"
+      ],
+      "counterMeasureTitles": [
+        "Implement least privilege access",
+        "Network isolation",
+        "Encrypt sensitive information within CD pipeline configurations, such as API keys and credentials",
+        "Set up encryption in transit",
+        "Utilize automated data masking or redaction techniques during the deployment process, reducing the exposure of sensitive information",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Regularly backup your CI/CD configuration, including dependency specifications"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM112",
+      "category": "CI/CD",
+      "scope": [
+        "Supply Chain"
+      ],
+      "element": "Data-flow",
+      "threat": "Insecure Configuration in CD Environment",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Misconfigurations in the CD environment can expose sensitive information or provide opportunities for attackers to exploit vulnerabilities.",
+      "examples": "In a security lapse, misconfigurations in the CD environment led to the unintentional exposure of sensitive information. Exploiting these misconfigurations, attackers could potentially gain unauthorized access or exploit vulnerabilities. (Public API of CD service, unencrypted data)",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.017",
+        "CM.003.012",
+        "CM.005.003",
+        "CM.024.005",
+        "CM.005.004",
+        "CM.024.018",
+        "CM.004"
+      ],
+      "counterMeasureTitles": [
+        "Establish and follow a secure configuration baseline for the CD environment, ensuring that systems and components are configured securely from the outset",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Implement SOC detection scenario on CI/CD",
+        "Establish procedures for restoring the repository to a known good state",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Implement automated rollback mechanism for CD to revert nefarious changes",
+        "Schedule training and awarness"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM113",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Caller spoofing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "Bruteforce attack to guess credentials",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.009",
+        "CM.003.011",
+        "CM.027.001",
+        "CM.020.002",
+        "CM.003.014",
+        "CM.027.003",
+        "CM.005.003",
+        "CM.005.004",
+        "CM.014",
+        "CM.003.015",
+        "CM.003.016",
+        "CM.003.002",
+        "CM.018.002",
+        "CM.003.017"
+      ],
+      "counterMeasureTitles": [
+        "Use OIDC",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Activate firewall",
+        "Set up encryption in transit",
+        "Use a centralized IAM for application user",
+        "Activate AWS Shield Advanced",
+        "Implement SOC detection scenario on CI/CD",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "White-list ressources",
+        "Use secure hash function to store passwords",
+        "Implement passwordless strategy",
+        "Activate multi factor authentication",
+        "Trace user actions",
+        "Implement account / credentials deactivation mechanism"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM114",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Application spoofing",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "Phishing campaign with emais containing a link to a mirror application",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.007.004",
+        "CM.032.001",
+        "CM.032.002",
+        "CM.006.007",
+        "CM.004.008",
+        "CM.032.003",
+        "CM.006.008"
+      ],
+      "counterMeasureTitles": [
+        "Use corporate mailbox only",
+        "Preferentially use subdomains from already known Stellantis domains rather than using a new domain",
+        "Use only Certification authorities allowed by Stellantis",
+        "Do not send password or credentials by email",
+        "Phishing awarness",
+        "Ensure that email sender domain is using SPF, DMARC and DKIM with a state of the art configuration",
+        "Avoid sending links inside emails, encourage to refer to bookmarks"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM115",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Application spoofing for third party calls",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "Credentials exposure through a vulnerability.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.023",
+        "CM.027.005",
+        "CM.020.002",
+        "CM.026.001"
+      ],
+      "counterMeasureTitles": [
+        "Network isolation",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Set up encryption in transit",
+        "Awarness program for the third party application"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM116",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Third party spoofing",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "DNS manipulation to redirect requests to an adversary controlled destination allowing to capture credentials.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.008",
+        "CM.027.005",
+        "CM.023"
+      ],
+      "counterMeasureTitles": [
+        "Log Egress traffic",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Network isolation"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM117",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "S3 name lost of control",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "an S3 name is unique accross AWS cloud. S3 is acting as a DNS route repository for AWS Route53 DNS service. The S3 name is endorsed by someone else that leverage it to change DNS rules. Idem for Cloudfront.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009.001",
+        "CM.009.005"
+      ],
+      "counterMeasureTitles": [
+        "Apply security card for bucket S3",
+        "Forbid S3 cross-account reading or writing"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM118",
+      "category": "Infra cloud",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Involontary applicative data exposure",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Application misconfiguration resulting in involontary service or data exposure on the Internet. The accessi is anonymous an unauthenticated.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.009",
+        "CM.027.010",
+        "CM.027.011",
+        "CM.027.002",
+        "CM.009.005",
+        "CM.009.001",
+        "CM.022",
+        "CM.022.001",
+        "CM.003.017",
+        "CM.027.012",
+        "CM.005.005",
+        "CM.005.001",
+        "CM.013.003"
+      ],
+      "counterMeasureTitles": [
+        "Configure security groups with least privileges inbound and outbound rules",
+        "Implement DNS firewall to avoid DNS exfiltration",
+        "Implement least privilege indound and outbound network firewall",
+        "Activate inbound and outbound Web Application Firewall",
+        "Forbid S3 cross-account reading or writing",
+        "Apply security card for bucket S3",
+        "Set up rate limit",
+        "Block IPs based on reputation",
+        "Implement account / credentials deactivation mechanism",
+        "Implement a locking mechanism based on bandwith overconsumption",
+        "Implement request status monitoring and alerting",
+        "Monitor resources consumption",
+        "Implement auto-remediation to prevent accidental public exposure"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM119",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Involontary exposure of applicative admin interface on the Internet",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The attacker leverages an initial access or a misconfiguration of the applicative layer allowing him to tamper the administration interface and to access the data hosted by the application.\n\nThe services such as middlewares often provide API interfaces for remote administration (ex: Redis, MongoDB, Tomcat, etc)",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.023",
+        "CM.027.011",
+        "CM.027.009",
+        "CM.003.018",
+        "CM.009.005",
+        "CM.009.007",
+        "CM.018.001",
+        "CM.018.002",
+        "CM.005.005",
+        "CM.005.004"
+      ],
+      "counterMeasureTitles": [
+        "Network isolation",
+        "Implement least privilege indound and outbound network firewall",
+        "Configure security groups with least privileges inbound and outbound rules",
+        "Renew default password at setup",
+        "Forbid S3 cross-account reading or writing",
+        "Apply patchs on cloud infrastructure",
+        "Trace application connection",
+        "Trace user actions",
+        "Implement request status monitoring and alerting",
+        "Implement alerting  and reflex sheet based on SOC scenario"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM120",
+      "category": "Infra cloud",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Data exfiltration from applicative API",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Malevolent querying of an applicative API to obtain technical or business data.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.002",
+        "CM.025.001",
+        "CM.025.002",
+        "CM.005.005",
+        "CM.005.006",
+        "CM.022.001",
+        "CM.003.017",
+        "CM.027.012"
+      ],
+      "counterMeasureTitles": [
+        "Activate inbound and outbound Web Application Firewall",
+        "Implement input and output filtering",
+        "Define and validate expected input/output formats",
+        "Implement request status monitoring and alerting",
+        "Implement network volume monitoring",
+        "Block IPs based on reputation",
+        "Implement account / credentials deactivation mechanism",
+        "Implement a locking mechanism based on bandwith overconsumption"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM121",
+      "category": "Infra cloud",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Verbose applicative answer",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The attacker leverages technical information disclosed by the application to conduct an attack.",
+      "examples": "Stack traces, headers with server details,...",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.025.004",
+        "CM.027.012",
+        "CM.009.008",
+        "CM.009.009",
+        "CM.009.010",
+        "CM.009.011"
+      ],
+      "counterMeasureTitles": [
+        "Expose only necessary APIs on API gateway",
+        "Implement a locking mechanism based on bandwith overconsumption",
+        "Remove demo configuration from open-source solution",
+        "Remove verbose errors from API or application responses",
+        "Study error rewriting in API Gateway",
+        "Configure proxy-pass only for public endpoint (not to proxy admin interface for instance)"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM122",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "External entity",
+      "threat": "Data exfiltration from a third party backend service",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The attacker leverages an applicative misconfiguration that exposes a backend service from a third party application to gather data.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.013",
+        "CM.010.001",
+        "CM.010.002",
+        "CM.003.009",
+        "CM.018.003"
+      ],
+      "counterMeasureTitles": [
+        "Expose all APIs through an API Gateway",
+        "Ensure that that the received data in the frontend match what was requested to the backend (using the ID for instance)",
+        "Ensure that the requested data by the frontend match the identifier known by the backend",
+        "Use OIDC",
+        "Ensure a coherente logging strategy through the whole Application or API stack"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM123",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Applicative source code exfiltration",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "L'attaquant exfiltre le code applicatif lui permettant de faire du \"reverse engineering\" de l'application à partir du code obtenu\nThe attacker exfiltrates the applicative source code to conduct soem reverse engineering.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.002",
+        "CM.003.008",
+        "CM.023.001",
+        "CM.027.013"
+      ],
+      "counterMeasureTitles": [
+        "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)",
+        "Implement least privilege access",
+        "Ensure that runtimes (VM, containers, lambda,...) are executed in an isolated network",
+        "Expose all APIs through an API Gateway"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM124",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Data exposure from an SFS LZ resource",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "The application implements a resource sharing mechanism of a service for which authorisation are poorly defined. An internal attacker leverages this misconfiguration to access out ofhis scope data.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.019",
+        "CM.009.013",
+        "CM.009.012",
+        "CM.012",
+        "CM.018",
+        "CM.009.014",
+        "CM.003.008",
+        "CM.031.006"
+      ],
+      "counterMeasureTitles": [
+        "Segregate environments (dev, staging, prod,...)",
+        "Prefer using standardized components validated by architects",
+        "Apply all security cards",
+        "Use IaC",
+        "Implement tracability",
+        "Deploy a Cloud Security Posture Management (CSPM) solution",
+        "Implement least privilege access",
+        "Use a secure by design approach"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM125",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Secret exfiltration",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "An attacker exfiltrates applicative secrets",
+      "examples": "Secrets such as credentials, certificates, encryption key...",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.003",
+        "CM.009.015",
+        "CM.003.011",
+        "CM.018.002",
+        "CM.003.020",
+        "CM.003.008",
+        "CM.003.004"
+      ],
+      "counterMeasureTitles": [
+        "Don't use secret or hardcoded credential in the source code or configuration files.",
+        "Use appropriate vault solutions validated by architects to store secrets",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Trace user actions",
+        "Implement SOC scenario based on vault secret access",
+        "Implement least privilege access",
+        "Implement separation of duty"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM126",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "API denial of service through access deny",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Denial of service on the API through a modification of the SSM configuration.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.012",
+        "CM.005.004",
+        "CM.009.021",
+        "CM.003.014"
+      ],
+      "counterMeasureTitles": [
+        "Use IaC",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Use AWS SSM as tenant for technical accounts",
+        "Use a centralized IAM for application user"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM127",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "WEB flooding denial of service",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "Denial of service on the web entry point using a massive amount of fake requests.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.003",
+        "CM.027.006",
+        "CM.027.007",
+        "CM.027.013",
+        "CM.009.022",
+        "CM.028",
+        "CM.003.002",
+        "CM.009.023"
+      ],
+      "counterMeasureTitles": [
+        "Activate AWS Shield Advanced",
+        "Implement cache mechanism such as CDN",
+        "Use load balancing",
+        "Expose all APIs through an API Gateway",
+        "Configure each component to allow horizontal scalability",
+        "Activate multi availibility zone",
+        "Activate multi factor authentication",
+        "Enable CloudWatch container insights"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM128",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Backend denial of service through API",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "Too many requests sent to the service, saturating it and preventing legitimate requests to succeed.\nThe real external entry point becomes the most sensitive part of the architecture for this kind of attacks.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.022",
+        "CM.005.006"
+      ],
+      "counterMeasureTitles": [
+        "Set up rate limit",
+        "Implement network volume monitoring"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM129",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of service on the API gateway",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "Too many requests saturating the API gateway and preventing legitimate requests to succeed.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.027.003",
+        "CM.027.006",
+        "CM.027.007",
+        "CM.027.013",
+        "CM.003.002",
+        "CM.009.022",
+        "CM.009.023"
+      ],
+      "counterMeasureTitles": [
+        "Activate AWS Shield Advanced",
+        "Implement cache mechanism such as CDN",
+        "Use load balancing",
+        "Expose all APIs through an API Gateway",
+        "Activate multi factor authentication",
+        "Configure each component to allow horizontal scalability",
+        "Enable CloudWatch container insights"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM130",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of service on cache",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "DDOS attack on the cache infrastructure (e.g. Redis)",
+      "examples": "Manipulation of one of the containers from the application to empty the outbound connexion pool of Redis.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009.022"
+      ],
+      "counterMeasureTitles": [
+        "Configure each component to allow horizontal scalability"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM131",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of Service on the database",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "",
+      "examples": "Manipulation of an application container to empty the database connexion pool.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.009.022"
+      ],
+      "counterMeasureTitles": [
+        "Configure each component to allow horizontal scalability"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM132",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of service through permission tampering",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Tampering of the permissions and rights (secrets, write permission on a service...)",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.005.006",
+        "CM.003.008"
+      ],
+      "counterMeasureTitles": [
+        "Implement network volume monitoring",
+        "Implement least privilege access"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM133",
+      "category": "Infra cloud",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Denial of service on authentication mechanism",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "Connection attempts made by an attacker on one or multiple accounts in order to make authentication mechanism unavailable.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002.001"
+      ],
+      "counterMeasureTitles": [
+        "Require DDOS protection"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM134",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Process",
+      "threat": "A threat agent manage to include a malevolant EC2 inside EKS node pool",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.021",
+        "CM.003.003",
+        "CM.023.002"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Limit additional authorizations on anonymous users using external policy tools like kyverno",
+        "Realize autorization review",
+        "Alert on anonymous access from source IP other than 127.0.0.1 (Specific pattern based alerting for anonymous auth)"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM135",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Use of infected AMI",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent spoof the AMI used to instanciate nodes.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.024.002",
+        "CM.024",
+        "CM.003",
+        "CM.003.002",
+        "CM.024.004",
+        "CM.003.011",
+        "CM.003.004",
+        "CM.030.002",
+        "CM.024.018"
+      ],
+      "counterMeasureTitles": [
+        "Use a CI/CD workflow validated by architect (versionning before delivery, only deliver tested components, tags, versions, etc.)",
+        "Use CI/CD",
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Activate multi factor authentication",
+        "Implement automated rollback mechanisms in the CI pipeline to revert nefarious changes",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Implement separation of duty",
+        "Develop and maintain an incident response plan specific to unauthorized release access",
+        "Implement automated rollback mechanism for CD to revert nefarious changes"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM136",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Process",
+      "threat": "Node takeover",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent manages to take control of a node.",
+      "examples": "Nodes can be used to inject kernel modules and compromise the pods.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.009.024",
+        "CM.014.002",
+        "CM.003.008",
+        "CM.003.004",
+        "CM.003.019",
+        "CM.005.004",
+        "CM.001",
+        "CM.011"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Provide a list of prohibited kernel modules to protect container compromise",
+        "Implement security feature to detect prohibited kernel modules implementation",
+        "Implement least privilege access",
+        "Implement separation of duty",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Realize Risk Assessments and Risk-Based Programs, Policies, Procedures, and Plans",
+        "Detect configuration change"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM137",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Lateral movement from one node to another",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "LM"
+      ],
+      "description": "A threat agent leverages the compromise a a node to access other nodes.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.008",
+        "CM.003.004",
+        "CM.003.019",
+        "CM.005.004",
+        "CM.011",
+        "CM.009.012",
+        "CM.027.011"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Implement least privilege access",
+        "Implement separation of duty",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Detect configuration change",
+        "Apply all security cards",
+        "Implement least privilege indound and outbound network firewall"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM138",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Process",
+      "threat": "Rogue Pod on EKS",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent deploys a a rogue pod inside the EKS",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.008",
+        "CM.003.004",
+        "CM.003.019",
+        "CM.005.004",
+        "CM.011",
+        "CM.009.012",
+        "CM.027.011"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Implement least privilege access",
+        "Implement separation of duty",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Detect configuration change",
+        "Apply all security cards",
+        "Implement least privilege indound and outbound network firewall"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM139",
+      "category": "EKS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Process",
+      "threat": "Pod takeover",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "a threat agent leverages a misconfiguration or a vulnerability to take control of a pod.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.001",
+        "CM.003",
+        "CM.003.003",
+        "CM.003.004",
+        "CM.003.008",
+        "CM.003.011",
+        "CM.003.017",
+        "CM.005.001",
+        "CM.005.002",
+        "CM.009",
+        "CM.009.007",
+        "CM.015.001",
+        "CM.016.001",
+        "CM.018.002",
+        "CM.025.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Realize Risk Assessments and Risk-Based Programs, Policies, Procedures, and Plans",
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Realize autorization review",
+        "Implement separation of duty",
+        "Implement least privilege access",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Implement account / credentials deactivation mechanism",
+        "Monitor resources consumption",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Use secure component configuration",
+        "Apply patchs on cloud infrastructure",
+        "Configure containers to be immutable",
+        "Realise pentest",
+        "Trace user actions",
+        "Implement data sanitization"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM140",
+      "category": "EKS",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Lateral movement between pods",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [],
+      "description": "A threat agent manages to move from one pod to another.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.008",
+        "CM.003.004",
+        "CM.003.011",
+        "CM.003.013",
+        "CM.003.018",
+        "CM.003.019",
+        "CM.004",
+        "CM.006.004",
+        "CM.009.012",
+        "CM.009.007",
+        "CM.011",
+        "CM.015.001",
+        "CM.016.001",
+        "CM.023.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Implement least privilege access",
+        "Implement separation of duty",
+        "Establish policies for regularly rotating sensitive credentials to minimize the impact of exposure",
+        "Ensure that each credential purpose is unique",
+        "Renew default password at setup",
+        "Segregate environments (dev, staging, prod,...)",
+        "Schedule training and awarness",
+        "Don't reuse production data on insecure environement",
+        "Apply all security cards",
+        "Apply patchs on cloud infrastructure",
+        "Detect configuration change",
+        "Configure containers to be immutable",
+        "Realise pentest",
+        "Deploy a service mesh to encrypt communication and filter network between pods"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM141",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Trust boundary",
+      "threat": "Insufficient applicative segregation",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "Several application that are not directly linked are hosted on the same EKS cluster, reducing the data segregation between applications.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.019",
+        "CM.003.008",
+        "CM.003.001",
+        "CM.003.003",
+        "CM.003.004",
+        "CM.003.012",
+        "CM.004.007",
+        "CM.009.012",
+        "CM.020.001",
+        "CM.020.006",
+        "CM.023.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement least privilege access",
+        "Implement access controls on storage",
+        "Realize autorization review",
+        "Implement separation of duty",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+        "Apply all security cards",
+        "Set up encryption at rest",
+        "Use each encryption key for only one purpose / scope",
+        "Deploy a service mesh to encrypt communication and filter network between pods"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM142",
+      "category": "EKS",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Improper network setting",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "LM"
+      ],
+      "description": "Network architecture solution is poorly configured or obsolete with known vulnerabilities.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.023.003",
+        "CM.009.007",
+        "CM.023",
+        "CM.023.001",
+        "CM.009.006",
+        "CM.009.012",
+        "CM.009.014",
+        "CM.009.013",
+        "CM.011.001",
+        "CM.016.001",
+        "CM.016.009",
+        "CM.016.010"
+      ],
+      "counterMeasureTitles": [
+        "Deploy a service mesh to encrypt communication and filter network between pods",
+        "Apply patchs on cloud infrastructure",
+        "Network isolation",
+        "Ensure that runtimes (VM, containers, lambda,...) are executed in an isolated network",
+        "Tate into account Security Hub findings",
+        "Apply all security cards",
+        "Deploy a Cloud Security Posture Management (CSPM) solution",
+        "Prefer using standardized components validated by architects",
+        "Detect public exposition change",
+        "Realise pentest",
+        "Set up automated notifications for developers to alert them about new releases or security patches for third-party dependencies",
+        "Conduct regular security audits specifically focused on the testing processes to identify gaps or weaknesses in the testing approach"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM143",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Improper control plan configuration",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A threat agent interacts with Kubernetes API server and disrupts the cluster.",
+      "examples": "By default, --anonymous-auth is set to true, this basically allows any connection to kube-apiserver.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.019",
+        "CM.003.001",
+        "CM.003.008",
+        "CM.003.004",
+        "CM.003.012",
+        "CM.004.007",
+        "CM.009.012",
+        "CM.020.001",
+        "CM.020.006",
+        "CM.023.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement access controls on storage",
+        "Implement least privilege access",
+        "Implement separation of duty",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+        "Apply all security cards",
+        "Set up encryption at rest",
+        "Use each encryption key for only one purpose / scope",
+        "Deploy a service mesh to encrypt communication and filter network between pods"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM144",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Control plan takeover",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "E"
+      ],
+      "description": "A threat agent manages to gain control of the kubernetes api-server",
+      "examples": "By default, --anonymous-auth is set to true, this basically allows any connection to kube-apiserver.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.003.019",
+        "CM.003.008",
+        "CM.003.001",
+        "CM.003.003",
+        "CM.003.004",
+        "CM.003.012",
+        "CM.004.007",
+        "CM.009.012",
+        "CM.020.001",
+        "CM.020.006",
+        "CM.023.003",
+        "CM.009.007"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Segregate environments (dev, staging, prod,...)",
+        "Implement least privilege access",
+        "Implement access controls on storage",
+        "Realize autorization review",
+        "Implement separation of duty",
+        "Utilize role-based access controls (RBAC) to define and manage permissions for individuals",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+        "Apply all security cards",
+        "Set up encryption at rest",
+        "Use each encryption key for only one purpose / scope",
+        "Deploy a service mesh to encrypt communication and filter network between pods",
+        "Apply patchs on cloud infrastructure"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM145",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Resource exhaustion",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A threat agent  open too many requests on the application, reaching the scaling limits that are configured and making the application unreachable for legitimate users.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002.001",
+        "CM.005.005",
+        "CM.005.006",
+        "CM.009.011",
+        "CM.009.013",
+        "CM.009.022",
+        "CM.016.005",
+        "CM.022",
+        "CM.022.001",
+        "CM.027.003",
+        "CM.027.005",
+        "CM.027.007"
+      ],
+      "counterMeasureTitles": [
+        "Require DDOS protection",
+        "Implement request status monitoring and alerting",
+        "Implement network volume monitoring",
+        "Configure proxy-pass only for public endpoint (not to proxy admin interface for instance)",
+        "Prefer using standardized components validated by architects",
+        "Configure each component to allow horizontal scalability",
+        "Realize stress test",
+        "Set up rate limit",
+        "Block IPs based on reputation",
+        "Activate AWS Shield Advanced",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Use load balancing"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM146",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Resource overcomsuption",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A threat agent open too many requests on the aplication, triggering an \"inifite\" horizontal scaling that will generate an unexpectedly big bill.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002.001",
+        "CM.005.005",
+        "CM.005.006",
+        "CM.009.011",
+        "CM.009.013",
+        "CM.009.022",
+        "CM.016.005",
+        "CM.022",
+        "CM.022.001",
+        "CM.027.003",
+        "CM.027.005",
+        "CM.027.007",
+        "CM.005.001"
+      ],
+      "counterMeasureTitles": [
+        "Require DDOS protection",
+        "Implement request status monitoring and alerting",
+        "Implement network volume monitoring",
+        "Configure proxy-pass only for public endpoint (not to proxy admin interface for instance)",
+        "Prefer using standardized components validated by architects",
+        "Configure each component to allow horizontal scalability",
+        "Realize stress test",
+        "Set up rate limit",
+        "Block IPs based on reputation",
+        "Activate AWS Shield Advanced",
+        "Restrict access to the release environment based on IP whitelisting, allowing connections only from known and trusted locations",
+        "Use load balancing",
+        "Monitor resources consumption"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM147",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "No audit policy is enabled on the cluster",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "R"
+      ],
+      "description": "In default configuration, there is no audit policy. This will not allow forensic analysis after an incident.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM148",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Mutual authentication between infrastructure components is compromised",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Authentication uses self-signed certificates that may be compromised.",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.005.004",
+        "CM.009.012",
+        "CM.005.001",
+        "CM.005.002",
+        "CM.005.006",
+        "CM.009.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Apply all security cards",
+        "Monitor resources consumption",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Implement network volume monitoring",
+        "Apply security card for KMS"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM149",
+      "category": "EKS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "A threat agent manages to extract credentials from the cluster components",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Kube-controller-manager handles secrets with minimal protection by default\nBy default, kubelet uses bootstrap certificates and writes them unencrypted to disk",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018",
+        "CM.018.003",
+        "CM.005.004",
+        "CM.009.012",
+        "CM.005.001",
+        "CM.005.002",
+        "CM.005.006",
+        "CM.009.003"
+      ],
+      "counterMeasureTitles": [
+        "Implement tracability",
+        "Ensure a coherente logging strategy through the whole Application or API stack",
+        "Implement alerting  and reflex sheet based on SOC scenario",
+        "Apply all security cards",
+        "Monitor resources consumption",
+        "Implement file integrity monitoring (FIM) to continuously monitor and detect changes to release artifacts, signaling potential tampering",
+        "Implement network volume monitoring",
+        "Apply security card for KMS"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM150",
+      "category": "Applicative",
+      "scope": [
+        "Application",
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Applicative data leaked from MTS2",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Someone gaining access to MTS2 platform manages to exfiltrate applicative data transiting through it.",
+      "examples": "An insider who has access to MTS2 extract some bank data transiting through this SFTP platform.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.007"
+      ],
+      "counterMeasureTitles": [
+        "Use PGP encryption for any data transiting through MTS2"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM151",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Uploading file containing malware",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "T",
+        "I"
+      ],
+      "description": "",
+      "examples": "File containing malware\nThe threat agent upload a filecontening a malware.",
+      "realExampleLink": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+      "counterMeasureIds": [
+        "CM.034.001"
+      ],
+      "counterMeasureTitles": [
+        "Setup whitestation mechanism"
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM152",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Presigned URL hijacking",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "S",
+        "I"
+      ],
+      "description": "",
+      "examples": "Presigned URL hijacking\nThe threat agent retrieves a valid presigned URL and uses it to upload malevolent data\nhttps://aws.amazon.com/fr/blogs/security/how-to-securely-transfer-files-with-presigned-urls/",
+      "realExampleLink": "https://aws.amazon.com/fr/blogs/security/how-to-securely-transfer-files-with-presigned-urls/",
+      "counterMeasureIds": [
+        "CM.034.002"
+      ],
+      "counterMeasureTitles": [
+        "Adjust presigned URL expire delay to the required minimum."
+      ],
+      "priority": "2",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM153",
+      "category": "Applicative",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Sensitive data sent by email are intercepted",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "",
+      "examples": "",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.002",
+        "CM.032.003",
+        "CM.034.002",
+        "CM.007.004",
+        "CM.007.005"
+      ],
+      "counterMeasureTitles": [
+        "Set up encryption in transit",
+        "Ensure that email sender domain is using SPF, DMARC and DKIM with a state of the art configuration",
+        "Adjust presigned URL expire delay to the required minimum.",
+        "Use corporate mailbox only",
+        "Prefer transmitting information through personal web space rather than directly by email"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    },
+    {
+      "id": "TM154",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Handling of invalid or wrong data",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "* A threat agent sends invalid data to the application.\n* The threat agent sends data to the system in the correct format but that is out of date, late, or related to the wrong context.",
+      "examples": "A batch file received contains obsolete data or it is received too late.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.010"
+      ],
+      "counterMeasureTitles": [
+        "Detect and handle wrong data"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM155",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Code injection",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A malicious agent sends to the application a specifically forged data or malware in order to cause a behaviour change in the application or to gain access to the server",
+      "examples": "A malicious agent exploits SQLi, LOG4Shell, XSS, webshell, etc.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM156",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Unused function abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent leverages unused features that have not been disabled",
+      "examples": "Google full text search activated on the whole documentary base by mistake.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.016.007",
+        "CM.017",
+        "CM.009.025"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Realize user acceptance tests",
+        "Define clear business user story or use case",
+        "Review default configurations provided by the editor"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM157",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Abuse of inadequate functional control",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "T",
+        "I"
+      ],
+      "description": "A malicious agent uses business logic flaw in the functionnal workflow or the way the controls are implemented in order to change the behavior of the application",
+      "examples": "A design error make data visible to all other users when a field is empty or unmanaged",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.009.025",
+        "CM.016.007",
+        "CM.017"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Review default configurations provided by the editor",
+        "Realize user acceptance tests",
+        "Define clear business user story or use case"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM158",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Indirect data exposure",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A malicious agent retrieves data displayed or stored outside the expected context.",
+      "examples": "A threat agent retrieves sensitive data in the URL, in a filename, in a log, in a too verbose error message, from a too verbose API.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.009",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Require encryption at rest",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM159",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Operation repudiation",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "R"
+      ],
+      "description": "A threat agent repudiates an action and the system doesn't have the evidence of the operation",
+      "examples": "The threat agent The application doesn't store the user consent properly. Misuse of cryptographic system for signature or data exchange.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.018.006"
+      ],
+      "counterMeasureTitles": [
+        "Require traceability"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM160",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Authorization or authentication abuse",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S",
+        "E"
+      ],
+      "description": "The threat agent exploits a weakness in the identification,  authentication or the authorization mechanism of the application",
+      "examples": "Lack of identification and authentication. Use of obsolete method (basic auth). Lack of authorization. Misuse of cryptographic algorithm for storing secret. Reuse of OTP",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.002",
+        "CM.003.006",
+        "CM.003.023"
+      ],
+      "counterMeasureTitles": [
+        "Activate multi factor authentication",
+        "Use ping federate",
+        "Require Strong Authentication"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM161",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Compliance issues",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "The application doesn't store properly compliance record, doesn't purge data properly, or doesn't sent apropriate compliance data.",
+      "examples": "A regulatory file is not send within the legal delay to the appropriate regulator. Records are loss or incomplet. Data is retained beyond the regulatory duration",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.025.005"
+      ],
+      "counterMeasureTitles": [
+        "Require a solution compliant with the regulation regarding data processing"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM162",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data store",
+      "threat": "Data loss",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "T"
+      ],
+      "description": "A threat agent destroys some data",
+      "examples": "A ransomware encrypts the data, making them unavailable.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.008.008",
+        "CM.033",
+        "CM.033.001",
+        "CM.033.002"
+      ],
+      "counterMeasureTitles": [
+        "Co-construct a backup Strategy",
+        "design a Disaster recovery plan",
+        "Conduct DRP tests following SFS ISSP requirements",
+        "conduct Backup integrity tests following SFS ISSP requirements"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM163",
+      "category": "SaaS",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Malevolent site mirroring",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "S"
+      ],
+      "description": "A threat agent creates a mirror site to steal user credential",
+      "examples": "A malevolent agent lures users into filling their credentials on a phishing website impersonating SaaS solution.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.004.001",
+        "CM.004.002",
+        "CM.004.007",
+        "CM.004.008",
+        "CM.032.001"
+      ],
+      "counterMeasureTitles": [
+        "Cybersecurity Training",
+        "Cybersecurity Awarness",
+        "Conduct regular security awareness training for personnel involved in the release process, emphasizing the importance of security practices and the consequences of unauthorized access",
+        "Phishing awarness",
+        "Preferentially use subdomains from already known Stellantis domains rather than using a new domain"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM164",
+      "category": "SaaS",
+      "scope": [
+        "External"
+      ],
+      "element": "External entity",
+      "threat": "Third party service outage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "D"
+      ],
+      "description": "A third party component is unavailable",
+      "examples": "ex Snowflake, codeweaver, etc.\nThe current SaaS application cannot fulfil the workflow due to the unavailability of another third party",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002.001",
+        "CM.001.001"
+      ],
+      "counterMeasureTitles": [
+        "Require DDOS protection",
+        "Formal study of the application behavior when a component is not present / available."
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM165",
+      "category": "SaaS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Sensitive data on wrong environment",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "A threat agent access PII data through a non production environnement.",
+      "examples": "PII data in dev, unused data replicated",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.006.004",
+        "CM.006.006"
+      ],
+      "counterMeasureTitles": [
+        "Don't reuse production data on insecure environement",
+        "Anonymize bank  data"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM166",
+      "category": "SaaS",
+      "scope": [
+        "Application"
+      ],
+      "element": "Data-flow",
+      "threat": "Malevolent account creation or modification",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E",
+        "LM"
+      ],
+      "description": "A malevolent agent creates an account in order to persist acces on the solution.",
+      "examples": "A malevolent agent creates and uses a service account with privileges to make fraudulent payments.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.006",
+        "CM.003.008",
+        "CM.003.003",
+        "CM.003.014",
+        "CM.003.013",
+        "CM.003.024"
+      ],
+      "counterMeasureTitles": [
+        "Use ping federate",
+        "Implement least privilege access",
+        "Realize autorization review",
+        "Use a centralized IAM for application user",
+        "Ensure that each credential purpose is unique",
+        "Require account / credentials deactivation mechanism"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM167",
+      "category": "SaaS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Credential thief",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "S"
+      ],
+      "description": "A malevolent agent stole credentials to access the application.",
+      "examples": "A malevolent agent stole credentials using spear phising to access the application.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.006",
+        "CM.003.002",
+        "CM.003.024",
+        "CM.020.010"
+      ],
+      "counterMeasureTitles": [
+        "Use ping federate",
+        "Activate multi factor authentication",
+        "Require account / credentials deactivation mechanism",
+        "Require encryption in transit"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM168",
+      "category": "SaaS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Process",
+      "threat": "Uncontrolled credential renewal or revocation",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "An accidental or malevolent renewal causes an application outage",
+      "examples": "A certificate change prevents another application from consuming APIs provided by the SaaS Solution.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.010"
+      ],
+      "counterMeasureTitles": [
+        "Write a process describing the credential renewal for a third party"
+      ],
+      "priority": "3"
+    },
+    {
+      "id": "TM169",
+      "category": "SaaS",
+      "scope": [
+        "Management"
+      ],
+      "element": "Data-flow",
+      "threat": "Incomplete Testing",
+      "atRest": true,
+      "inTransit": true,
+      "inUse": true,
+      "stride": [
+        "S",
+        "T",
+        "R",
+        "I",
+        "D",
+        "E",
+        "LM"
+      ],
+      "description": "An audit reveals some non conformities regarding testing required by the regulation.",
+      "examples": "Pentests, User acceptance tests,... d'ont comply with DORA regulation",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.001",
+        "CM.016.005",
+        "CM.016.007",
+        "CM.033.001",
+        "CM.033.002"
+      ],
+      "counterMeasureTitles": [
+        "Realise pentest",
+        "Realize stress test",
+        "Realize user acceptance tests",
+        "Conduct DRP tests following SFS ISSP requirements",
+        "conduct Backup integrity tests following SFS ISSP requirements"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM170",
+      "category": "SaaS",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Network resource exhaustion",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "D"
+      ],
+      "description": "A threat agent consumes too much network resources, preventing the legitimate use of the application",
+      "examples": "DDOS attack.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.016.005",
+        "CM.017.002",
+        "CM.027.014"
+      ],
+      "counterMeasureTitles": [
+        "Realize stress test",
+        "Define the expected load of the application",
+        "Require network protection"
+      ],
+      "priority": "2"
+    },
+    {
+      "id": "TM171",
+      "category": "SaaS",
+      "scope": [
+        "Network"
+      ],
+      "element": "Data-flow",
+      "threat": "Untrusted zone eavesdrooping / adversary in the middle",
+      "atRest": false,
+      "inTransit": true,
+      "inUse": false,
+      "stride": [
+        "T",
+        "I"
+      ],
+      "description": "A malevolent agent sniffs non secure HTTP communication.",
+      "examples": "A malevolent agent intercepts the communication between the application and any kind of clients.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.010"
+      ],
+      "counterMeasureTitles": [
+        "Require encryption in transit"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM172",
+      "category": "SaaS",
+      "scope": [
+        "Infrastructure"
+      ],
+      "element": "Data-flow",
+      "threat": "Unclear T&Cs and Data Privacy Policies",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Unclear T&Cs and data privacy policies of the model operators lead to the application's sensitive data being used for model training and subsequent sensitive information exposure. This may also apply to risks from using copyrighted material by the model supplier",
+      "examples": "An agreement is signed with a provider that stores SFS data in an inadequate country.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.026"
+      ],
+      "counterMeasureTitles": [
+        "Evaluate the provider"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM173",
+      "category": "SaaS",
+      "scope": [
+        "Application",
+        "Infrastructure"
+      ],
+      "element": "Data store",
+      "threat": "Applicative data leaked from MTS2",
+      "atRest": true,
+      "inTransit": false,
+      "inUse": false,
+      "stride": [
+        "I"
+      ],
+      "description": "Someone gaining access to MTS2 platform manages to exfiltrate applicative data transiting through it.",
+      "examples": "An insider who has access to MTS2 extract some bank data transiting through this SFTP platform.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.020.007"
+      ],
+      "counterMeasureTitles": [
+        "Use PGP encryption for any data transiting through MTS2"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM174",
+      "category": "SaaS",
+      "scope": [
+        "Application",
+        "Management"
+      ],
+      "element": "Process",
+      "threat": "Local account usage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "R"
+      ],
+      "description": "A threat agent uses a generic account, thus reducing traceability and accountability.",
+      "examples": "* A malevolent agent uses a technical account to perform some fraudulent operations\n * A threat agent shares his own account with other colleagues",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.004.002",
+        "CM.003.013",
+        "CM.003.025",
+        "CM.030.003"
+      ],
+      "counterMeasureTitles": [
+        "Cybersecurity Awarness",
+        "Ensure that each credential purpose is unique",
+        "Require per person dedicated account",
+        "require account management policy"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM175",
+      "category": "SaaS",
+      "scope": [
+        "Application",
+        "Management"
+      ],
+      "element": "Process",
+      "threat": "Local account usage",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "A threat agent uses an obsolete account",
+      "examples": "A former employee uses his account on the SaaS solution to exfiltrate SFS data.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003.006",
+        "CM.003.003",
+        "CM.003.024",
+        "CM.030.003"
+      ],
+      "counterMeasureTitles": [
+        "Use ping federate",
+        "Realize autorization review",
+        "Require account / credentials deactivation mechanism",
+        "require account management policy"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM176",
+      "category": "SaaS",
+      "scope": [
+        "Application",
+        "Infrastructure"
+      ],
+      "element": "Trust boundary",
+      "threat": "Unsuficient data segregation",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "I"
+      ],
+      "description": "An external threat agent sharing the same SaaS solution accesses SFS data.",
+      "examples": "Another external user of the same CRM as SFS manages to access SFS customer data within the solution.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.002.004",
+        "CM.016.001"
+      ],
+      "counterMeasureTitles": [
+        "Require physical or logical data segregation between each customer / tenant of the SaaS solution",
+        "Realise pentest"
+      ],
+      "priority": "1"
+    },
+    {
+      "id": "TM177",
+      "category": "Applicative",
+      "scope": [
+        "Infrastructure",
+        "Application"
+      ],
+      "element": "Trust boundary",
+      "threat": "Container misconfiguration",
+      "atRest": false,
+      "inTransit": false,
+      "inUse": true,
+      "stride": [
+        "E",
+        "LM"
+      ],
+      "description": "A malevolent agent manages to escape from a container and gain admin privileges on the server",
+      "examples": "An attacker leverages an applicative vulnerability to drop a webshell on the container and then evade the container, gaining root privileges on the server.",
+      "realExampleLink": "",
+      "counterMeasureIds": [
+        "CM.003",
+        "CM.003.026"
+      ],
+      "counterMeasureTitles": [
+        "Set up Identification, Authentication, Autorisation and Accountability mechanism",
+        "Use a dedicated and unprivileged technical account as owner of the container process"
+      ],
+      "priority": "1",
+      "sampleOccurrence": 1,
+      "sampleImpact": 1,
+      "sampleRiskLevel": "very low"
+    }
+  ]
+}
