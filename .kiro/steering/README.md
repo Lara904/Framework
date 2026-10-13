@@ -11,6 +11,10 @@ the framework and are safe to publish:
 - `command-execution.md` - shell timeout/retry rules and the `.kiro/.temp_ai/<agent>/` scratch convention.
 - `skill-authoring.md` - requirements for authoring/maintaining skills (structure, self-containment, OPC-safe generation).
 - `office-word.md`, `office-excel.md`, `office-powerpoint.md` - environment constraints for Office automation. These assume Windows/PowerShell + Office COM (no Python/Node). Verify against your environment and adjust the constraints header if it differs.
+- `open-questions-convention.md` - the fixed role vocabulary (PGA/MOA/DPO/Security/Finance/
+  Cloud-Infra/EA) and the `- **Ask:** <Role>` tag every skill's "Open questions"/"Missing
+  information" bullets should use, so the `open-questions-consolidation` skill can assemble one
+  addressed questionnaire instead of a run ending in scattered TBCs and a false "done".
 
 ## Project pilotage (NOT publishable - stays local)
 

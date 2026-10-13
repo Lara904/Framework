@@ -102,7 +102,9 @@ ports, sizing or integrations: unknowns become a `C?` marker on the diagram, a "
 DAT, and an entry in the README **Missing information (to be provided)** table (plus an Open
 question), then ask the user. That table is the single consolidated list of every `TBC` / `C?`
 across the DAT, the Data flow mapping and the diagrams, with what each item unblocks and who owns
-it - keep it in sync whenever any deliverable changes. See `references/readme-template.md`.
+it - use the fixed role vocabulary and `- **Ask:** <Role>` tag from
+`.kiro/steering/open-questions-convention.md` so `open-questions-consolidation` can route it - keep
+it in sync whenever any deliverable changes. See `references/readme-template.md`.
 
 ## Reference guides (load on demand)
 Read the relevant reference file(s) in `references/` for the task at hand:

@@ -185,11 +185,33 @@ Read the relevant reference file(s) in `references/` for the task at hand:
     instruction text, actually replace or delete it (rule 8) - never hide the slide to dodge
     the check unless it is genuinely not applicable (then hide it per rule 5, which excludes it
     from the check entirely).
+    **If a flagged slide cannot be filled because the real content is unknown (not because it was
+    skipped), that is NOT a reason to leave it failing or to report the deck as "done anyway" - it
+    is an open question for `open-questions-consolidation` (rule 12) to route to whoever has the
+    answer (PGA / MOA / Finance / Cloud-Infra / Security / DPO / EA). A real delivery once reported
+    a deck as complete while ~50 slides still failed this exact check, with the content gap simply
+    narrated in a chat summary instead of routed anywhere actionable - do not repeat that.**
+11b. **Every TBD/placeholder this skill leaves on a slide must also exist as an open question
+    somewhere `open-questions-consolidation` can see** - either on this deck's own
+    `${project_name}_Architecture_Gates_README.md` (the deliverables-status table already serves
+    this for annex links) or by adding a short note here if the gap is slide-content-only and not
+    already tracked by another skill's README. A placeholder that exists only inside the `.pptx`
+    XML, invisible to every README-scanning tool, is a silent gap - never create one.
 11. **Output** is a new .pptx saved to the per-project output folder `output/${project_name}/`
     (create it if missing - see the `output-convention.md` steering, single source of truth for
     output location; or a path the user gives), e.g. `${project_name}_Architecture_Gates_G<n>.pptx`,
     plus the gates README `${project_name}_Architecture_Gates_README.md` in the same folder. Never
     overwrite the template.
+12. **Never declare the dossier/AGD "done", "ready to publish" or "complete" without running
+    `open-questions-consolidation` first and reporting its total.** This skill sits at the end of
+    the pipeline (it aggregates everyone else's deliverables), which makes it the natural place
+    where a false "all done" verdict gets stated - and where a real delivery stated exactly that
+    while `validate-deck.ps1` was failing and 100+ items were open across the other 7 READMEs.
+    Before any final report: run `open-questions-consolidation`'s
+    `build-questionnaire.ps1` against `output/${project_name}/`, and state the total open-item
+    count and which roles still have pending items. A non-zero total and "ready to publish" are
+    mutually exclusive sentences - say "pre-fill ready, N open items pending (see the
+    questionnaire)" instead. See the `open-questions-convention.md` steering.
 
 ## Quick workflow
 1. Confirm the target gate (1/2/3/4) and gather project inputs.
@@ -201,4 +223,9 @@ Read the relevant reference file(s) in `references/` for the task at hand:
 6. Re-dump edited slides to confirm values landed and no mojibake / leftover placeholders remain.
 7. (Re)generate the gates README to `<Project>_Architecture_Gates_README.md` (`-Gate all`) so it
    reflects the deck's current state — do this after every change — `references/gates-readme.md`.
-8. Save the copy + the gates README, and report what was filled and what is still missing.
+8. Run `open-questions-consolidation` (`build-questionnaire.ps1`) against
+   `output/${project_name}/` to refresh `${project_name}_Open_Questions_Questionnaire.md` across
+   ALL deliverables, not just this deck — rule 12.
+9. Save the copy + the gates README, and report what was filled, what `validate-deck.ps1` still
+   flags, and the questionnaire's total open-item count by role. Never say "done"/"ready to
+   publish" while either is non-zero — say what is pre-filled and what is pending, and from whom.

@@ -96,7 +96,9 @@ Ask only what you genuinely need; if the solution is already described, confirm 
 choices in one short round rather than interrogating section by section. Do not invent
 applications, company names, flows, BIS, architects or data - if a detail is unknown, mark it as
 an assumption in the README, a `TODO` note on the diagram / a "TBC" in the FAD, and an entry in
-the README **Missing information (to be provided)** table (with what it unblocks and who owns it),
+the README **Missing information (to be provided)** table (with what it unblocks and who owns it -
+use the fixed role vocabulary and `- **Ask:** <Role>` tag from
+`.kiro/steering/open-questions-convention.md` so `open-questions-consolidation` can route it),
 then ask the user. That table is the single consolidated list of every `TODO`/"to confirm" / "TBC"
 across the diagram, README and FAD; keep it in sync. See `references/readme-template.md`.
 

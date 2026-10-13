@@ -88,7 +88,11 @@ Written to the per-project output folder `output/${project_name}/` (create it if
 Scope the requirements interactively with `references/questionnaire.md`. Ask ONLY what
 is not already known from the workspace (DICT README, architecture READMEs, existing
 REFLEX/PRD references). Anything still unknown becomes a visible placeholder in the
-`.xlsx` and an Open question in the transient README - never invent a value.
+`.xlsx` and an Open question in the transient README - never invent a value. Tag each
+transient-README question `- **Ask:** PGA` (PRD code status, REFLEX names, business-profiles
+decision are all things the project owner can usually answer today) per
+`.kiro/steering/open-questions-convention.md`, so `open-questions-consolidation` surfaces it
+instead of it sitting as a `<PRD>` placeholder indefinitely.
 
 ## Reference guides (load on demand)
 - `references/questionnaire.md` - requirements questionnaire (identity, REFLEX names,

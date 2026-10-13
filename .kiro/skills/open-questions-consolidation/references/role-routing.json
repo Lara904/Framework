@@ -1,0 +1,12 @@
+{
+  "roles": ["PGA", "MOA", "DPO", "Security", "Finance", "Cloud-Infra", "EA"],
+  "defaultRole": "PGA",
+  "rules": [
+    { "role": "DPO", "keywords": ["dpo", "gdpr", "personal data", "donnees personnelles", "privacy"] },
+    { "role": "Security", "keywords": ["security team", "sfes", "pentest", "threat", "countermeasure", "vulnerab", "stride"] },
+    { "role": "MOA", "keywords": ["moa", "business owner", "dict", "ciat", "availability expectation", "business-profile", "business profile sign"] },
+    { "role": "Finance", "keywords": ["daily rate", "jh", "k eur/jh", "fx rate", "exchange rate", "license cost", "licence", "hardware cost", "budget", "backlog cost"] },
+    { "role": "Cloud-Infra", "keywords": ["aws calculator", "cloud consumption", "monthly cost", "annual cost", "sizing", "consumption metric", "instance type", "landing zone", "cross-account", "siem"] },
+    { "role": "EA", "keywords": ["enterprise architect", "applicability", "non-applicable domain", "hide slide", "hide the slide"] }
+  ]
+}

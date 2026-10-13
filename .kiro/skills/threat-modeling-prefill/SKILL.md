@@ -115,7 +115,11 @@ Seed from the DAT + dataflow, then confirm with the project team using
 already answer. **Never invent** an element, scenario, occurrence/impact score, countermeasure or
 NIST family: select real scenarios and countermeasures from `threat-catalog.json` /
 `countermeasure-library.json`. Any unknown becomes a `TBC` in the workbook, an Open question in the
-README, and a question to the project team / security.
+README, and a question to the project team / security - tag each README item
+`- **Ask:** PGA`/`Security` per `.kiro/steering/open-questions-convention.md` so
+`open-questions-consolidation` can route it. A category excluded on an assumption (e.g. "no
+CI/CD pipeline of its own") is itself an open question to confirm, not a silent default - do not
+exclude a catalog category without asking.
 
 ## Reference guides (load on demand)
 - `references/prefill-logic.json` - single source of truth (matrix, efficiency formula,

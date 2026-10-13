@@ -120,7 +120,9 @@ The skill bundles everything it needs - no external file is required:
    hidden. Put your applicability opinion in Status, not Relevant.
 4. **Never invent the system context.** DICT, RTO, SOX and data-privacy inputs come from the
    MOA / DPO / the `dict-assessment` deliverable. If unknown, mark `TBD - to validate` and say
-   so; produce a best-effort draft and list open questions.
+   so; produce a best-effort draft and list open questions - tag each one
+   `- **Ask:** MOA`/`DPO`/`PGA` per `.kiro/steering/open-questions-convention.md` so
+   `open-questions-consolidation` routes it correctly instead of it staying buried in this README.
 5. **Respect dispensation (via Status).** `No dispense possible` = mandatory (never Status Not
    relevant; use Not feasible + contingency if truly impossible). A conditional dispensation may
    be applied only when its condition holds - record which condition applies.

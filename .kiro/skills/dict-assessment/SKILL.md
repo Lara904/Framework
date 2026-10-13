@@ -61,7 +61,9 @@ history. Use `references/readme-template.md`. Regenerate/update it whenever the 
 2. **Never invent the final rating.** D/I/C/T levels are validated by the business owner (MOA)
    and aligned with the CMDB. You may PROPOSE a value as an explicit "assumption to validate"
    (clearly marked `TBD - to validate with MOA/DPO`), with the reasoning, but never present it
-   as final.
+   as final. Tag each open item `- **Ask:** MOA`/`DPO` per
+   `.kiro/steering/open-questions-convention.md` so `open-questions-consolidation` routes it to
+   the right person instead of it waiting, unasked, in this README.
 3. **Apply the GDPR floor.** If the application processes personal data, apply the minimum DICT
    from `references/personal-data-gdpr.md`, then `DICT = max(standard-risk DICT, GDPR DICT)`.
 4. **A legal/regulatory traceability constraint forces T = 4.**

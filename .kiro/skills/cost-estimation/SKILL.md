@@ -92,6 +92,11 @@ Solicit the missing inputs from the user - see `references/questionnaire.md`. **
 price, a consumption metric, a JH/day count, a daily rate, a license fee or a headcount. Any
 unknown becomes a clearly marked `TBD` in the README's "Open questions / Missing" section and a
 question to the user (or MOA / finance / cloud team). Amounts are estimates to be validated.
+`open-questions-consolidation` routes the README's missing-item lines to Finance/Cloud-Infra/PGA
+automatically via keyword fallback (`.kiro/steering/open-questions-convention.md`); a figure you
+genuinely cannot estimate without a project-team input (sizing assumptions: acquisitions/month,
+evidence volume, whether a backlog already exists) is still worth asking the user directly first -
+the fallback routing is a safety net for what the chat pass misses, not a substitute for it.
 
 ## Reference guides (load on demand)
 - `references/cost-model.md` - the TCC cost families, the Y1-quarterly / Y2-recurrent structure,
