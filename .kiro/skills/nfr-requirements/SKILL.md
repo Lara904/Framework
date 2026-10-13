@@ -135,11 +135,23 @@ The skill bundles everything it needs - no external file is required:
    single source of truth for output location), named `${project_name}_NFR.xlsm`. Preserve the
    macros and Synthesis charts; avoid
    mojibake (use `-`, straight quotes).
-9. **The `.xlsm` is the only NFR deliverable; do NOT keep the working decisions file.** The
+9. **The `.xlsm` is the only NFR *data* deliverable; do NOT keep the working decisions file.** The
    decisions TSV (and any `*_NFR_decisions.tsv` / `*_NFR_decisions.csv` export) is only an
    intermediate input to `new-nfr-workbook.ps1`. Once the `.xlsm` is generated, delete the TSV so
    it is not mistaken for the deliverable. Presentations and checklists must reference the
    `.xlsm`, never the TSV.
+10. **Always also write `${project_name}_nfr_requirements_README.md`** to
+    `output/${project_name}/` (see `output-convention.md`). The `.xlsm`'s own "Comments /
+    Valorization" column is where every `TBD`/`TBC` justification for a relevant NFR lives, but
+    `open-questions-consolidation` only reads `*_README.md` files - without this README, every
+    TBC written inside the workbook is invisible to the consolidated questionnaire and the dossier
+    could be declared done while real open items sit unseen inside a spreadsheet cell. The README
+    needs only: the system context used (DICT/RTO/SOX/data privacy, and whether it was confirmed
+    or is itself a `- **Ask:**`-tagged assumption), a one-line status summary (counts per Status),
+    and a **Missing information** table listing every NFR reference whose Comments/Valorization
+    column contains `TBC`/`TBD`, each tagged `- **Ask:** <Role>` per
+    `.kiro/steering/open-questions-convention.md` (the NFR's own "Responsible role" column is a
+    good default role hint, mapped to the fixed vocabulary).
 
 ## Quick workflow
 1. Gather the system context: DICT, RTO, SOX, data-privacy level, and the app's functional/
@@ -152,7 +164,9 @@ The skill bundles everything it needs - no external file is required:
    computed Relevant -> your Status/Comment) - see `references/tooling.md`.
 5. Re-dump with `assets/scripts/export-nfr.ps1` to confirm values landed and review the
    status/relevance summary.
-6. **Delete the working decisions TSV** - the `.xlsm` is the deliverable; do not leave the
+6. **Delete the working decisions TSV** - the `.xlsm` is the data deliverable; do not leave the
    `*_NFR_decisions.tsv` behind (it must not be mistaken for or referenced as the deliverable).
-7. Report what is relevant / not relevant / not feasible and what still needs MOA/business
+7. Write `${project_name}_nfr_requirements_README.md` (system context, status summary, Missing
+   information table of every TBC/TBD Comments cell, tagged by role) - see core rule 10.
+8. Report what is relevant / not relevant / not feasible and what still needs MOA/business
    validation.
