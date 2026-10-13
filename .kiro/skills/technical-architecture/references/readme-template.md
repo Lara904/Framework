@@ -100,20 +100,22 @@ each item an owner and where it lands.
 
 | # | Missing information | Needed for | Owner / source |
 |---|---------------------|-----------|----------------|
-| M1 | <e.g. Public domain / subdomain for the widget> | DAT 2.7 Domain Name, diagram Route 53 | Platform team |
-| M2 | <e.g. Volumetry: widget loads per brand site per day> | DAT 1.3.2 Volumetry, FinOps | Business |
-| M3 | <e.g. CMDB/ARIS/GDPR extraction dates and URLs> | Data flow mapping Cover | CMDB / DPO |
+| M1 | <e.g. Public domain / subdomain for the widget> | DAT 2.7 Domain Name, diagram Route 53 | - **Ask:** Cloud-Infra |
+| M2 | <e.g. Volumetry: widget loads per brand site per day> | DAT 1.3.2 Volumetry, FinOps | - **Ask:** MOA |
+| M3 | <e.g. CMDB/ARIS/GDPR extraction dates and URLs> | Data flow mapping Cover | - **Ask:** DPO |
 | ... | ... | ... | ... |
-
-## Open questions
-- <questions pending with the user, mirroring the on-diagram C?/TODO markers>
 ```
+
+Do NOT add a separate "## Open questions" bullet list that repeats these rows: the Missing
+information table above is the single, authoritative, role-tagged register that
+`open-questions-consolidation` reads (it parses both bullet lists and table rows, so a mirrored
+bullet section would double-count every item in the final questionnaire).
 
 Rules:
 - Write in **English** (like all deliverables).
 - The README, the architecture diagram, the dataflow diagram, the DAT and the Frameworks diagram must agree (same components, flows, patterns, criticalities and stack versions).
 - The Technical stack table matches the Frameworks diagram, the DAT 2.1.2 table and the Deck slides 30/44/43; every `XX*` / `TBC` version has a matching Missing-information row.
-- Every `C?` / TODO marker on either diagram has a matching Open question here, and vice versa.
+- Every `C?` / TODO marker on either diagram has a matching row in the Missing information table, and vice versa. Do not also keep a separate "## Open questions" bullet section - see the note above the table.
 - The **Missing information** table is the single place that consolidates every `TBC` / `C?` /
   `XX*` in the DAT model, the Data flow mapping model and the diagrams (including undecided stack
   versions); keep it in sync whenever any deliverable changes. Each row says what is missing, what

@@ -40,7 +40,34 @@ $readmes = Get-ChildItem -Path $ProjectDir -Filter '*_README.md' -File -Recurse
 $sectionHeaderRx = '^#{1,3}\s*(\d+[\.\)]\s*)?(Open questions|Missing( information)?|Assumptions)\b'
 $nextHeaderRx    = '^#{1,3}\s'
 $bulletRx        = '^\s*-\s*(\[[ xX]\]\s*)?(.+?)\s*$'
+$tableRowRx      = '^\s*\|(.+)\|\s*$'
+$tableSepCellRx  = '^:?-{2,}:?$'
 $askTagRx        = '-\s*\*\*Ask:\*\*\s*([A-Za-z,\-\s]+)\s*$'
+
+function Resolve-Roles($text, $knownRoles, $routing, $defaultRole) {
+  # Returns @{ Roles = <array>; Text = <cleaned text> }. Explicit "- **Ask:** <Role>" tag wins
+  # over the keyword fallback; a short acronym like "dpo" must not fire on "endPOints", hence the
+  # word-boundary match below rather than a plain substring.
+  $roles = @()
+  if ($text -match $askTagRx) {
+    $tagged = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
+    foreach ($t in $tagged) { if ($knownRoles -contains $t) { $roles += $t } }
+    $text = ($text -replace $askTagRx, '').Trim().TrimEnd('-', ' ')
+  }
+  if ($roles.Count -eq 0) {
+    $lower = $text.ToLowerInvariant()
+    foreach ($rule in $routing.rules) {
+      $hit = $false
+      foreach ($kw in $rule.keywords) {
+        $pattern = '\b' + [regex]::Escape($kw) + '\b'
+        if ($lower -match $pattern) { $hit = $true; break }
+      }
+      if ($hit) { $roles += $rule.role; break }
+    }
+    if ($roles.Count -eq 0) { $roles += $defaultRole }
+  }
+  return [pscustomobject]@{ Roles = $roles; Text = $text }
+}
 
 # items: list of @{ Role=...; Text=...; Source=<readme basename> }
 $items = New-Object System.Collections.Generic.List[object]
@@ -48,38 +75,50 @@ $items = New-Object System.Collections.Generic.List[object]
 foreach ($rm in $readmes) {
   $lines = Get-Content $rm.FullName
   $inSection = $false
+  # Per-table state: a table is HEADER row, then a |---|---| separator row, then data rows.
+  # Reset whenever we (re)enter a section, since a section holds at most one table.
+  $sawTableHeader = $false
+  $pastTableSep = $false
   $source = $rm.BaseName -replace '_README$', ''
   foreach ($line in $lines) {
-    if ($line -match $sectionHeaderRx) { $inSection = $true; continue }
+    if ($line -match $sectionHeaderRx) { $inSection = $true; $sawTableHeader = $false; $pastTableSep = $false; continue }
     if ($inSection -and $line -match $nextHeaderRx) { $inSection = $false; continue }
     if (-not $inSection) { continue }
+
+    # Markdown table row inside the section (e.g. the "Missing information (to be provided)"
+    # table, whose owner column carries the "- **Ask:** <Role>" tag): parse cells, skip the
+    # header row and the |---|---| separator row, then treat each data row as one item.
+    if ($line -match $tableRowRx) {
+      $cells = $Matches[1] -split '\|' | ForEach-Object { $_.Trim() }
+      $nonEmpty = @($cells | Where-Object { $_ -ne '' })
+      $isSepRow = $nonEmpty.Count -gt 0 -and (@($nonEmpty | Where-Object { $_ -notmatch $tableSepCellRx }).Count -eq 0)
+      if ($isSepRow) { $pastTableSep = $true; continue }
+      if (-not $sawTableHeader) { $sawTableHeader = $true; continue }  # this is the header row
+      if (-not $pastTableSep) { continue }  # malformed table (no separator yet) - be safe, skip
+
+      # Item text: the longest cell that isn't the Ask-tag cell and isn't a bare id (# / M1 / 1).
+      $candidates = $cells | Where-Object { $_ -notmatch '\*\*Ask:\*\*' -and $_ -notmatch '^#?[A-Za-z]?\d*$' -and $_ -ne '' }
+      if ($candidates.Count -eq 0) { continue }
+      $itemText = ($candidates | Sort-Object { $_.Length } -Descending | Select-Object -First 1)
+      # The Ask tag can be in any cell (usually the last/"Owner" column), not necessarily itemText's.
+      $askCell = $cells | Where-Object { $_ -match $askTagRx } | Select-Object -First 1
+      $textForRouting = if ($askCell) { "$itemText $askCell" } else { $itemText }
+
+      $resolved = Resolve-Roles $textForRouting $knownRoles $routing $defaultRole
+      foreach ($r in $resolved.Roles) {
+        $items.Add([pscustomobject]@{ Role = $r; Text = $itemText; Source = $source })
+      }
+      continue
+    }
+
     if ($line -notmatch $bulletRx) { continue }
     $text = $Matches[2]
     if ([string]::IsNullOrWhiteSpace($text)) { continue }
     if ($text -match '^[\-=\s]*$') { continue }  # skip stray "---" / "===" separator lines
 
-    $roles = @()
-    if ($text -match $askTagRx) {
-      $tagged = ($Matches[1] -split ',') | ForEach-Object { $_.Trim() }
-      foreach ($t in $tagged) { if ($knownRoles -contains $t) { $roles += $t } }
-      $text = ($text -replace $askTagRx, '').Trim().TrimEnd('-', ' ')
-    }
-    if ($roles.Count -eq 0) {
-      $lower = $text.ToLowerInvariant()
-      foreach ($rule in $routing.rules) {
-        $hit = $false
-        foreach ($kw in $rule.keywords) {
-          # Word-boundary match, not a plain substring: a short acronym like "dpo" must not
-          # fire on "endPOints". [regex]::Escape handles keywords with '/' etc. safely.
-          $pattern = '\b' + [regex]::Escape($kw) + '\b'
-          if ($lower -match $pattern) { $hit = $true; break }
-        }
-        if ($hit) { $roles += $rule.role; break }
-      }
-      if ($roles.Count -eq 0) { $roles += $defaultRole }
-    }
-    foreach ($r in $roles) {
-      $items.Add([pscustomobject]@{ Role = $r; Text = $text; Source = $source })
+    $resolved = Resolve-Roles $text $knownRoles $routing $defaultRole
+    foreach ($r in $resolved.Roles) {
+      $items.Add([pscustomobject]@{ Role = $r; Text = $resolved.Text; Source = $source })
     }
   }
 }

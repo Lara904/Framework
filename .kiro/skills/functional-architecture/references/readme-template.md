@@ -49,20 +49,28 @@ and in this README. Give each item what it unblocks and who owns it.
 
 | # | Missing information | Needed for | Owner / source |
 |---|---------------------|-----------|----------------|
-| M1 | <e.g. Other brand-side applications (analytics, consent) in the ICT container> | Applications, Interactions | Brand sites |
-| M2 | <e.g. As-Is only, or also a To-Be with a future flow to SFS> | Diagram scope | Product / Architecture |
+| M1 | <e.g. Other brand-side applications (analytics, consent) in the ICT container> | Applications, Interactions | - **Ask:** PGA |
+| M2 | <e.g. As-Is only, or also a To-Be with a future flow to SFS> | Diagram scope | - **Ask:** EA |
 | ... | ... | ... | ... |
-
-## Open questions
-- <questions still pending with the user, mirroring the on-diagram TODO notes>
 ```
+
+Do NOT add a separate "## Open questions" bullet list that repeats these rows: the Missing
+information table above is the single, authoritative, role-tagged register that
+`open-questions-consolidation` reads (it parses both bullet lists and table rows, so a mirrored
+bullet section would double-count every item in the final questionnaire). If a question does not
+unblock any specific diagram/FAD element and genuinely has nothing to go in the table, add it as
+its own Missing-information row instead (leave "Needed for" as "General" if needed) rather than a
+separate section.
 
 Rules:
 - English only; ASCII-safe text.
 - The README, the diagram and the FAD (`<project>_functional_architecture_document.docx`) must
   agree (same companies, applications, interactions, users). The README application/interaction
   tables feed FAD sections 1.3 and 2.2.
-- Every `TODO` note on the diagram has a matching Open question here, and vice versa.
+- Every `TODO` note on the diagram has a matching row in the Missing information table, and vice
+  versa.
 - The **Missing information** table is the single place that consolidates every `TODO` / "to
   confirm" marker on the diagram and in this README; keep it in sync whenever either changes.
-  Each row says what is missing, what it unblocks, and who owns it.
+  Each row says what is missing, what it unblocks, and who owns it (tagged
+  `- **Ask:** <Role>` per `.kiro/steering/open-questions-convention.md`). Do not also keep a
+  separate "## Open questions" bullet section - see the note above the table.
