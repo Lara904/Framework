@@ -1,7 +1,8 @@
 <#
   build-questionnaire.ps1 - scans every *_README.md already produced for a project in
   output/${project_name}/, pulls out each "Open questions" / "Missing information" /
-  "Assumptions (to validate)" bullet, routes it to a role (PGA / MOA / DPO / Security / Finance /
+  "Assumptions (to validate)" / "Arbitrary default choices" bullet or table row, routes it to a
+  role (PGA / MOA / DPO / Security / Finance /
   Cloud-Infra / EA) - using an explicit "- **Ask:** <Role>" tag when present, else the keyword
   fallback in references/role-routing.json - and writes ONE consolidated, addressed questionnaire
   so the project owner (or whoever) can see at a glance who needs to answer what, instead of
@@ -37,7 +38,8 @@ $defaultRole = $routing.defaultRole
 #    "*_Open_Questions_Questionnaire.md", never "*_README.md", so it never self-matches.)
 $readmes = Get-ChildItem -Path $ProjectDir -Filter '*_README.md' -File -Recurse
 
-$sectionHeaderRx = '^#{1,3}\s*(\d+[\.\)]\s*)?(Open questions|Missing( information)?|Assumptions)\b'
+$sectionHeaderRx = '^#{1,3}\s*(\d+[\.\)]\s*)?(Open questions|Missing( information)?|Assumptions|Arbitrary default)\b'
+$arbitraryHeaderRx = '^#{1,3}\s*(\d+[\.\)]\s*)?Arbitrary default\b'
 $nextHeaderRx    = '^#{1,3}\s'
 $bulletRx        = '^\s*-\s*(\[[ xX]\]\s*)?(.+?)\s*$'
 $tableRowRx      = '^\s*\|(.+)\|\s*$'
@@ -79,9 +81,15 @@ foreach ($rm in $readmes) {
   # Reset whenever we (re)enter a section, since a section holds at most one table.
   $sawTableHeader = $false
   $pastTableSep = $false
+  $isArbitrarySection = $false
+  $headerCells = @()
   $source = $rm.BaseName -replace '_README$', ''
   foreach ($line in $lines) {
-    if ($line -match $sectionHeaderRx) { $inSection = $true; $sawTableHeader = $false; $pastTableSep = $false; continue }
+    if ($line -match $sectionHeaderRx) {
+      $inSection = $true; $sawTableHeader = $false; $pastTableSep = $false
+      $isArbitrarySection = [bool]($line -match $arbitraryHeaderRx)
+      continue
+    }
     if ($inSection -and $line -match $nextHeaderRx) { $inSection = $false; continue }
     if (-not $inSection) { continue }
 
@@ -93,20 +101,39 @@ foreach ($rm in $readmes) {
       $nonEmpty = @($cells | Where-Object { $_ -ne '' })
       $isSepRow = $nonEmpty.Count -gt 0 -and (@($nonEmpty | Where-Object { $_ -notmatch $tableSepCellRx }).Count -eq 0)
       if ($isSepRow) { $pastTableSep = $true; continue }
-      if (-not $sawTableHeader) { $sawTableHeader = $true; continue }  # this is the header row
+      if (-not $sawTableHeader) { $sawTableHeader = $true; $headerCells = $cells; continue }  # this is the header row
       if (-not $pastTableSep) { continue }  # malformed table (no separator yet) - be safe, skip
 
       # Item text: the longest cell that isn't the Ask-tag cell and isn't a bare id (# / M1 / 1).
       $candidates = $cells | Where-Object { $_ -notmatch '\*\*Ask:\*\*' -and $_ -notmatch '^#?[A-Za-z]?\d*$' -and $_ -ne '' }
       if ($candidates.Count -eq 0) { continue }
-      $itemText = ($candidates | Sort-Object { $_.Length } -Descending | Select-Object -First 1)
+      if ($isArbitrarySection) {
+        # Arbitrary-default tables vary in width (5 to 7 columns), so pick by HEADER rather than
+        # position: column 1 (right after the # id) is always the item/NFR description, and
+        # whichever header contains "default" holds the chosen placeholder - those two together
+        # are what the role needs, not whatever cell happens to be longest (often "Reasoning").
+        $descCell = if ($cells.Count -gt 1) { $cells[1] } else { $null }
+        $defaultColIdx = -1
+        for ($i = 0; $i -lt $headerCells.Count; $i++) { if ($headerCells[$i] -match '(?i)default') { $defaultColIdx = $i; break } }
+        $defaultCell = if ($defaultColIdx -ge 0 -and $defaultColIdx -lt $cells.Count) { $cells[$defaultColIdx] } else { $null }
+        if ($descCell -and $defaultCell -and $descCell -ne $defaultCell) {
+          $itemText = "$descCell - default chosen: $defaultCell"
+        } elseif ($descCell) {
+          $itemText = $descCell
+        } else {
+          $itemText = ($candidates | Sort-Object { $_.Length } -Descending | Select-Object -First 1)
+        }
+      } else {
+        $itemText = ($candidates | Sort-Object { $_.Length } -Descending | Select-Object -First 1)
+      }
       # The Ask tag can be in any cell (usually the last/"Owner" column), not necessarily itemText's.
       $askCell = $cells | Where-Object { $_ -match $askTagRx } | Select-Object -First 1
       $textForRouting = if ($askCell) { "$itemText $askCell" } else { $itemText }
 
       $resolved = Resolve-Roles $textForRouting $knownRoles $routing $defaultRole
+      $renderedText = if ($isArbitrarySection) { "[Confirm default] $itemText" } else { $itemText }
       foreach ($r in $resolved.Roles) {
-        $items.Add([pscustomobject]@{ Role = $r; Text = $itemText; Source = $source })
+        $items.Add([pscustomobject]@{ Role = $r; Text = $renderedText; Source = $source })
       }
       continue
     }

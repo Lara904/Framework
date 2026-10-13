@@ -37,6 +37,26 @@ Every bullet in a skill's "Open questions" / "Missing information" section shoul
 ```
 Example: `- [ ] What is the internal daily rate (k EUR/JH) to use for this project? - **Ask:** Finance`
 
+**Keep each tagged bullet on one physical line.** The consolidator reads line-by-line and only
+recognises a line starting with `-` as a bullet; a long bullet manually soft-wrapped onto
+continuation lines (common when a human or an editor reflows text) silently loses whatever sits on
+those continuation lines, including the `- **Ask:**` tag if it ends up there. Let the line run long
+rather than wrapping it.
+
+## Arbitrary default choices are still open items - a third recognised section
+Sometimes a value cannot be sourced at all and, rather than leave the deliverable blank, the author
+(human or agent) records an explicit, reasoned, clearly-labelled **placeholder** so downstream work
+(a budget line, a slide, an architecture diagram) isn't empty. That placeholder is NOT a confirmed
+fact - it still needs the tagged role to confirm or correct it, so it is just as much an open item
+as a blank `TBC`. Record it as a table under a header starting with **"Arbitrary default
+choices"** (e.g. `## Arbitrary default choices (pending validation - explicit placeholders, NOT
+confirmed facts)`), with one row per item and an `- **Ask:** <Role>` tag in the owner column, the
+same as a "Missing information" table. The consolidator recognises this header too and surfaces
+each row to its role, prefixed `[Confirm default]` in the questionnaire, so the recipient
+understands they are reviewing/correcting a guess, not answering from a blank slate. Do NOT also
+list the same item under "Missing information" or "Open questions" once it has an arbitrary
+default - that would double-count it; the item lives in exactly one of the three section types.
+
 ## Until every script emits the tag - keyword fallback
 Several existing scripts (e.g. `cost-estimation/assets/scripts/costs-readme.ps1`) still emit plain
 missing-item strings with no tag (e.g. `"global IT Q1 amount"`). The consolidator
