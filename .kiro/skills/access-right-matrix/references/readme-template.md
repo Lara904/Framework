@@ -44,3 +44,13 @@ Use the structure below.
   in the `.xlsx`. The README may be deleted only when this section is empty and the
   deliverable carries no unresolved **required** value (a `<PRD>` token must be gone; a
   REFLEX_NAME descriptive placeholder may remain if the org keeps it deliberately).
+- **If an "Arbitrary default choices" section was added** (per
+  `.kiro/steering/open-questions-convention.md`, for any value that could not be sourced and was
+  given an explicit reasoned placeholder instead of staying blank) - **that section must ALSO be
+  empty, or every one of its rows resolved and removed, before this README is deleted.** An
+  arbitrary default is not a confirmed fact: deleting a README that still has open rows there
+  would silently remove those items from `open-questions-consolidation`'s questionnaire with no
+  trace, since the consolidator can only see what is still written in a `*_README.md` file. This
+  is the one skill in the framework whose own template says to delete its working file, so it is
+  the one place this silent-loss risk can actually happen - check both sections, not just "Open
+  questions", before deleting.

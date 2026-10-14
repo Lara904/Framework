@@ -66,6 +66,17 @@ no explicit `- **Ask:**` tag. An explicit tag always wins over the keyword fallb
 the explicit tag to a script's generated strings as a welcome, low-risk improvement whenever that
 script is touched for another reason - never a prerequisite to running the consolidator.
 
+## A transient working file must check EVERY open-item section before deleting itself
+`open-questions-consolidation` only ever sees what is currently written in a `*_README.md` file -
+it has no memory of what used to be there. A skill whose own template says to delete its working
+README once resolved (today, only `access-right-matrix`) must therefore treat deletion as
+destructive to the questionnaire too: deleting the file while ANY of its "Open questions" /
+"Missing information" / "Assumptions" / "Arbitrary default choices" rows is still unresolved
+silently removes those items from the consolidated questionnaire with no trace and no error. Check
+every section type this convention defines, not just the one the skill's own deletion rule
+happened to name first - a future skill written with the same "delete when done" pattern should
+check all of them from the start.
+
 ## The non-negotiable consequence for every skill
 No skill, and no final AGD/dossier report, may state a deliverable or the overall submission as
 **"done" / "terminé" / "complete" / "ready to publish"** while it has open items reachable by this
