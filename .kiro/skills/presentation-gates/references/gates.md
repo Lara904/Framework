@@ -72,6 +72,14 @@ Complete / update:
 - SonarQube report (Quality Gate validated) and Checkmarx scan + action plan (pos 38).
 - Costs update (pos 24/25), Residual risks (pos 65), Monitoring (pos 58).
 - Confirm environments, backup, DRP, exit/reversibility plan (pos 48).
+- **Security scan action plan, in the format a later committee will actually want**: a real
+  go-live readiness review (a separate, later committee from these Gates) did not accept "Quality
+  Gate passed" alone - it listed each remaining Critical/High finding individually (reference,
+  description, priority, current status such as "To be done" / "Partially done", and a
+  realization target date), and explicitly marked confirmed false positives as such (e.g.
+  "Proposed Not exploitable - awaited feedback from Vulnerability team") rather than leaving them
+  ambiguous among the real open items. Apply the same standard to the pos 38 Checkmarx/SonarQube
+  action plan here: a finding count with no per-item detail is not an action plan.
 
 ## SaaS-specific reminders (apply across gates when solution is a SaaS)
 - Exit plan strategy and reversibility are mandatory and must be reflected in the contract.

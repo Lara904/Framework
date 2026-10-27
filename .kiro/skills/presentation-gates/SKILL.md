@@ -129,6 +129,14 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    slides) - the latter even with no edits. See `references/tooling.md`.
 8. **Never invent approvals, names, costs, SLA or CMDB values.** If a value is unknown,
    leave a clearly marked `TBD` / `TODO` placeholder and tell the user what is missing.
+   **A marked placeholder beats a silently empty field.** A real IT Go-Live committee (a later,
+   separate meeting from these Architecture Gates, but filled the same way - body text typed
+   straight onto a slide) was presented with bullets reading "Validated Date of GO-Live:" and
+   "General view of the committee:" with nothing after the colon - not TBD, not a dash, just
+   empty. An empty field reads as "forgotten," not "deliberately unknown," and nobody in the room
+   can tell the difference between an oversight and a genuine open question. If a field has no
+   value yet, write `TBD` (or `n/a` when it is genuinely not applicable, as the same deck did
+   correctly elsewhere) rather than leaving the line visually blank.
 8d. **Template examples are INDICATIVE, not a source of truth.** The pre-filled example rows/items
    the template ships with (e.g. the Risks table's "Gen AI / Accessibility / Lack of training /
    Data" rows, sample cost lines, example approvers) are prompts to consider - NOT content to
@@ -148,6 +156,12 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    elsewhere on the slide, or leave your own explanatory text in the body. Keep the template's
    field headings intact (e.g. "Technical Architecture document"). After filling, remove leftover
    guidance/"Example"/"Insert here" runs, but do not invent new text runs.
+   **A link field left as bare text is as bad as an unfilled one.** A real Go-Live deck shipped
+   a diagram slide with its reference field reading only the single underlined word "link" - the
+   label was there, the hyperlink never was. `Set-PptxHyperlink` must actually run and attach a
+   `TargetMode="External"` relationship before a slide with a link field is considered filled;
+   underlined/colored placeholder-looking text is not evidence a link exists, so check the
+   relationship, not just the run's formatting.
 8c. **When a slide has no free space for a new picture, REPLACE the existing example image**
    (usually a placeholder thumbnail in a corner, e.g. the top-right example on slide 42) instead
    of adding another `<p:pic>`. Use `Remove-PptxImagesFromSlide` (or replace in place) and size

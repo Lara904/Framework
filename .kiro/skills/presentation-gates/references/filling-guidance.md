@@ -201,6 +201,14 @@ architects, Data Privacy rep, CISO referent, Solution delivery, Infrastructure r
 Maintain-in-production resp. Informed: Contract Manager, OPS owner, DRP referent, API catalog
 referent, Data platform referent (sibs-cct@stellantis.com), SaaS Manager.
 Mark Resp. / Present / Approved (Yes/No) per person. Do not invent approvals.
+**A per-person approval/sign-off table is exactly the kind of field that reaches the committee
+unfilled if nobody re-checks it**: a real IT CO Go-Live meeting (a later, separate committee
+from these Architecture Gates, but with the same per-approver table shape) was presented with
+most of its "Approval/Rejection" column still showing the literal placeholder text for every
+row but one. Before marking a slide with an approval/sign-off table as ready, read every row of
+that column specifically - a slide can pass every other content check and still carry an
+unfilled decision column, because the column total (how many rows are blank) is easy to miss
+when scanning the slide as a whole.
 
 ## Do-not-fill slides
 Slides at positions 71-75 are "Reference & examples", the SME directory, the flow-mapping
