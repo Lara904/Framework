@@ -71,22 +71,43 @@ function New-DatPageBreak {
 }
 
 function New-DatTable {
-  param([string[]]$Header, [object[]]$Rows)
+  # Usable page width for this template (A4, pgMar left=1134 right=1134 on pgSz w=11906)
+  # is 11906-1134-1134 = 9638 twips. <w:tblGrid> is a MANDATORY child of <w:tbl> per the
+  # OOXML schema (ECMA-376 17.4.49): without it the part is invalid XML. python-docx and
+  # other strict readers raise InvalidXmlError on it, and Word silently "repairs" the
+  # file on open (risking a recovery prompt for the end user) rather than erroring, which
+  # is why this went unnoticed. We also set tblLayout=fixed with the grid widths so long
+  # cell text (this document's tables routinely carry 100-500+ character cells) actually
+  # wraps inside a sane column width instead of the autofit engine collapsing columns to
+  # fit their widest single word.
+  param([string[]]$Header, [object[]]$Rows, [int[]]$ColWidths)
   $sb = New-Object System.Text.StringBuilder
-  [void]$sb.Append('<w:tbl><w:tblPr><w:tblStyle w:val="DatTable"/><w:tblW w:w="0" w:type="auto"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:left w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:right w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="999999"/></w:tblBorders></w:tblPr>')
+  $colCount = if ($Header -and $Header.Count -gt 0) { $Header.Count } elseif ($Rows -and $Rows.Count -gt 0) { @($Rows[0]).Count } else { 1 }
+  $usableWidth = 9638
+  if (-not $ColWidths -or $ColWidths.Count -ne $colCount) {
+    $base = [int]([math]::Floor($usableWidth / $colCount))
+    $ColWidths = @(for ($i = 0; $i -lt $colCount; $i++) { $base })
+    $ColWidths[$ColWidths.Count - 1] += $usableWidth - ($base * $colCount)
+  }
+  [void]$sb.Append('<w:tbl><w:tblPr><w:tblStyle w:val="DatTable"/><w:tblW w:w="' + $usableWidth + '" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:left w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:right w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="999999"/></w:tblBorders></w:tblPr>')
+  [void]$sb.Append('<w:tblGrid>')
+  foreach ($w in $ColWidths) { [void]$sb.Append('<w:gridCol w:w="' + $w + '"/>') }
+  [void]$sb.Append('</w:tblGrid>')
   # header row (shaded, bold)
   if ($Header -and $Header.Count -gt 0) {
     [void]$sb.Append('<w:tr>')
-    foreach ($h in $Header) {
-      $cell = '<w:tc><w:tcPr><w:shd w:val="clear" w:color="auto" w:fill="DAE8FC"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="TableText"/></w:pPr>' + (New-DatRun -Text ([string]$h) -Bold) + '</w:p></w:tc>'
+    for ($i = 0; $i -lt $Header.Count; $i++) {
+      $cell = '<w:tc><w:tcPr><w:tcW w:w="' + $ColWidths[$i] + '" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="DAE8FC"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="TableText"/></w:pPr>' + (New-DatRun -Text ([string]$Header[$i]) -Bold) + '</w:p></w:tc>'
       [void]$sb.Append($cell)
     }
     [void]$sb.Append('</w:tr>')
   }
   foreach ($row in $Rows) {
     [void]$sb.Append('<w:tr>')
-    foreach ($c in $row) {
-      $cell = '<w:tc><w:p><w:pPr><w:pStyle w:val="TableText"/></w:pPr>' + (New-DatRun -Text ([string]$c)) + '</w:p></w:tc>'
+    $cells = @($row)
+    for ($i = 0; $i -lt $cells.Count; $i++) {
+      $w = if ($i -lt $ColWidths.Count) { $ColWidths[$i] } else { $ColWidths[$ColWidths.Count - 1] }
+      $cell = '<w:tc><w:tcPr><w:tcW w:w="' + $w + '" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="TableText"/></w:pPr>' + (New-DatRun -Text ([string]$cells[$i])) + '</w:p></w:tc>'
       [void]$sb.Append($cell)
     }
     [void]$sb.Append('</w:tr>')

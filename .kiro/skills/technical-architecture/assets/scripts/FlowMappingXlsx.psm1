@@ -94,9 +94,35 @@ function New-XlsxRow {
   return $sb.ToString()
 }
 
+# Per-column widths, derived from the header text so every sheet gets widths that fit
+# its OWN columns instead of one flat number for every column (the earlier version used
+# width="26" for all 15 "Technical Flow Pattern" columns regardless of content -
+# "APIC Product" and "Port" ended up as wide as "Hostname Source", and nothing was wide
+# enough for the sheet's long free-text columns, which still overflowed unread because
+# data rows also carried no wrapText - see StyleId 3 below).
+function Get-XlsxColWidths {
+  param([string[]]$Header)
+  $wideKeywords = @('name','source','destination','hostname','token','endpoint','end point','comment','description','purpose','objective','assumption','method','url','type of','product')
+  $narrowKeywords = @('yes/no','(c1','port','frequency','version','id)','date')
+  $widths = @()
+  foreach ($h in $Header) {
+    $hl = ([string]$h).ToLowerInvariant()
+    $isWide = $false
+    foreach ($k in $wideKeywords) { if ($hl.Contains($k)) { $isWide = $true; break } }
+    $isNarrow = $false
+    foreach ($k in $narrowKeywords) { if ($hl.Contains($k)) { $isNarrow = $true; break } }
+    if ($isNarrow) { $widths += 14 }
+    elseif ($isWide) { $widths += 30 }
+    else { $widths += [math]::Max(16, [math]::Min(34, $h.Length + 4)) }
+  }
+  return $widths
+}
+
 function Get-XlsxSheetData {
   param([string[]]$Header, [object[]]$Rows, [string]$Title = '')
-  # StyleId 1 = title, 2 = header (bold + shaded), 0 = normal
+  # StyleId 1 = title, 2 = header (bold + shaded), 3 = normal data (wrapped + bordered,
+  # top-aligned). Plain StyleId 0 (no wrap, no border) is still used for the Cover sheet's
+  # free-form label/value rows, which are narrative text rather than a tabular grid.
   $sb = New-Object System.Text.StringBuilder
   $r = 1
   if ($Title -ne '') {
@@ -106,20 +132,39 @@ function Get-XlsxSheetData {
   [void]$sb.Append((New-XlsxRow -RowNum $r -Values $Header -StyleId 2))
   $r++
   foreach ($row in $Rows) {
-    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 0))
+    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 3))
     $r++
   }
   return $sb.ToString()
 }
 
 function Get-XlsxWorksheetXml {
-  param([string]$SheetData, [int]$ColCount)
+  param([string]$SheetData, [int]$ColCount, [int[]]$ColWidths, [int]$HeaderRow = 1, [int]$LastRow = 1, [switch]$AutoFilter)
   $lastCol = Get-XlsxColLetter -Index ([math]::Max(1, $ColCount))
+  if (-not $ColWidths -or $ColWidths.Count -lt $ColCount) {
+    $ColWidths = @(for ($i = 0; $i -lt $ColCount; $i++) { 24 })
+  }
+  $colsXml = New-Object System.Text.StringBuilder
+  for ($i = 0; $i -lt $ColCount; $i++) {
+    [void]$colsXml.Append(('<col min="{0}" max="{0}" width="{1}" customWidth="1"/>' -f ($i + 1), $ColWidths[$i]))
+  }
+  # Freeze the header row so it stays visible while scrolling through the data rows -
+  # these sheets regularly run to 60-90+ rows (e.g. a full flow mapping or threat list).
+  $paneXml = ''
+  if ($HeaderRow -gt 0) {
+    $paneXml = '<pane ySplit="{0}" topLeftCell="A{1}" activePane="bottomLeft" state="frozen"/>' -f $HeaderRow, ($HeaderRow + 1)
+  }
+  $filterXml = ''
+  if ($AutoFilter -and $HeaderRow -gt 0) {
+    $filterXml = '<autoFilter ref="A{0}:{1}{2}"/>' -f $HeaderRow, $lastCol, $LastRow
+  }
 @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <cols><col min="1" max="$ColCount" width="26" customWidth="1"/></cols>
+  <sheetViews><sheetView workbookViewId="0">$paneXml</sheetView></sheetViews>
+  <cols>$colsXml</cols>
   <sheetData>$SheetData</sheetData>
+  $filterXml
 </worksheet>
 "@
 }
@@ -143,10 +188,11 @@ function Get-XlsxStylesXml {
     <border><left style="thin"><color rgb="FF999999"/></left><right style="thin"><color rgb="FF999999"/></right><top style="thin"><color rgb="FF999999"/></top><bottom style="thin"><color rgb="FF999999"/></bottom><diagonal/></border>
   </borders>
   <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-  <cellXfs count="3">
+  <cellXfs count="4">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
     <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
     <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
   </cellXfs>
   <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>
@@ -265,31 +311,31 @@ function New-FlowMappingXlsx {
   $coverSb = New-Object System.Text.StringBuilder
   $r = 1
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Purpose') -StyleId 2)); $r++
-  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $Model 'purpose' 'The purpose of this spreadsheet is to give a list of dependencies between the applications of our Information System.')) -StyleId 0)); $r += 2
+  [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $Model 'purpose' 'The purpose of this spreadsheet is to give a list of dependencies between the applications of our Information System.')) -StyleId 3)); $r += 2
 
   $objective = Get-Prop $Model 'objective' ''
   if ($objective -ne '') {
     [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Objective') -StyleId 2)); $r++
-    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @($objective) -StyleId 0)); $r += 2
+    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @($objective) -StyleId 3)); $r += 2
   }
 
   $sources = Get-Prop $Model 'sources' @()
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Sources','Type','Extraction Date','Sheet') -StyleId 2)); $r++
   foreach ($s in $sources) {
-    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $s 'url'),(Get-Prop $s 'type'),(Get-Prop $s 'extractionDate'),(Get-Prop $s 'sheet')) -StyleId 0)); $r++
+    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $s 'url'),(Get-Prop $s 'type'),(Get-Prop $s 'extractionDate'),(Get-Prop $s 'sheet')) -StyleId 3)); $r++
   }
   $r++
   $assumptions = Get-Prop $Model 'assumptions' @()
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Assumptions & Rules') -StyleId 2)); $r++
   foreach ($a in $assumptions) {
-    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @([string]$a) -StyleId 0)); $r++
+    [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @([string]$a) -StyleId 3)); $r++
   }
   $r++
   $method = @(Get-Prop $Model 'method' @())
   if ($method.Count -gt 0) {
     [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Method') -StyleId 2)); $r++
     foreach ($m in $method) {
-      [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @([string]$m) -StyleId 0)); $r++
+      [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @([string]$m) -StyleId 3)); $r++
     }
     $r++
   }
@@ -297,10 +343,12 @@ function New-FlowMappingXlsx {
   if ($versions.Count -gt 0) {
     [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Version','Type','Updated Date','Updated by','Owners','Update Comments') -StyleId 2)); $r++
     foreach ($v in $versions) {
-      [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $v 'version'),(Get-Prop $v 'type'),(Get-Prop $v 'updatedDate'),(Get-Prop $v 'updatedBy'),(Get-Prop $v 'owners'),(Get-Prop $v 'comments')) -StyleId 0)); $r++
+      [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @((Get-Prop $v 'version'),(Get-Prop $v 'type'),(Get-Prop $v 'updatedDate'),(Get-Prop $v 'updatedBy'),(Get-Prop $v 'owners'),(Get-Prop $v 'comments')) -StyleId 3)); $r++
     }
   }
-  $coverXml = Get-XlsxWorksheetXml -SheetData $coverSb.ToString() -ColCount 6
+  # Cover sheet is narrative (label rows + a couple of small tables stacked vertically,
+  # not one tabular grid), so no header-row freeze or autofilter here (HeaderRow 0).
+  $coverXml = Get-XlsxWorksheetXml -SheetData $coverSb.ToString() -ColCount 6 -ColWidths @(28,20,20,30,20,24) -HeaderRow 0
 
   # ---- Sheet 2: Functional Flow Pattern (official columns incl. DCP breakdown) ----
   $fHeader = @('Functional flow name','Type of treatment','Source Service/App','Destination Service/App','Frequency','Data confidentiality (C1/C2/C3/C4)','DCP (Yes/No)','Party (Yes/No)','Party identification (Yes/No)','Banking information (Yes/No)','Sensitive personnal data (Yes/No)','Type of data with DCP')
@@ -314,7 +362,7 @@ function New-FlowMappingXlsx {
     )
   }
   $funcData = Get-XlsxSheetData -Header $fHeader -Rows $fRows
-  $funcXml = Get-XlsxWorksheetXml -SheetData $funcData -ColCount $fHeader.Count
+  $funcXml = Get-XlsxWorksheetXml -SheetData $funcData -ColCount $fHeader.Count -ColWidths (Get-XlsxColWidths -Header $fHeader) -HeaderRow 1 -LastRow ([math]::Max(1, $fRows.Count + 1)) -AutoFilter
 
   # ---- Sheet 3: Technical Flow Pattern (official columns) ----
   $tHeader = @('Functional flow name','Technical flow name','Type of flow','Source Service/App','Hostname Source','Destination Service/App','Hostname Destination','Frequency','Data confidentiality (C1/C2/C3/C4)','DCP (Yes/No)','Port','Protocol','Token supplier if API','Exposition End Point','APIC Product')
@@ -329,7 +377,7 @@ function New-FlowMappingXlsx {
     )
   }
   $techData = Get-XlsxSheetData -Header $tHeader -Rows $tRows
-  $techXml = Get-XlsxWorksheetXml -SheetData $techData -ColCount $tHeader.Count
+  $techXml = Get-XlsxWorksheetXml -SheetData $techData -ColCount $tHeader.Count -ColWidths (Get-XlsxColWidths -Header $tHeader) -HeaderRow 1 -LastRow ([math]::Max(1, $tRows.Count + 1)) -AutoFilter
 
   $sheetNames = @('Cover sheet', 'Functional Flow Pattern', 'Technical Flow Pattern')
   $sheetCount = $sheetNames.Count

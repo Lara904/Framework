@@ -93,20 +93,41 @@ function New-FadPageBreak {
 function New-FadTable {
   # Uses the template's "Grilledutableau" (Table Grid) style + explicit borders; header
   # row shaded and bold.
-  param([string[]]$Header, [object[]]$Rows)
+  #
+  # Usable page width for this template (A4, pgMar left=851 right=851 on pgSz w=11905)
+  # is 11905-851-851 = 10203 twips. <w:tblGrid> is a MANDATORY child of <w:tbl> per the
+  # OOXML schema (ECMA-376 17.4.49): without it the part is invalid XML. python-docx and
+  # other strict readers raise InvalidXmlError on it, and Word silently "repairs" the
+  # file on open (risking a recovery prompt for the end user) rather than erroring, which
+  # is why this went unnoticed. We also set tblLayout=fixed with the grid widths so long
+  # cell text actually wraps inside a sane column width instead of the autofit engine
+  # collapsing columns to fit their widest single word.
+  param([string[]]$Header, [object[]]$Rows, [int[]]$ColWidths)
   $sb = New-Object System.Text.StringBuilder
-  [void]$sb.Append('<w:tbl><w:tblPr><w:tblStyle w:val="Grilledutableau"/><w:tblW w:w="0" w:type="auto"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:left w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:right w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="999999"/></w:tblBorders></w:tblPr>')
+  $colCount = if ($Header -and $Header.Count -gt 0) { $Header.Count } elseif ($Rows -and $Rows.Count -gt 0) { @($Rows[0]).Count } else { 1 }
+  $usableWidth = 10203
+  if (-not $ColWidths -or $ColWidths.Count -ne $colCount) {
+    $base = [int]([math]::Floor($usableWidth / $colCount))
+    $ColWidths = @(for ($i = 0; $i -lt $colCount; $i++) { $base })
+    $ColWidths[$ColWidths.Count - 1] += $usableWidth - ($base * $colCount)
+  }
+  [void]$sb.Append('<w:tbl><w:tblPr><w:tblStyle w:val="Grilledutableau"/><w:tblW w:w="' + $usableWidth + '" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders><w:top w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:left w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:right w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="999999"/></w:tblBorders></w:tblPr>')
+  [void]$sb.Append('<w:tblGrid>')
+  foreach ($w in $ColWidths) { [void]$sb.Append('<w:gridCol w:w="' + $w + '"/>') }
+  [void]$sb.Append('</w:tblGrid>')
   if ($Header -and $Header.Count -gt 0) {
     [void]$sb.Append('<w:tr>')
-    foreach ($h in $Header) {
-      [void]$sb.Append('<w:tc><w:tcPr><w:shd w:val="clear" w:color="auto" w:fill="DAE8FC"/></w:tcPr><w:p>' + (New-FadRun -Text ([string]$h) -Bold) + '</w:p></w:tc>')
+    for ($i = 0; $i -lt $Header.Count; $i++) {
+      [void]$sb.Append('<w:tc><w:tcPr><w:tcW w:w="' + $ColWidths[$i] + '" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="DAE8FC"/></w:tcPr><w:p>' + (New-FadRun -Text ([string]$Header[$i]) -Bold) + '</w:p></w:tc>')
     }
     [void]$sb.Append('</w:tr>')
   }
   foreach ($row in $Rows) {
     [void]$sb.Append('<w:tr>')
-    foreach ($c in $row) {
-      [void]$sb.Append('<w:tc><w:p>' + (New-FadRun -Text ([string]$c)) + '</w:p></w:tc>')
+    $cells = @($row)
+    for ($i = 0; $i -lt $cells.Count; $i++) {
+      $w = if ($i -lt $ColWidths.Count) { $ColWidths[$i] } else { $ColWidths[$ColWidths.Count - 1] }
+      [void]$sb.Append('<w:tc><w:tcPr><w:tcW w:w="' + $w + '" w:type="dxa"/></w:tcPr><w:p>' + (New-FadRun -Text ([string]$cells[$i])) + '</w:p></w:tc>')
     }
     [void]$sb.Append('</w:tr>')
   }

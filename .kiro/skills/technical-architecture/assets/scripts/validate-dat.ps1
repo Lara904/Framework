@@ -42,6 +42,22 @@ try {
         if ($e.FullName -eq 'word/document.xml' -and $content -notmatch '<w:body>') {
           $fail += "word/document.xml has no <w:body>"
         }
+        # 2b) Every <w:tbl> must carry a <w:tblGrid> (ECMA-376 17.4.49: mandatory child).
+        # Well-formed XML and a clean OPC-package open (checks 1 and 2 above) do NOT
+        # catch this: Word silently repairs a missing tblGrid on open instead of
+        # erroring, and strict readers (python-docx, Pandoc, ...) throw InvalidXmlError.
+        # This exact defect shipped undetected for every table New-DatTable produced
+        # (all 15 tables in a typical DAT) before tblGrid support was added to that
+        # function - keep this check so a future regression fails CI instead of
+        # reaching a Gate reviewer's Word.
+        if ($e.FullName -eq 'word/document.xml') {
+          $tblMatches = [regex]::Matches($content, '<w:tbl>.*?</w:tbl>', 'Singleline')
+          $missingGrid = 0
+          foreach ($m in $tblMatches) { if ($m.Value -notmatch '<w:tblGrid>') { $missingGrid++ } }
+          if ($missingGrid -gt 0) {
+            $fail += "$missingGrid of $($tblMatches.Count) <w:tbl> element(s) in word/document.xml are missing the mandatory <w:tblGrid> child"
+          }
+        }
       }
     }
   } finally { $zip.Dispose() }

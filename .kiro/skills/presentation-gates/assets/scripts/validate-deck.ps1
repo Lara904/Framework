@@ -18,6 +18,16 @@
 #     TBD/TODO/Yes-No-to-decide and similar are NOT checked here (SKILL.md rule 8 allows them
 #     as a deliberate marker for a genuinely unknown value) - only find-missing.ps1 reports those,
 #     as an informational checklist, not a build failure.
+#   - the "Reference & examples" section (positions 71-75: divider, Subject Matter Experts,
+#     Flow mapping guideline, and the two "- EXAMPLE" slides) must be HIDDEN (show="0") in the
+#     final delivered deck. This section is tagged SKIP (never filled, never checked for leftover
+#     text/highlight above - see line 60), which is correct for a WORKING copy but means nothing
+#     else in this script ever looks at it either: a real delivered deck shipped with its EXAMPLE
+#     As-Is/To-Be diagram and macro-schedule timeline fully visible to the ARB because rule 5
+#     ("hide non-applicable slides per the Applicability slide") only covers domain-applicability,
+#     not this always-irrelevant, author-facing reference material. SKILL.md rule 5 has been
+#     extended (5c) to require hiding 71-75 before delivery; this check enforces it so a missed
+#     step fails the build instead of reaching a Gate reviewer.
 # Exit code 0 = OK, 1 = problems found.
 param(
     [Parameter(Mandatory = $true)][string]$Pptx,
@@ -70,6 +80,22 @@ if ($hlHits.Count -eq 0 -and $markerHits.Count -eq 0) {
 else {
     foreach ($h in $hlHits) { Write-Output ("ERROR: Slide {0} still has {1} leftover highlighted run(s) - run Remove-PptxHighlight before delivery." -f $h.Position, $h.Count) }
     foreach ($m in $markerHits) { Write-Output ("ERROR: Slide {0} still has leftover template instruction text: {1}" -f $m.Position, ($m.Markers -join ', ')) }
+}
+
+Write-Output ""
+Write-Output "== Reference & examples section (positions 71-75) must be hidden =="
+$refSectionVisible = @()
+foreach ($s in $slides) {
+    if ($s.Position -ge 71 -and $s.Position -le 75 -and $s.Visible) {
+        $refSectionVisible += $s.Position
+    }
+}
+if ($refSectionVisible.Count -eq 0) {
+    Write-Output "Reference & examples section (71-75) is hidden. OK."
+}
+else {
+    $fail = $true
+    Write-Output ("ERROR: Reference & examples slide(s) still VISIBLE in the delivered deck: {0} - hide with Set-PptxSlideVisibility -Positions {0} -Visible `$false before delivery (SKILL.md rule 5c)." -f ($refSectionVisible -join ','))
 }
 
 Write-Output ""

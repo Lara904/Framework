@@ -97,6 +97,18 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    `Set-PptxSlideVisibility ... -Visible $false` (`show="0"`) - do NOT physically delete slides
    (that renumbers positions and breaks the slide map / checklist). Hidden slides are auto-excluded
    from the gates checklist.
+5c. **Hide the "Reference & examples" section (positions 71-75) before every delivery.** These five
+   slides (the divider, Subject Matter Experts, Flow mapping guideline, and the two "- EXAMPLE"
+   slides) are author-facing reference material, tagged SKIP so nothing in this skill ever fills
+   or content-checks them (rule 10's leftover-highlight/instruction-text check explicitly excludes
+   SKIP slides). That is correct for the WORKING copy, but it means they are never automatically
+   hidden either - rule 5 only covers domain-applicability, not this section, which is irrelevant
+   to every project without exception. A real delivery once shipped with the EXAMPLE As-Is/To-Be
+   diagram and EXAMPLE macro-schedule timeline fully visible to the ARB because of exactly this
+   gap. Before saving the final deliverable, always run
+   `Set-PptxSlideVisibility -Positions 71,72,73,74,75 -Visible $false`. `validate-deck.ps1` now
+   fails the build if any of 71-75 is still visible, so there is no "I'll remember to hide it"
+   step left to skip (same philosophy as rule 10).
 5b. **Flag each slide's review state with a status corner banner.** After a filling pass, mark
    every in-scope slide with a colour-coded corner band via `Set-PptxSlideBanner` (or the
    `set-banners.ps1 -Auto` wrapper): ORANGE "TO VALIDATE" = content filled, awaiting stakeholder
@@ -141,7 +153,14 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    of adding another `<p:pic>`. Use `Remove-PptxImagesFromSlide` (or replace in place) and size
    the new diagram to the freed slot, preserving aspect ratio. Only use `Add-PptxImageToSlide` to
    add a picture on slides that genuinely have an empty area (e.g. slide 33's diagram zone). Never
-   overlap the diagram with existing text/shapes.
+   overlap the diagram with existing text/shapes. **Enforce this by eye, not just by rule**: this
+   script does not compute shape geometry, so nothing catches an overlap automatically. On slide
+   17 specifically, a real deck once added the functional-architecture diagram picture directly on
+   top of a template text paragraph that should have been deleted first (the paragraph was faint
+   enough behind the image to go unnoticed in a text-only review) - after placing or resizing any
+   picture, re-open the slide (render it, e.g. via LibreOffice `--convert-to png`) and visually
+   confirm nothing is hidden behind the new image before moving on, rather than trusting the XML
+   diff alone.
 8b. **On a "Link to ..." field, reference the OFFICIAL deliverable file/link, not a working copy.**
    The template's deliverable fields are meant to carry a link/reference to the authoritative
    document. Reference that official file by name/link on the slide - do NOT paste the document's
