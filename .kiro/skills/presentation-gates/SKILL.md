@@ -148,6 +148,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    Add project-specific rows the examples did not cover. Keep formatting UNIFORM across the
    rows/items you add (same font family and size as the existing body rows - reuse the run
    properties `<a:rPr sz=...>` already present, do not introduce a different font/size).
+   **Some of a row's cells ship genuinely empty** (e.g. the Risks table's Impact/Likehood/
+   Mitigation plan/Comments columns for the example rows are blank `<a:p><a:endParaRPr/></a:p>`,
+   not placeholder text) - `Set-PptxSlideRuns` has no `<a:t>` to target there. Use
+   `Add-PptxTableCellText -Cells @(@{Position=<n>; TableIndex=0; Row=<r>; Col=<c>; Text='...'})`
+   instead, which inserts a new run anchored on the cell's own `<a:endParaRPr>` (so it inherits
+   that cell's font size automatically). After filling a row this way, apply rule 8e's
+   `Set-PptxTableRowAutosize` and re-render - a row that was one short line of placeholder text
+   is now several real sentences across multiple cells, and is exactly the kind of growth that can
+   push a fixed-position shape below the table into overlap.
 8a. **Put references ONLY in the template's designated placeholder field - respect the layout.**
    Each slide has specific placeholders for its links (e.g. slide 42 has one field for the
    Technical Architecture *document* link and a separate field for the *diagram* link; slide 33
@@ -198,6 +207,21 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    OneDrive-synced library (it reads the local sync mount -> URL namespace mapping - no need to
    ask the user). Only if that returns `$null` (a purely local file, not synced) ask the user for
    the link, or leave the filename as plain text and note it in the README.
+8e. **After filling any table slide (e.g. Technical stack, slide 32/47), run
+   `Set-PptxTableRowAutosize -Positions <n>`.** A pre-built table's rows are sized for the
+   template's own short placeholder text; real project content is usually longer, and a taller
+   table can grow down into a standalone shape below it (a caption/footnote box does not move
+   out of the way on its own - this is true in PowerPoint too, not a rendering quirk). A real
+   pass found exactly this on slide 32: replacing "Debian XX*" / a 66-character comment with
+   real content overlapped a fixed "All the software and libraries..." note box sitting below
+   the table. `Set-PptxTableRowAutosize` estimates each row's needed height from the text
+   actually filled in, finds the nearest shape below the table and how much room is free before
+   it (and how much further that shape could still move down before running off the 16:9
+   slide), and uses that room first; only if the content still doesn't fit even using all the
+   slide's free room does it shrink the table's font (uniformly, floor 9pt) as a last resort -
+   which is a sign the content itself may be too dense and worth shortening instead. Re-render
+   the slide afterward and look at the PNG; this function's own report (FontScale, ShapeShiftedEmu)
+   says what it did, but is not itself proof the fix landed - see rule 10's rendering requirement.
 9. **Always keep the gates checklist up to date.** It is structured BY GATE, and each gate lists
    (a) its **slides** with missing data / leftover guidance and (b) its **required annex
    deliverables** (documents behind the "Link to ..." fields) with a persisted status. A trailing

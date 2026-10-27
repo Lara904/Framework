@@ -99,4 +99,22 @@ else {
 }
 
 Write-Output ""
+Write-Output "== Table overflow risk (text/geometry heuristic - see SKILL.md rule 8e) =="
+$overflowRisks = @()
+foreach ($s in $slides) {
+    if (-not $s.Visible) { continue }
+    $overflowRisks += @(Test-PptxTableOverflowRisk -Pptx $Pptx -Positions $s.Position)
+}
+$atRisk = @($overflowRisks | Where-Object AtRisk)
+if ($atRisk.Count -eq 0) {
+    Write-Output "No table on a visible slide looks too tall for the room below it."
+}
+else {
+    foreach ($r in $atRisk) {
+        Write-Output ("WARN:  Slide {0}'s table may overflow into the next shape (needs ~{1}% font scale to fit even after using all free slide room) - run Set-PptxTableRowAutosize -Positions {0}, then re-render and look at the PNG." -f $r.Position, [Math]::Round($r.FontScaleNeeded * 100))
+    }
+    Write-Output "(This is a heuristic WARNING, not a build failure - it does not fail the build on its own, because it estimates text wrapping rather than truly laying it out. Treat it as a cue to run Set-PptxTableRowAutosize and visually confirm, same as rule 8c.)"
+}
+
+Write-Output ""
 if ($fail) { Write-Output "RESULT: PROBLEMS FOUND"; exit 1 } else { Write-Output "RESULT: OK"; exit 0 }
