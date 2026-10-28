@@ -97,6 +97,18 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    `Set-PptxSlideVisibility ... -Visible $false` (`show="0"`) - do NOT physically delete slides
    (that renumbers positions and breaks the slide map / checklist). Hidden slides are auto-excluded
    from the gates checklist.
+5c. **Hide the "Reference & examples" section (positions 71-75) before every delivery.** These five
+   slides (the divider, Subject Matter Experts, Flow mapping guideline, and the two "- EXAMPLE"
+   slides) are author-facing reference material, tagged SKIP so nothing in this skill ever fills
+   or content-checks them (rule 10's leftover-highlight/instruction-text check explicitly excludes
+   SKIP slides). That is correct for the WORKING copy, but it means they are never automatically
+   hidden either - rule 5 only covers domain-applicability, not this section, which is irrelevant
+   to every project without exception. A real delivery once shipped with the EXAMPLE As-Is/To-Be
+   diagram and EXAMPLE macro-schedule timeline fully visible to the ARB because of exactly this
+   gap. Before saving the final deliverable, always run
+   `Set-PptxSlideVisibility -Positions 71,72,73,74,75 -Visible $false`. `validate-deck.ps1` now
+   fails the build if any of 71-75 is still visible, so there is no "I'll remember to hide it"
+   step left to skip (same philosophy as rule 10).
 5b. **Flag each slide's review state with a status corner banner.** After a filling pass, mark
    every in-scope slide with a colour-coded corner band via `Set-PptxSlideBanner` (or the
    `set-banners.ps1 -Auto` wrapper): ORANGE "TO VALIDATE" = content filled, awaiting stakeholder
@@ -117,6 +129,14 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    slides) - the latter even with no edits. See `references/tooling.md`.
 8. **Never invent approvals, names, costs, SLA or CMDB values.** If a value is unknown,
    leave a clearly marked `TBD` / `TODO` placeholder and tell the user what is missing.
+   **A marked placeholder beats a silently empty field.** A real IT Go-Live committee (a later,
+   separate meeting from these Architecture Gates, but filled the same way - body text typed
+   straight onto a slide) was presented with bullets reading "Validated Date of GO-Live:" and
+   "General view of the committee:" with nothing after the colon - not TBD, not a dash, just
+   empty. An empty field reads as "forgotten," not "deliberately unknown," and nobody in the room
+   can tell the difference between an oversight and a genuine open question. If a field has no
+   value yet, write `TBD` (or `n/a` when it is genuinely not applicable, as the same deck did
+   correctly elsewhere) rather than leaving the line visually blank.
 8d. **Template examples are INDICATIVE, not a source of truth.** The pre-filled example rows/items
    the template ships with (e.g. the Risks table's "Gen AI / Accessibility / Lack of training /
    Data" rows, sample cost lines, example approvers) are prompts to consider - NOT content to
@@ -128,6 +148,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    Add project-specific rows the examples did not cover. Keep formatting UNIFORM across the
    rows/items you add (same font family and size as the existing body rows - reuse the run
    properties `<a:rPr sz=...>` already present, do not introduce a different font/size).
+   **Some of a row's cells ship genuinely empty** (e.g. the Risks table's Impact/Likehood/
+   Mitigation plan/Comments columns for the example rows are blank `<a:p><a:endParaRPr/></a:p>`,
+   not placeholder text) - `Set-PptxSlideRuns` has no `<a:t>` to target there. Use
+   `Add-PptxTableCellText -Cells @(@{Position=<n>; TableIndex=0; Row=<r>; Col=<c>; Text='...'})`
+   instead, which inserts a new run anchored on the cell's own `<a:endParaRPr>` (so it inherits
+   that cell's font size automatically). After filling a row this way, apply rule 8e's
+   `Set-PptxTableRowAutosize` and re-render - a row that was one short line of placeholder text
+   is now several real sentences across multiple cells, and is exactly the kind of growth that can
+   push a fixed-position shape below the table into overlap.
 8a. **Put references ONLY in the template's designated placeholder field - respect the layout.**
    Each slide has specific placeholders for its links (e.g. slide 42 has one field for the
    Technical Architecture *document* link and a separate field for the *diagram* link; slide 33
@@ -136,12 +165,25 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    elsewhere on the slide, or leave your own explanatory text in the body. Keep the template's
    field headings intact (e.g. "Technical Architecture document"). After filling, remove leftover
    guidance/"Example"/"Insert here" runs, but do not invent new text runs.
+   **A link field left as bare text is as bad as an unfilled one.** A real Go-Live deck shipped
+   a diagram slide with its reference field reading only the single underlined word "link" - the
+   label was there, the hyperlink never was. `Set-PptxHyperlink` must actually run and attach a
+   `TargetMode="External"` relationship before a slide with a link field is considered filled;
+   underlined/colored placeholder-looking text is not evidence a link exists, so check the
+   relationship, not just the run's formatting.
 8c. **When a slide has no free space for a new picture, REPLACE the existing example image**
    (usually a placeholder thumbnail in a corner, e.g. the top-right example on slide 42) instead
    of adding another `<p:pic>`. Use `Remove-PptxImagesFromSlide` (or replace in place) and size
    the new diagram to the freed slot, preserving aspect ratio. Only use `Add-PptxImageToSlide` to
    add a picture on slides that genuinely have an empty area (e.g. slide 33's diagram zone). Never
-   overlap the diagram with existing text/shapes.
+   overlap the diagram with existing text/shapes. **Enforce this by eye, not just by rule**: this
+   script does not compute shape geometry, so nothing catches an overlap automatically. On slide
+   17 specifically, a real deck once added the functional-architecture diagram picture directly on
+   top of a template text paragraph that should have been deleted first (the paragraph was faint
+   enough behind the image to go unnoticed in a text-only review) - after placing or resizing any
+   picture, re-open the slide (render it, e.g. via LibreOffice `--convert-to png`) and visually
+   confirm nothing is hidden behind the new image before moving on, rather than trusting the XML
+   diff alone.
 8b. **On a "Link to ..." field, reference the OFFICIAL deliverable file/link, not a working copy.**
    The template's deliverable fields are meant to carry a link/reference to the authoritative
    document. Reference that official file by name/link on the slide - do NOT paste the document's
@@ -165,6 +207,21 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    OneDrive-synced library (it reads the local sync mount -> URL namespace mapping - no need to
    ask the user). Only if that returns `$null` (a purely local file, not synced) ask the user for
    the link, or leave the filename as plain text and note it in the README.
+8e. **After filling any table slide (e.g. Technical stack, slide 32/47), run
+   `Set-PptxTableRowAutosize -Positions <n>`.** A pre-built table's rows are sized for the
+   template's own short placeholder text; real project content is usually longer, and a taller
+   table can grow down into a standalone shape below it (a caption/footnote box does not move
+   out of the way on its own - this is true in PowerPoint too, not a rendering quirk). A real
+   pass found exactly this on slide 32: replacing "Debian XX*" / a 66-character comment with
+   real content overlapped a fixed "All the software and libraries..." note box sitting below
+   the table. `Set-PptxTableRowAutosize` estimates each row's needed height from the text
+   actually filled in, finds the nearest shape below the table and how much room is free before
+   it (and how much further that shape could still move down before running off the 16:9
+   slide), and uses that room first; only if the content still doesn't fit even using all the
+   slide's free room does it shrink the table's font (uniformly, floor 9pt) as a last resort -
+   which is a sign the content itself may be too dense and worth shortening instead. Re-render
+   the slide afterward and look at the PNG; this function's own report (FontScale, ShapeShiftedEmu)
+   says what it did, but is not itself proof the fix landed - see rule 10's rendering requirement.
 9. **Always keep the gates checklist up to date.** It is structured BY GATE, and each gate lists
    (a) its **slides** with missing data / leftover guidance and (b) its **required annex
    deliverables** (documents behind the "Link to ..." fields) with a persisted status. A trailing

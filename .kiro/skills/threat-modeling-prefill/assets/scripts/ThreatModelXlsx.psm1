@@ -74,8 +74,34 @@ function New-XlsxRow {
   return $sb.ToString()
 }
 
+# Per-column widths, derived from the header text so every sheet gets widths that fit
+# its OWN columns instead of one flat number for every column. "Threat Scenarios" real
+# output routinely has a 226-char "Element / asset" cell and a 579-char "Countermeasures"
+# cell sitting in a column that was 24 units wide with no wrapText - completely unreadable
+# without the reviewer manually resizing every column by hand first.
+function Get-XlsxColWidths {
+  param([string[]]$Header)
+  $wideKeywords = @('scenario','element','asset','countermeasure','description','scope','comment','validation')
+  $narrowKeywords = @('id','occurrence','impact','stride','nist','date')
+  $widths = @()
+  foreach ($h in $Header) {
+    $hl = ([string]$h).ToLowerInvariant()
+    $isWide = $false
+    foreach ($k in $wideKeywords) { if ($hl.Contains($k)) { $isWide = $true; break } }
+    $isNarrow = $false
+    foreach ($k in $narrowKeywords) { if ($hl.Contains($k)) { $isNarrow = $true; break } }
+    if ($isWide) { $widths += 42 }
+    elseif ($isNarrow) { $widths += 14 }
+    else { $widths += [math]::Max(16, [math]::Min(34, $h.Length + 4)) }
+  }
+  return $widths
+}
+
 function Get-XlsxSheetData {
   param([string[]]$Header, [object[]]$Rows, [string]$Title = '')
+  # StyleId 1 = title, 2 = header (bold + shaded), 3 = normal data (wrapped + bordered,
+  # top-aligned). Plain StyleId 0 (no wrap, no border) is still used for the Cover
+  # sheet's free-form label/value rows built directly in New-ThreatModelXlsx below.
   $sb = New-Object System.Text.StringBuilder
   $r = 1
   if ($Title -ne '') {
@@ -85,19 +111,39 @@ function Get-XlsxSheetData {
   [void]$sb.Append((New-XlsxRow -RowNum $r -Values $Header -StyleId 2))
   $r++
   foreach ($row in $Rows) {
-    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 0))
+    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 3))
     $r++
   }
   return $sb.ToString()
 }
 
 function Get-XlsxWorksheetXml {
-  param([string]$SheetData, [int]$ColCount)
+  param([string]$SheetData, [int]$ColCount, [int[]]$ColWidths, [int]$HeaderRow = 1, [int]$LastRow = 1, [switch]$AutoFilter)
+  $lastCol = Get-XlsxColLetter -Index ([math]::Max(1, $ColCount))
+  if (-not $ColWidths -or $ColWidths.Count -lt $ColCount) {
+    $ColWidths = @(for ($i = 0; $i -lt $ColCount; $i++) { 24 })
+  }
+  $colsXml = New-Object System.Text.StringBuilder
+  for ($i = 0; $i -lt $ColCount; $i++) {
+    [void]$colsXml.Append(('<col min="{0}" max="{0}" width="{1}" customWidth="1"/>' -f ($i + 1), $ColWidths[$i]))
+  }
+  # Freeze the header row so it stays visible while scrolling (Threat Scenarios regularly
+  # runs to 80-90+ rows for a real catalog selection).
+  $paneXml = ''
+  if ($HeaderRow -gt 0) {
+    $paneXml = '<pane ySplit="{0}" topLeftCell="A{1}" activePane="bottomLeft" state="frozen"/>' -f $HeaderRow, ($HeaderRow + 1)
+  }
+  $filterXml = ''
+  if ($AutoFilter -and $HeaderRow -gt 0) {
+    $filterXml = '<autoFilter ref="A{0}:{1}{2}"/>' -f $HeaderRow, $lastCol, $LastRow
+  }
 @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <cols><col min="1" max="$ColCount" width="24" customWidth="1"/></cols>
+  <sheetViews><sheetView workbookViewId="0">$paneXml</sheetView></sheetViews>
+  <cols>$colsXml</cols>
   <sheetData>$SheetData</sheetData>
+  $filterXml
 </worksheet>
 "@
 }
@@ -121,10 +167,11 @@ function Get-XlsxStylesXml {
     <border><left style="thin"><color rgb="FF999999"/></left><right style="thin"><color rgb="FF999999"/></right><top style="thin"><color rgb="FF999999"/></top><bottom style="thin"><color rgb="FF999999"/></bottom><diagonal/></border>
   </borders>
   <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-  <cellXfs count="3">
+  <cellXfs count="4">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
     <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
     <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
   </cellXfs>
   <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>
@@ -260,7 +307,8 @@ function New-ThreatModelXlsx {
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Risk level', 'matrix lookup (occurrence, impact): very low / low / average / above average / high / extreme - NOT occurrence x impact as a number') -StyleId 0)); $r++
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Countermeasure efficiency', 'occurrenceMitigation x impactMitigation x easeOfImplementation x bandWeight(highest risk level it mitigates) - see countermeasure-library.json') -StyleId 0)); $r++
   [void]$coverSb.Append((New-XlsxRow -RowNum $r -Values @('Scenario catalog', 'Selected from the real 176-scenario SFS catalog (threat-catalog.json); a scenario with no catalog match is marked custom') -StyleId 0)); $r++
-  $coverXml = Get-XlsxWorksheetXml -SheetData $coverSb.ToString() -ColCount 2
+  # Cover is narrative (label/value rows), not a tabular grid, so no header-row freeze.
+  $coverXml = Get-XlsxWorksheetXml -SheetData $coverSb.ToString() -ColCount 2 -ColWidths @(28,70) -HeaderRow 0
 
   # ---- Sheet 2: Threat Scenarios ----
   $sHeader = @('ID','Element / asset','Scope','Threat scenario','STRIDE-LM','Occurrence (1-3)','Impact (1-3)','Risk level','Countermeasures','Efficiency','NIST families','Validation status')
@@ -274,7 +322,7 @@ function New-ThreatModelXlsx {
     )
   }
   $scenData = Get-XlsxSheetData -Header $sHeader -Rows $sRows
-  $scenXml = Get-XlsxWorksheetXml -SheetData $scenData -ColCount $sHeader.Count
+  $scenXml = Get-XlsxWorksheetXml -SheetData $scenData -ColCount $sHeader.Count -ColWidths (Get-XlsxColWidths -Header $sHeader) -HeaderRow 1 -LastRow ([math]::Max(1, $sRows.Count + 1)) -AutoFilter
 
   # ---- Sheet 3: NIST Mapping ----
   $nHeader = @('Scenario ID','STRIDE-LM','NIST SP 800-53 families','Family names')
@@ -285,7 +333,7 @@ function New-ThreatModelXlsx {
     )
   }
   $nistData = Get-XlsxSheetData -Header $nHeader -Rows $nRows -Title 'STRIDE-LM -> NIST SP 800-53 mapping'
-  $nistXml = Get-XlsxWorksheetXml -SheetData $nistData -ColCount $nHeader.Count
+  $nistXml = Get-XlsxWorksheetXml -SheetData $nistData -ColCount $nHeader.Count -ColWidths (Get-XlsxColWidths -Header $nHeader) -HeaderRow 3 -LastRow ([math]::Max(3, $nRows.Count + 3)) -AutoFilter
 
   $sheetNames = @('Cover', 'Threat Scenarios', 'NIST Mapping')
   $sheetCount = $sheetNames.Count

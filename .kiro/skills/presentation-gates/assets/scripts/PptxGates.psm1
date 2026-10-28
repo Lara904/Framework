@@ -519,6 +519,510 @@ function Set-PptxSlideRuns {
     return $results
 }
 
+function Add-PptxTableCellText {
+    <#
+        Insert text into a genuinely EMPTY table cell - one the template ships as a blank
+        paragraph with no run at all (<a:p><a:endParaRPr lang="en-US" sz="1200"/></a:p>), such as
+        the Risks table's Impact/Likehood/Mitigation plan/Comments columns for its "Gen AI" /
+        "Accessibility" / "Lack of training" / "Data" example rows (rule 8d: these rows are
+        indicative and must be completed with real project values, or deleted if not applicable).
+
+        Set-PptxSlideRuns cannot address these cells - it replaces the text of an EXISTING <a:t>,
+        and an empty cell has none. This function instead locates the cell by table/row/column
+        position and inserts a new <a:r> (reusing the cell's own <a:endParaRPr> lang/sz as the new
+        run's <a:rPr>, so added text matches the surrounding table's formatting per rule 8d)
+        immediately before that <a:endParaRPr>. It refuses to touch a cell that already has an
+        <a:t> run, to avoid silently duplicating or shadowing existing content - use
+        Set-PptxSlideRuns for a cell that already has text.
+
+        -Cells is an array of hashtables: @{ Position=<n>; TableIndex=0; Row=<r>; Col=<c>; Text='..' }
+        TableIndex/Row/Col are all 0-based, counting <a:tbl>/<a:tr>/<a:tc> elements on the slide (or
+        within the row) in document order; a gridSpan-merged cell still occupies exactly one <a:tc>
+        at its position. Returns a result object per cell (Applied true/false + Reason).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][hashtable[]]$Cells
+    )
+    if (-not (Test-Path $Pptx)) { throw "File not found: $Pptx" }
+    Assert-NotTemplate -Path $Pptx
+    $full = (Resolve-Path $Pptx).Path
+
+    $cache = @{}
+    $results = @()
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
+    try {
+        $order = Get-PptxSlideOrderFromArchive -Archive $zip
+        foreach ($c in $Cells) {
+            $p = [int]$c.Position
+            $tblIdx = if ($c.ContainsKey('TableIndex')) { [int]$c.TableIndex } else { 0 }
+            $row = [int]$c.Row
+            $col = [int]$c.Col
+            $text = [string]$c.Text
+
+            if ($p -lt 1 -or $p -gt $order.Count) {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = 'position out of range' }
+                continue
+            }
+            $entry = $order[$p - 1]
+            if (-not $cache.ContainsKey($entry)) { $cache[$entry] = Read-ZipEntryText -Archive $zip -EntryName $entry }
+            $content = $cache[$entry]
+
+            $tblMatches = [regex]::Matches($content, '<a:tbl>.*?</a:tbl>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+            if ($tblIdx -lt 0 -or $tblIdx -ge $tblMatches.Count) {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = "table index out of range (0..$($tblMatches.Count - 1))" }
+                continue
+            }
+            $tblMatch = $tblMatches[$tblIdx]
+
+            $rowMatches = [regex]::Matches($tblMatch.Value, '<a:tr[ >].*?</a:tr>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+            if ($row -lt 0 -or $row -ge $rowMatches.Count) {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = "row index out of range (0..$($rowMatches.Count - 1))" }
+                continue
+            }
+            $rowMatch = $rowMatches[$row]
+
+            $cellMatches = [regex]::Matches($rowMatch.Value, '<a:tc[ >].*?</a:tc>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+            if ($col -lt 0 -or $col -ge $cellMatches.Count) {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = "col index out of range (0..$($cellMatches.Count - 1))" }
+                continue
+            }
+            $cellMatch = $cellMatches[$col]
+
+            if ($cellMatch.Value -match '<a:t>') {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = 'cell already has text - use Set-PptxSlideRuns instead' }
+                continue
+            }
+
+            $endParaMatch = [regex]::Match($cellMatch.Value, '<a:endParaRPr[^>]*/>')
+            if (-not $endParaMatch.Success) {
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = 'no empty <a:endParaRPr/> found to anchor the new run on' }
+                continue
+            }
+            $lang = 'en-US'
+            $langMatch = [regex]::Match($endParaMatch.Value, 'lang="([^"]*)"')
+            if ($langMatch.Success) { $lang = $langMatch.Groups[1].Value }
+            $sz = $null
+            $szMatch = [regex]::Match($endParaMatch.Value, 'sz="([^"]*)"')
+            if ($szMatch.Success) { $sz = $szMatch.Groups[1].Value }
+            $rPrAttrs = "lang=`"$lang`""
+            if ($sz) { $rPrAttrs += " sz=`"$sz`"" }
+            $newRun = "<a:r><a:rPr $rPrAttrs/><a:t>" + (ConvertTo-XmlText $text) + '</a:t></a:r>'
+
+            # Absolute offset of the <a:endParaRPr/> within the full part content.
+            $absOffset = $tblMatch.Index + $rowMatch.Index + $cellMatch.Index + $endParaMatch.Index
+            $content = $content.Substring(0, $absOffset) + $newRun + $content.Substring($absOffset)
+            $cache[$entry] = $content
+            $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $true; Reason = 'run inserted' }
+        }
+    } finally { $zip.Dispose() }
+
+    $edits = @{}
+    foreach ($k in $cache.Keys) { $edits[$k] = $cache[$k] }
+    if ($edits.Count -gt 0) { Set-PptxParts -Pptx $full -Edits $edits }
+    return $results
+}
+
+# --- Table row autosize (root-cause fix for text-overflow/overlap on table slides) -----------
+function Measure-PptxTableRowHeightsInternal {
+    <#
+        Internal helper (not exported). Estimates each row's content height for a table XML
+        fragment at a given font-size SCALE (1.0 = actual declared run sizes). Returns an
+        array of per-row heights in EMU, same order as the table's rows. Used twice by
+        Set-PptxTableRowAutosize: once at scale 1.0 to see whether the table fits as filled,
+        and again at a reduced scale to size-check a candidate font shrink BEFORE committing
+        to it.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Tbl,
+        [Parameter(Mandatory)][int64[]]$GridCols,
+        [double]$Scale = 1.0
+    )
+    $reOpts = [System.Text.RegularExpressions.RegexOptions]::Singleline
+    $rowMatches = [regex]::Matches($Tbl, '<a:tr\s[^>]*?\bh="(\d+)"[^>]*>.*?</a:tr>', $reOpts)
+    $heights = @()
+    foreach ($rowMatch in $rowMatches) {
+        $rowXml = $rowMatch.Value
+        $cellMatches = [regex]::Matches($rowXml, '<a:tc(?:\s[^>]*)?/>|<a:tc(?:\s[^>]*)?>.*?</a:tc>', $reOpts)
+        $colIdx = 0
+        $maxCellHeight = [int64]0
+        foreach ($cm in $cellMatches) {
+            $tc = $cm.Value
+            $gridSpanM = [regex]::Match($tc, '\bgridSpan="(\d+)"')
+            $span = 1
+            if ($gridSpanM.Success) { $span = [Math]::Max(1, [int]$gridSpanM.Groups[1].Value) }
+
+            $cellWidth = [int64]0
+            for ($s = 0; $s -lt $span -and ($colIdx + $s) -lt $GridCols.Count; $s++) { $cellWidth += $GridCols[$colIdx + $s] }
+            if ($cellWidth -le 0) { $cellWidth = 914400 }
+            $colIdx += $span
+
+            $isMergeContinuation = ($tc -match '\bhMerge="1"') -or ($tc -match '\bvMerge="1"')
+            if ($isMergeContinuation) { continue }
+
+            $marLm = [regex]::Match($tc, 'marL="(\d+)"'); $marL = if ($marLm.Success) { [int64]$marLm.Groups[1].Value } else { 91440 }
+            $marRm = [regex]::Match($tc, 'marR="(\d+)"'); $marR = if ($marRm.Success) { [int64]$marRm.Groups[1].Value } else { 91440 }
+            $marTm = [regex]::Match($tc, 'marT="(\d+)"'); $marT = if ($marTm.Success) { [int64]$marTm.Groups[1].Value } else { 45720 }
+            $marBm = [regex]::Match($tc, 'marB="(\d+)"'); $marB = if ($marBm.Success) { [int64]$marBm.Groups[1].Value } else { 45720 }
+
+            $usableWidth = $cellWidth - $marL - $marR
+            if ($usableWidth -lt 91440) { $usableWidth = 91440 }
+
+            $paraMatches = [regex]::Matches($tc, '<a:p>.*?</a:p>', $reOpts)
+            $cellLines = 0
+            $maxSz = 0
+            if ($paraMatches.Count -eq 0) { $cellLines = 1 }
+            foreach ($pm in $paraMatches) {
+                $para = $pm.Value
+                $runSzMatches = [regex]::Matches($para, '<a:r>.*?<a:rPr[^>]*\bsz="(\d+)"', $reOpts)
+                $sz = 1200
+                if ($runSzMatches.Count -gt 0) {
+                    $sz = ($runSzMatches | ForEach-Object { [int]$_.Groups[1].Value } | Measure-Object -Maximum).Maximum
+                } else {
+                    $anySz = [regex]::Matches($para, '\bsz="(\d+)"')
+                    if ($anySz.Count -gt 0) { $sz = ($anySz | ForEach-Object { [int]$_.Groups[1].Value } | Measure-Object -Maximum).Maximum }
+                }
+                $sz = $sz * $Scale
+                if ($sz -gt $maxSz) { $maxSz = $sz }
+
+                $texts = [regex]::Matches($para, '<a:t>(.*?)</a:t>')
+                $paraText = ($texts | ForEach-Object { [System.Net.WebUtility]::HtmlDecode($_.Groups[1].Value) }) -join ''
+                $fontPt = $sz / 100.0
+                # 0.62, not the more typical ~0.52 for a plain proportional font: this
+                # template's "Encode Sans" is usually unavailable (e.g. on a Linux render host)
+                # and falls back to a substitute whose metrics run wider, plus this pads for the
+                # heuristic's own imprecision - calibrated against the actual slide 32 overflow.
+                $avgCharWidthEmu = [Math]::Max(1.0, $fontPt * 0.62 * 12700)
+                $charsPerLine = [Math]::Max(1, [Math]::Floor($usableWidth / $avgCharWidthEmu))
+                $len = $paraText.Length
+                $linesInPara = if ($len -eq 0) { 1 } else { [Math]::Ceiling($len / $charsPerLine) }
+                $cellLines += $linesInPara
+            }
+            if ($maxSz -eq 0) { $maxSz = 1200 * $Scale }
+            $lineHeightEmu = ($maxSz / 100.0) * 1.3 * 12700
+            $cellHeight = [int64]([Math]::Ceiling($cellLines * $lineHeightEmu) + $marT + $marB)
+            if ($cellHeight -gt $maxCellHeight) { $maxCellHeight = $cellHeight }
+        }
+        $heights += $maxCellHeight
+    }
+    return , $heights
+}
+
+function Set-PptxTableRowAutosize {
+    <#
+        Root-cause fix for the "longer real content overlaps something below the table" class
+        of defect found by rendering the slide 32 (Technical stack) table to PNG: replacing a
+        template's short placeholder cell text ("Debian XX*", a ~66-char comment) with longer
+        real content ("~115-char comment") makes the table need more vertical room than the
+        template originally laid out for it - and PowerPoint tables do not push other shapes
+        out of their way, so a standalone caption/callout sitting below the table (here, a
+        fixed-position "All the software and libraries will be upgraded..." note box) ends up
+        with the now-taller table rendered underneath it. Rendering the deck (LibreOffice) is
+        how this was found; the same geometry defect reproduces in real PowerPoint, since it is
+        two independently-positioned shapes overlapping, not a renderer quirk.
+
+        Call this AFTER filling a table's cell text (Set-PptxSlideRuns / Set-PptxSlideReplacements)
+        on every table-bearing slide - see presentation-gates SKILL.md rule 8e. For each table:
+          1. Estimates each row's content height from its actual text (column width, cell
+             insets, gridSpan, and the run font size(s) present), using a character-width
+             heuristic (0.62 * font size, padded above the ~0.52 textbook average to cover
+             both substitute-font widening and the heuristic's own imprecision).
+          2. Finds the next shape positioned below the table (by XML/declaration order) to learn
+             how much room is actually free before something else starts, and how much further
+             that shape could still be nudged down before it would run off the bottom of the
+             16:9 slide (-SlideHeightEmu, default 5143500 - this template's canvas height).
+          3. If the table already fits in that free room: done, no visual change, but the
+             <a:tr h="..."> values and the frame's declared cy are still set to the content-
+             accurate heights (cosmetic/consistency - real PowerPoint recomputes these dynamically
+             when it opens the file, but shipping accurate values avoids relying on that).
+          4. If it doesn't fit but nudging the next shape down (within the slide's remaining
+             room) closes the gap: shift that shape down by exactly the overflow - the content
+             itself is untouched.
+          5. If it still doesn't fit even after using all the room on the slide: shrinks every
+             run's font size in the table by the smallest uniform factor (floor 9pt / sz=900)
+             that makes it fit, and nudges the next shape down by any remainder. This is a last
+             resort - a reviewer should still sanity-check whether that content truly needs to
+             be that dense, or should be shortened instead (this function cannot tell).
+        Reports exactly which of these happened per position, so the caller/report doesn't have
+        to guess from the file diff.
+
+        -Positions: slide positions whose top-level table(s) should be sized. Never shrinks a
+        row/font below what's needed - only grows/shrinks exactly as far as the content and the
+        slide's own geometry require. OPC-safe: byte-level splice + Create-mode rewrite
+        (Set-PptxParts), like the rest of this module - never re-serializes slide XML.
+
+        This is a heuristic (character-width approximation, not a real text-layout engine), not
+        a substitute for actually looking at the rendered PNG - always re-render after calling
+        it and visually confirm, especially on a last-resort font shrink.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][int[]]$Positions,
+        [int64]$SlideHeightEmu = 5143500
+    )
+    if (-not (Test-Path $Pptx)) { throw "File not found: $Pptx" }
+    Assert-NotTemplate -Path $Pptx
+    $full = (Resolve-Path $Pptx).Path
+    $reOpts = [System.Text.RegularExpressions.RegexOptions]::Singleline
+    $bottomMargin = 45720   # 0.05in - never push a shape flush against the slide edge
+    $gapMargin = 45720      # 0.05in - minimum visual gap to preserve above the next shape
+
+    $cache = @{}
+    $report = @()
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
+    try {
+        $order = Get-PptxSlideOrderFromArchive -Archive $zip
+        foreach ($p in $Positions) {
+            if ($p -lt 1 -or $p -gt $order.Count) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'position out of range' }; continue }
+            $entry = $order[$p - 1]
+            if (-not $cache.ContainsKey($entry)) { $cache[$entry] = Read-ZipEntryText -Archive $zip -EntryName $entry }
+            $content = $cache[$entry]
+
+            $tblMatches = [regex]::Matches($content, '<a:tbl>.*?</a:tbl>', $reOpts)
+            if ($tblMatches.Count -eq 0) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'no <a:tbl> found' }; continue }
+
+            $plannedEdits = @()   # list of @{ Start; Length; Replacement }
+            $rowsResized = 0
+            $minScaleApplied = 1.0
+            $totalShift = 0
+
+            foreach ($tblMatch in $tblMatches) {
+                $tbl = $tblMatch.Value
+                $gridCols = @([regex]::Matches($tbl, '<a:gridCol[^>]*\sw="(\d+)"') | ForEach-Object { [int64]$_.Groups[1].Value })
+                if ($gridCols.Count -eq 0) { continue }
+
+                # This table's own frame position (search backward for the nearest preceding xfrm).
+                # p:graphicFrame (tables, embedded objects) uses <p:xfrm>; ordinary shapes
+                # (<p:sp>, <p:pic>) carry their position as <a:xfrm> inside <p:spPr>/<p:pic>'s
+                # shape properties - match either so a plain textbox below the table is found.
+                $xfrmPattern = '<[ap]:xfrm[^>]*>\s*<a:off x="(-?\d+)" y="(-?\d+)"\s*/>\s*<a:ext cx="(\d+)" cy="(\d+)"\s*/>\s*</[ap]:xfrm>'
+                $beforeTbl = $content.Substring(0, $tblMatch.Index)
+                $selfXfrms = [regex]::Matches($beforeTbl, $xfrmPattern)
+                if ($selfXfrms.Count -eq 0) { continue }
+                $selfXfrm = $selfXfrms[$selfXfrms.Count - 1]
+                $tableY = [int64]$selfXfrm.Groups[2].Value
+                $cyGroup = $selfXfrm.Groups[4]
+
+                # The shape positioned immediately below the table on the SLIDE - not simply the
+                # next xfrm in document order, because shapes are not necessarily declared in
+                # top-to-bottom visual order (e.g. a callout box drawn above the table can appear
+                # later in the XML than the table itself). Scan every xfrm on the slide, exclude
+                # the table's own, keep only those whose top (y) is at or below the table's own
+                # top, and take the SMALLEST such y as the nearest shape below.
+                $allXfrms = [regex]::Matches($content, $xfrmPattern)
+                $hasNextShape = $false
+                $nextShapeY = $SlideHeightEmu
+                $nextShapeH = 0
+                $nextShapeYGroup = $null
+                foreach ($nx in $allXfrms) {
+                    if ($nx.Index -eq $selfXfrm.Index) { continue }  # skip the table's own xfrm
+                    $candY = [int64]$nx.Groups[2].Value
+                    if ($candY -lt $tableY) { continue }  # above the table - not relevant
+                    if (-not $hasNextShape -or $candY -lt $nextShapeY) {
+                        $hasNextShape = $true
+                        $nextShapeY = $candY
+                        $nextShapeH = [int64]$nx.Groups[4].Value
+                        $nextShapeYGroup = $nx.Groups[2]
+                    }
+                }
+                if (-not $hasNextShape) { $nextShapeY = $SlideHeightEmu }
+
+                $budget = $nextShapeY - $tableY - $gapMargin
+                if ($budget -lt 0) { $budget = 0 }
+                $maxSlack = 0
+                if ($hasNextShape) {
+                    $maxSlack = $SlideHeightEmu - $bottomMargin - ($nextShapeY + $nextShapeH)
+                    if ($maxSlack -lt 0) { $maxSlack = 0 }
+                }
+                $extendedBudget = $budget + $maxSlack
+
+                $naturalHeights = Measure-PptxTableRowHeightsInternal -Tbl $tbl -GridCols $gridCols -Scale 1.0
+                $naturalTotal = [int64](($naturalHeights | Measure-Object -Sum).Sum)
+
+                $finalHeights = $naturalHeights
+                $finalTotal = $naturalTotal
+                $scale = 1.0
+                $shiftNeeded = 0
+
+                if ($naturalTotal -gt $budget) {
+                    if ($naturalTotal -le $extendedBudget) {
+                        $shiftNeeded = $naturalTotal - $budget
+                    } else {
+                        if ($extendedBudget -gt 0) {
+                            $scale = [Math]::Max(0.6, [Math]::Min(0.95, $extendedBudget / [double]$naturalTotal))
+                        } else {
+                            $scale = 0.6
+                        }
+                        $scaledHeights = Measure-PptxTableRowHeightsInternal -Tbl $tbl -GridCols $gridCols -Scale $scale
+                        $scaledTotal = [int64](($scaledHeights | Measure-Object -Sum).Sum)
+                        $finalHeights = $scaledHeights
+                        $finalTotal = $scaledTotal
+                        $shiftNeeded = [Math]::Min($maxSlack, [Math]::Max(0, $scaledTotal - $budget))
+                    }
+                }
+                if ($shiftNeeded -lt 0) { $shiftNeeded = 0 }
+                if ($scale -lt $minScaleApplied) { $minScaleApplied = $scale }
+                $totalShift += $shiftNeeded
+
+                # Queue the font-size shrink (only if scale < 1.0): rewrite every sz="N" inside
+                # this table to round(N*scale) clamped to a 9pt floor, nearest 0.5pt (50 units).
+                if ($scale -lt 1.0) {
+                    $szMatches = [regex]::Matches($tbl, '\bsz="(\d+)"')
+                    foreach ($szm in $szMatches) {
+                        $origSz = [int]$szm.Groups[1].Value
+                        $newSz = [Math]::Max(900, [Math]::Round(($origSz * $scale) / 50.0) * 50)
+                        if ($newSz -ne $origSz) {
+                            $g = $szm.Groups[1]
+                            $plannedEdits += [pscustomobject]@{ Start = $tblMatch.Index + $g.Index; Length = $g.Length; Replacement = [string]([int]$newSz) }
+                        }
+                    }
+                }
+
+                # Queue row height edits using the final (natural or scaled) per-row heights.
+                $rowMatches = [regex]::Matches($tbl, '<a:tr\s[^>]*?\bh="(\d+)"[^>]*>.*?</a:tr>', $reOpts)
+                for ($i = 0; $i -lt $rowMatches.Count -and $i -lt $finalHeights.Count; $i++) {
+                    $rowMatch = $rowMatches[$i]
+                    $existingH = [int64]$rowMatch.Groups[1].Value
+                    $newH = $finalHeights[$i]
+                    if ($newH -ne $existingH) {
+                        $hGroup = $rowMatch.Groups[1]
+                        $plannedEdits += [pscustomobject]@{ Start = $tblMatch.Index + $hGroup.Index; Length = $hGroup.Length; Replacement = [string]([int64]$newH) }
+                        $rowsResized++
+                    }
+                }
+
+                # Queue the frame's own cy update if the table's total height changed.
+                $existingCy = [int64]$cyGroup.Value
+                if ($finalTotal -ne $existingCy) {
+                    $plannedEdits += [pscustomobject]@{ Start = $cyGroup.Index; Length = $cyGroup.Length; Replacement = [string]$finalTotal }
+                }
+
+                # Queue the next shape's downward shift, if any. $nextShapeYGroup.Index is
+                # already an absolute offset into $content (found via a full-content scan above).
+                if ($shiftNeeded -gt 0 -and $nextShapeYGroup) {
+                    $newY = $nextShapeY + $shiftNeeded
+                    $plannedEdits += [pscustomobject]@{ Start = $nextShapeYGroup.Index; Length = $nextShapeYGroup.Length; Replacement = [string]([int64]$newY) }
+                }
+            }
+
+            if ($plannedEdits.Count -eq 0) {
+                $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'already fits - no change needed' }
+                continue
+            }
+
+            # Apply right-to-left so earlier offsets stay valid as we splice (same pattern as
+            # Set-PptxSlideRuns / Set-PptxSlideReplacements elsewhere in this module).
+            $ordered = $plannedEdits | Sort-Object { [int64]$_.Start } -Descending
+            foreach ($e in $ordered) {
+                $content = $content.Substring(0, $e.Start) + $e.Replacement + $content.Substring($e.Start + $e.Length)
+            }
+            $cache[$entry] = $content
+            $reason = $null
+            if ($minScaleApplied -lt 1.0) { $reason = "font shrunk to $([Math]::Round($minScaleApplied*100))% to fit" }
+            $report += [pscustomobject]@{ Position = $p; Applied = $true; RowsResized = $rowsResized; FontScale = $minScaleApplied; ShapeShiftedEmu = $totalShift; Reason = $reason }
+        }
+    } finally { $zip.Dispose() }
+
+    $edits = @{}
+    foreach ($k in $cache.Keys) { $edits[$k] = $cache[$k] }
+    if ($edits.Count -gt 0) { Set-PptxParts -Pptx $full -Edits $edits }
+    return $report
+}
+
+function Test-PptxTableOverflowRisk {
+    <#
+        Text/geometry-only early warning for the table-overflow defect class
+        Set-PptxTableRowAutosize fixes (see its help and SKILL.md rule 8e): for every table on
+        every given slide position, estimates the table's natural content height the same way
+        Set-PptxTableRowAutosize does, and flags it if that height would still need a font
+        shrink to fit before the next shape on the slide - i.e. Set-PptxTableRowAutosize was
+        never run on it, or ran and had to shrink fonts to cope, either of which is worth a
+        second look. This is the rule-8c-style "a text-only check can't replace looking at the
+        render" check for THIS specific defect: it catches the geometry case cheaply, in every
+        validate-deck.ps1 run, without needing to render anything - but a PASS here is not proof
+        the slide looks right; it only means the known failure mode wasn't detected. Always
+        still do the full visual render pass before calling a deck final.
+
+        -Positions: slide positions to check (validate-deck.ps1 passes every visible slide).
+        Returns one object per table found, with Position, RowCount, NaturalHeightEmu,
+        BudgetEmu, FontScaleNeeded (1.0 = fits as-is) and AtRisk (bool - true when
+        FontScaleNeeded < 1.0, meaning even using all the slide's free room wasn't enough).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][int[]]$Positions,
+        [int64]$SlideHeightEmu = 5143500
+    )
+    if (-not (Test-Path $Pptx)) { throw "File not found: $Pptx" }
+    $full = (Resolve-Path $Pptx).Path
+    $reOpts = [System.Text.RegularExpressions.RegexOptions]::Singleline
+    $bottomMargin = 45720
+    $gapMargin = 45720
+    $xfrmPattern = '<[ap]:xfrm[^>]*>\s*<a:off x="(-?\d+)" y="(-?\d+)"\s*/>\s*<a:ext cx="(\d+)" cy="(\d+)"\s*/>\s*</[ap]:xfrm>'
+
+    $results = @()
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
+    try {
+        $order = Get-PptxSlideOrderFromArchive -Archive $zip
+        foreach ($p in $Positions) {
+            if ($p -lt 1 -or $p -gt $order.Count) { continue }
+            $entry = $order[$p - 1]
+            $content = Read-ZipEntryText -Archive $zip -EntryName $entry
+            $tblMatches = [regex]::Matches($content, '<a:tbl>.*?</a:tbl>', $reOpts)
+            foreach ($tblMatch in $tblMatches) {
+                $tbl = $tblMatch.Value
+                $gridCols = @([regex]::Matches($tbl, '<a:gridCol[^>]*\sw="(\d+)"') | ForEach-Object { [int64]$_.Groups[1].Value })
+                if ($gridCols.Count -eq 0) { continue }
+
+                $beforeTbl = $content.Substring(0, $tblMatch.Index)
+                $selfXfrms = [regex]::Matches($beforeTbl, $xfrmPattern)
+                if ($selfXfrms.Count -eq 0) { continue }
+                $selfXfrm = $selfXfrms[$selfXfrms.Count - 1]
+                $tableY = [int64]$selfXfrm.Groups[2].Value
+
+                $allXfrms = [regex]::Matches($content, $xfrmPattern)
+                $hasNextShape = $false
+                $nextShapeY = $SlideHeightEmu
+                $nextShapeH = 0
+                foreach ($nx in $allXfrms) {
+                    if ($nx.Index -eq $selfXfrm.Index) { continue }
+                    $candY = [int64]$nx.Groups[2].Value
+                    if ($candY -lt $tableY) { continue }
+                    if (-not $hasNextShape -or $candY -lt $nextShapeY) {
+                        $hasNextShape = $true; $nextShapeY = $candY; $nextShapeH = [int64]$nx.Groups[4].Value
+                    }
+                }
+                if (-not $hasNextShape) { $nextShapeY = $SlideHeightEmu }
+
+                $budget = [Math]::Max(0, $nextShapeY - $tableY - $gapMargin)
+                $maxSlack = 0
+                if ($hasNextShape) { $maxSlack = [Math]::Max(0, $SlideHeightEmu - $bottomMargin - ($nextShapeY + $nextShapeH)) }
+                $extendedBudget = $budget + $maxSlack
+
+                $naturalHeights = Measure-PptxTableRowHeightsInternal -Tbl $tbl -GridCols $gridCols -Scale 1.0
+                $naturalTotal = [int64](($naturalHeights | Measure-Object -Sum).Sum)
+
+                $scaleNeeded = 1.0
+                if ($naturalTotal -gt $extendedBudget -and $extendedBudget -gt 0) {
+                    $scaleNeeded = $extendedBudget / [double]$naturalTotal
+                } elseif ($naturalTotal -gt $extendedBudget) {
+                    $scaleNeeded = 0.0
+                }
+
+                $results += [pscustomobject]@{
+                    Position          = $p
+                    RowCount          = $naturalHeights.Count
+                    NaturalHeightEmu  = $naturalTotal
+                    BudgetEmu         = $extendedBudget
+                    FontScaleNeeded   = [Math]::Round($scaleNeeded, 3)
+                    AtRisk            = ($scaleNeeded -lt 0.999)
+                }
+            }
+        }
+    } finally { $zip.Dispose() }
+    return $results
+}
+
 # --- Slide map: position -> Title + Gate tags (SINGLE SOURCE OF TRUTH) ----------------------
 # Tags: G1 G2 G3 G4 (primary gate to fill), GEN (general / any solution), ALL (every gate),
 #       SKIP (front matter, dividers, reference/example slides - not filled with project data).
@@ -1606,6 +2110,7 @@ function Copy-PptxSlideFromDeck {
 Export-ModuleMember -Function `
     Assert-NotTemplate, ConvertTo-XmlText, Set-PptxParts, `
     Get-PptxSlides, Get-PptxSlideRuns, Set-PptxSlideReplacements, Set-PptxSlideRuns, `
+    Add-PptxTableCellText, Set-PptxTableRowAutosize, Test-PptxTableOverflowRisk, `
     Set-PptxSlideVisibility, Remove-PptxHighlight, Set-PptxSlideBanner, Set-PptxHyperlink, `
     Get-SyncedSharePointUrl, `
     Add-PptxImageToSlide, Remove-PptxImagesFromSlide, Copy-PptxSlideFromDeck, `

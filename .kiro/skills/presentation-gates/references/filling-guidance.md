@@ -67,6 +67,27 @@ Values must align with the target CMDB application; note "no change" or "changed
 - AI Act (AIU-14): guarantee privacy across the AI system lifecycle; remove/obfuscate PII
   before use in an AI system.
 
+## Objectives of the project (pos 16, GEN)
+Body text fills the slide's "Objectives" and "Stakes" (benefits) placeholders directly - that
+part is routine. The trap on this slide is its **two "Current situation" / "Target situation"
+callout boxes**, which the template ships as a worked EXAMPLE for a DIFFERENT, unrelated past
+project (not blank placeholders): they contain another project's real narrative text, sized and
+positioned for that project's wording, with two `<p:pic>` picture elements layered behind/over
+them carrying that same example project's "current/target" diagram snippets.
+- **Remove both example pictures first** (`Remove-PptxImagesFromSlide -Position 16`) - leaving
+  them in place means a real delivered deck ends up showing a stale, unrelated project's name and
+  diagram to the ARB behind the current project's text. This is NOT a diagram slot to keep and
+  reuse (contrast with rule 8c's "replace the example image" slides, e.g. slide 42) - slide 16
+  has no diagram requirement at all; the pictures are pure leftover and must go.
+- **Then replace the example callout text** with this project's actual current/target situation,
+  and **re-check the two callout boxes' position** (`<p:sp>` `<a:off>`/`<a:ext>`) against the
+  Objectives/Stakes body text box once your text is in: the example project's wording was shorter
+  than most real fills, so the boxes as positioned in the template sit low enough to overlap the
+  last line(s) of a full-length Stakes paragraph. Nudge the callout boxes down (increase `<a:off
+  y=.../>`) rather than shrinking your body text, and re-render/inspect the slide after any text
+  length change on this slide specifically - this is the one slide on the deck where "the shapes
+  didn't move" and "the text got longer" combine into a near-guaranteed overlap.
+
 ## NFR (pos 18)
 Mandatory link to the NFR document(s). NFR topics: Security, Compliance (privacy, SOX),
 Infrastructure (incl. Cloud), Performance, Compatibility, Usability, Reliability,
@@ -180,6 +201,14 @@ architects, Data Privacy rep, CISO referent, Solution delivery, Infrastructure r
 Maintain-in-production resp. Informed: Contract Manager, OPS owner, DRP referent, API catalog
 referent, Data platform referent (sibs-cct@stellantis.com), SaaS Manager.
 Mark Resp. / Present / Approved (Yes/No) per person. Do not invent approvals.
+**A per-person approval/sign-off table is exactly the kind of field that reaches the committee
+unfilled if nobody re-checks it**: a real IT CO Go-Live meeting (a later, separate committee
+from these Architecture Gates, but with the same per-approver table shape) was presented with
+most of its "Approval/Rejection" column still showing the literal placeholder text for every
+row but one. Before marking a slide with an approval/sign-off table as ready, read every row of
+that column specifically - a slide can pass every other content check and still carry an
+unfilled decision column, because the column total (how many rows are blank) is easy to miss
+when scanning the slide as a whole.
 
 ## Do-not-fill slides
 Slides at positions 71-75 are "Reference & examples", the SME directory, the flow-mapping
