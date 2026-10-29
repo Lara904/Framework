@@ -84,19 +84,43 @@ foreach ($rm in $readmes) {
   $isArbitrarySection = $false
   $headerCells = @()
   $source = $rm.BaseName -replace '_README$', ''
+
+  # A bullet item may wrap onto indented continuation lines (common when a question plus its
+  # "- **Ask:** <Role>" tag is long). A past real README did exactly this, and the role tag -
+  # placed on the wrapped line - was silently dropped because each physical line was resolved in
+  # isolation: the continuation line matched neither $bulletRx nor $tableRowRx, so it was just
+  # skipped, and the bullet's first-line-only text fell through to keyword routing (or the PGA
+  # default) instead of honoring its explicit tag. $pendingBulletText buffers a bullet across its
+  # continuation lines so the full text - tag included - is resolved as one unit, regardless of
+  # how the source README wrapped it.
+  $pendingBulletText = $null
+  function Flush-PendingBullet {
+    if ($null -eq $script:pendingBulletText) { return }
+    $t = $script:pendingBulletText.Trim()
+    $script:pendingBulletText = $null
+    if ([string]::IsNullOrWhiteSpace($t)) { return }
+    if ($t -match '^[\-=\s]*$') { return }  # skip stray "---" / "===" separator lines
+    $resolved = Resolve-Roles $t $knownRoles $routing $defaultRole
+    foreach ($r in $resolved.Roles) {
+      $script:items.Add([pscustomobject]@{ Role = $r; Text = $resolved.Text; Source = $script:source })
+    }
+  }
+
   foreach ($line in $lines) {
     if ($line -match $sectionHeaderRx) {
+      Flush-PendingBullet
       $inSection = $true; $sawTableHeader = $false; $pastTableSep = $false
       $isArbitrarySection = [bool]($line -match $arbitraryHeaderRx)
       continue
     }
-    if ($inSection -and $line -match $nextHeaderRx) { $inSection = $false; continue }
+    if ($inSection -and $line -match $nextHeaderRx) { Flush-PendingBullet; $inSection = $false; continue }
     if (-not $inSection) { continue }
 
     # Markdown table row inside the section (e.g. the "Missing information (to be provided)"
     # table, whose owner column carries the "- **Ask:** <Role>" tag): parse cells, skip the
     # header row and the |---|---| separator row, then treat each data row as one item.
     if ($line -match $tableRowRx) {
+      Flush-PendingBullet
       $cells = $Matches[1] -split '\|' | ForEach-Object { $_.Trim() }
       $nonEmpty = @($cells | Where-Object { $_ -ne '' })
       $isSepRow = $nonEmpty.Count -gt 0 -and (@($nonEmpty | Where-Object { $_ -notmatch $tableSepCellRx }).Count -eq 0)
@@ -138,16 +162,28 @@ foreach ($rm in $readmes) {
       continue
     }
 
-    if ($line -notmatch $bulletRx) { continue }
-    $text = $Matches[2]
-    if ([string]::IsNullOrWhiteSpace($text)) { continue }
-    if ($text -match '^[\-=\s]*$') { continue }  # skip stray "---" / "===" separator lines
+    if ($line -match $bulletRx) {
+      Flush-PendingBullet
+      $text = $Matches[2]
+      if ([string]::IsNullOrWhiteSpace($text)) { continue }
+      $pendingBulletText = $text
+      continue
+    }
 
-    $resolved = Resolve-Roles $text $knownRoles $routing $defaultRole
-    foreach ($r in $resolved.Roles) {
-      $items.Add([pscustomobject]@{ Role = $r; Text = $resolved.Text; Source = $source })
+    # Not a header/table/new-bullet line: if we're mid-bullet AND this line is itself indented
+    # (the established wrapping convention - a continuation is written with leading whitespace,
+    # e.g. "  (details) - **Ask:** Role"), fold it into the pending bullet instead of silently
+    # dropping it. A blank line, or a non-indented stray line (a "---" rule, a trailing "Totals:"
+    # paragraph after the section's last bullet, etc.), ends the bullet instead - it is NOT a
+    # continuation, so it is flushed and left out, exactly as such lines were already ignored
+    # before this buffering existed. Column-0 text should never silently extend someone else's
+    # bullet.
+    if ($null -ne $pendingBulletText) {
+      if ($line -match '^\s+\S') { $pendingBulletText = $pendingBulletText + ' ' + $line.Trim() }
+      else { Flush-PendingBullet }
     }
   }
+  Flush-PendingBullet
 }
 
 # 2) Render: one section per known role, in a fixed order, even if empty.

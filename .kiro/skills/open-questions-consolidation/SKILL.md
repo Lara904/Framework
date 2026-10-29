@@ -84,6 +84,22 @@ section would read as "nobody checked", not "nothing pending".
    ticket is a separate, not-yet-designed decision - do not block on it, and do not simulate
    sending anything.
 7. **English, ASCII-safe, UTF-8 without BOM.**
+8. **A wrapped bullet is read as one item, not just its first physical line.** Writing a question's
+   text and its `- **Ask:** <Role>` tag on one physical line is the house convention, but a real
+   README defect slipped past it anyway (the question text ran long and the tag landed on an
+   indented second line). Before this was fixed, `build-questionnaire.ps1` resolved each physical
+   line in isolation, so the continuation line - tag included - was silently skipped and the
+   bullet's first-line-only text fell through keyword routing (or further to the PGA default)
+   instead of honoring its explicit tag; several real items were mis-routed this way before the
+   mismatch was ever noticed. The script now buffers a bullet across any immediately-following
+   **indented** line (the existing continuation convention) and resolves the joined text as one
+   unit - verified by regenerating a real project's questionnaire before/after the fix (misrouted
+   items moved to their correct role, total count unchanged) and by a synthetic README exercising
+   both a wrapped tag and a trailing non-indented stray line (a "---"/"Totals:" footer), confirming
+   the footer is correctly NOT absorbed into the previous bullet. Do not "simplify" the script back
+   to resolving one physical line at a time - and do not rely on this fallback either: keep writing
+   `- [ ] <question> - **Ask:** <Role>` on one physical line wherever practical, since the buffering
+   is a safety net, not a license to wrap routinely.
 
 ## Quick workflow
 1. Confirm `${project_name}` and its output folder `output/${project_name}/`.
