@@ -522,10 +522,14 @@ function Set-PptxSlideRuns {
 function Add-PptxTableCellText {
     <#
         Insert text into a genuinely EMPTY table cell - one the template ships as a blank
-        paragraph with no run at all (<a:p><a:endParaRPr lang="en-US" sz="1200"/></a:p>), such as
-        the Risks table's Impact/Likehood/Mitigation plan/Comments columns for its "Gen AI" /
-        "Accessibility" / "Lack of training" / "Data" example rows (rule 8d: these rows are
-        indicative and must be completed with real project values, or deleted if not applicable).
+        paragraph with no run at all. Two shapes are recognized: the bare self-closing
+        <a:p><a:endParaRPr lang="en-US" sz="1200"/></a:p> (the Risks table's Impact/Likehood/
+        Mitigation plan/Comments columns for its "Gen AI" / "Accessibility" / "Lack of training" /
+        "Data" example rows - rule 8d: these rows are indicative and must be completed with real
+        project values, or deleted if not applicable), and a "decorated" one whose <a:endParaRPr>
+        carries explicit child run properties instead of being self-closing (seen on the TCC
+        approvers table's empty Name column) - both mean the same thing (no run yet, just
+        formatting to inherit) and both anchor the new run the same way.
 
         Set-PptxSlideRuns cannot address these cells - it replaces the text of an EXISTING <a:t>,
         and an empty cell has none. This function instead locates the cell by table/row/column
@@ -594,9 +598,17 @@ function Add-PptxTableCellText {
                 continue
             }
 
-            $endParaMatch = [regex]::Match($cellMatch.Value, '<a:endParaRPr[^>]*/>')
+            # Two valid shapes for an empty paragraph's end-mark: the bare self-closing form
+            # (<a:endParaRPr lang="en-US" sz="1200"/>) and a "decorated" one that carries explicit
+            # run properties as children (<a:endParaRPr lang="en-US" sz="900" ...><a:solidFill>...
+            # </a:endParaRPr>), seen on the TCC approvers table's empty Name cells. Both mean
+            # exactly the same thing - no run, just formatting to inherit - so both must anchor the
+            # new run; matching only the self-closing form falsely reported "no empty endParaRPr"
+            # on a cell the function's own preceding check had already confirmed was empty (no
+            # <a:t>), which silently blocked filling those cells.
+            $endParaMatch = [regex]::Match($cellMatch.Value, '<a:endParaRPr[^>]*/>|<a:endParaRPr[^>]*>.*?</a:endParaRPr>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
             if (-not $endParaMatch.Success) {
-                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = 'no empty <a:endParaRPr/> found to anchor the new run on' }
+                $results += [pscustomobject]@{ Position = $p; Row = $row; Col = $col; Applied = $false; Reason = 'no empty <a:endParaRPr> found to anchor the new run on' }
                 continue
             }
             $lang = 'en-US'
@@ -744,7 +756,13 @@ function Set-PptxTableRowAutosize {
              resort - a reviewer should still sanity-check whether that content truly needs to
              be that dense, or should be shortened instead (this function cannot tell).
         Reports exactly which of these happened per position, so the caller/report doesn't have
-        to guess from the file diff.
+        to guess from the file diff. IMPORTANT: the 9pt floor in step 5 is a floor, not a
+        guarantee - a table with enough rows/content can still be taller than the slide has room
+        for even at 9pt with the neighbor shape pushed as far down as the canvas allows. When
+        that happens the result's StillOverflowsEmu is > 0 (and Reason says so explicitly): the
+        table was NOT made to fit, rows below the cutoff will be clipped off the bottom edge and
+        never rendered at all. Found on a 16-row Applicability-style table with no shape below it
+        to push. Always check StillOverflowsEmu rather than assuming Applied=true means it fits.
 
         -Positions: slide positions whose top-level table(s) should be sized. Never shrinks a
         row/font below what's needed - only grows/shrinks exactly as far as the content and the
@@ -773,18 +791,19 @@ function Set-PptxTableRowAutosize {
     try {
         $order = Get-PptxSlideOrderFromArchive -Archive $zip
         foreach ($p in $Positions) {
-            if ($p -lt 1 -or $p -gt $order.Count) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'position out of range' }; continue }
+            if ($p -lt 1 -or $p -gt $order.Count) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; StillOverflowsEmu = 0; Reason = 'position out of range' }; continue }
             $entry = $order[$p - 1]
             if (-not $cache.ContainsKey($entry)) { $cache[$entry] = Read-ZipEntryText -Archive $zip -EntryName $entry }
             $content = $cache[$entry]
 
             $tblMatches = [regex]::Matches($content, '<a:tbl>.*?</a:tbl>', $reOpts)
-            if ($tblMatches.Count -eq 0) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'no <a:tbl> found' }; continue }
+            if ($tblMatches.Count -eq 0) { $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; StillOverflowsEmu = 0; Reason = 'no <a:tbl> found' }; continue }
 
             $plannedEdits = @()   # list of @{ Start; Length; Replacement }
             $rowsResized = 0
             $minScaleApplied = 1.0
             $totalShift = 0
+            $totalResidualOverflow = 0
 
             foreach ($tblMatch in $tblMatches) {
                 $tbl = $tblMatch.Value
@@ -800,15 +819,42 @@ function Set-PptxTableRowAutosize {
                 $selfXfrms = [regex]::Matches($beforeTbl, $xfrmPattern)
                 if ($selfXfrms.Count -eq 0) { continue }
                 $selfXfrm = $selfXfrms[$selfXfrms.Count - 1]
+                $tableX = [int64]$selfXfrm.Groups[1].Value
                 $tableY = [int64]$selfXfrm.Groups[2].Value
+                $tableCx = [int64]$selfXfrm.Groups[3].Value
                 $cyGroup = $selfXfrm.Groups[4]
 
                 # The shape positioned immediately below the table on the SLIDE - not simply the
                 # next xfrm in document order, because shapes are not necessarily declared in
                 # top-to-bottom visual order (e.g. a callout box drawn above the table can appear
                 # later in the XML than the table itself). Scan every xfrm on the slide, exclude
-                # the table's own, keep only those whose top (y) is at or below the table's own
-                # top, and take the SMALLEST such y as the nearest shape below.
+                # the table's own, and keep only candidates that are genuinely positioned below
+                # (not beside, and not co-located with) the table:
+                #  1. the candidate's top must be at or below the table's own DECLARED BOTTOM
+                #     (tableY + its own declared cy), not merely at/below the table's top - a
+                #     shape whose top falls inside the table's own vertical span is positioned
+                #     alongside specific rows (a row-label annotation), not "after" the table.
+                #     Found on slide 35 of the Architecture Gates template, which uses narrow
+                #     free-floating "ZoneTexte" label boxes (e.g. "SIBS tribe lead") placed in
+                #     the left margin at the vertical height of a specific row: these sit fully
+                #     inside the table's declared y-range and were wrongly treated as "below".
+                #  2. the candidate's horizontal span must overlap the table's by at least half
+                #     of whichever of the two is narrower - a shape only beside the table (e.g.
+                #     a callout box in a side column, or one of those same narrow label boxes
+                #     whose edge just grazes the table's left edge) is not "below" it just
+                #     because its y happens to be lower or a sliver of x happens to overlap.
+                #     Found on slide 9, which has a free-floating "Business Capabilities" box
+                #     beside, not under, the table: without this check it was picked as "the
+                #     next shape" and shifted down by ~2.9in, pushing it into and overlapping
+                #     the unrelated "Related records" box beneath IT - a real defect introduced
+                #     by a previous autosize pass, found by rendering and comparing against the
+                #     raw template.
+                # Both were found by actually rendering autosized slides and comparing them
+                # against the raw template's render, per rule 8c - neither is visible from the
+                # heuristic numbers alone. Among shapes that pass both checks, take the smallest
+                # y as the nearest shape actually below.
+                $tableDeclaredCy = [int64]$cyGroup.Value
+                $tableBottom = $tableY + $tableDeclaredCy
                 $allXfrms = [regex]::Matches($content, $xfrmPattern)
                 $hasNextShape = $false
                 $nextShapeY = $SlideHeightEmu
@@ -817,7 +863,11 @@ function Set-PptxTableRowAutosize {
                 foreach ($nx in $allXfrms) {
                     if ($nx.Index -eq $selfXfrm.Index) { continue }  # skip the table's own xfrm
                     $candY = [int64]$nx.Groups[2].Value
-                    if ($candY -lt $tableY) { continue }  # above the table - not relevant
+                    if ($candY -lt $tableBottom) { continue }  # inside/above the table's own span - not relevant
+                    $candX = [int64]$nx.Groups[1].Value
+                    $candCx = [int64]$nx.Groups[3].Value
+                    $overlapWidth = [Math]::Min($tableX + $tableCx, $candX + $candCx) - [Math]::Max($tableX, $candX)
+                    if ($overlapWidth -lt (0.5 * [Math]::Min($tableCx, $candCx))) { continue }  # beside, not below
                     if (-not $hasNextShape -or $candY -lt $nextShapeY) {
                         $hasNextShape = $true
                         $nextShapeY = $candY
@@ -843,6 +893,7 @@ function Set-PptxTableRowAutosize {
                 $finalTotal = $naturalTotal
                 $scale = 1.0
                 $shiftNeeded = 0
+                $residualOverflow = 0
 
                 if ($naturalTotal -gt $budget) {
                     if ($naturalTotal -le $extendedBudget) {
@@ -858,19 +909,54 @@ function Set-PptxTableRowAutosize {
                         $finalHeights = $scaledHeights
                         $finalTotal = $scaledTotal
                         $shiftNeeded = [Math]::Min($maxSlack, [Math]::Max(0, $scaledTotal - $budget))
+                        # The 0.6 scale floor (just above) is a FLOOR, not a guarantee of fit: for
+                        # a table with enough rows/content, even 9pt text plus the maximum possible
+                        # neighbor-shift can still be taller than the room actually available on the
+                        # slide (extendedBudget). When that happens the table silently runs off the
+                        # bottom edge of the canvas - rows below the cutoff are not merely overlapping
+                        # something, they are never rendered at all. Surface that precisely instead of
+                        # reporting a false "to fit": this is the exact gap rule 8c warns about, found
+                        # on a 16-row Applicability-style table where flooring the font was not enough
+                        # and there was no neighbor shape below to push out of the way.
+                        #
+                        # IMPORTANT: only treat this as a genuine "floor wasn't enough" failure when
+                        # the 0.6 floor was actually REACHED (ratio <= 0.6, i.e. $scale -eq 0.6). The
+                        # linear scale estimate (extendedBudget/naturalTotal) is not exact - real text
+                        # wrap doesn't reduce height perfectly linearly with font size - so a table
+                        # whose computed scale lands in the open (0.6, 0.95] range (not clamped at the
+                        # floor) can still show a small residual after Measure-PptxTableRowHeightsInternal
+                        # re-measures at that scale. That residual is the ordinary rule-8c heuristic-vs-
+                        # render gap, not an unfixable table - flagging it here produced a false ERROR on
+                        # two perfectly-fine tables (TCC approvers, scale ~0.94-0.95, residual a few % from
+                        # rounding) during this very pass. Only a scale that was actually pinned to 0.6
+                        # means "the floor is doing all it can and it is still not enough."
+                        if ($scale -le 0.6) {
+                            $residualOverflow = [Math]::Max(0, $scaledTotal - $extendedBudget)
+                        }
                     }
                 }
                 if ($shiftNeeded -lt 0) { $shiftNeeded = 0 }
                 if ($scale -lt $minScaleApplied) { $minScaleApplied = $scale }
                 $totalShift += $shiftNeeded
+                $totalResidualOverflow += $residualOverflow
 
                 # Queue the font-size shrink (only if scale < 1.0): rewrite every sz="N" inside
                 # this table to round(N*scale) clamped to a 9pt floor, nearest 0.5pt (50 units).
+                # The 9pt floor is a floor on how far we SHRINK a run, not a minimum the run must
+                # be grown up to: it must never exceed the run's own original size. Without the
+                # Min($origSz, ...) below, a table whose author had already deliberately set a
+                # SMALLER font (e.g. 7pt, to fit a dense sample table) got "shrunk" from 7pt up to
+                # the 9pt floor - enlarging text that already fit, and pushing a table that fit
+                # cleanly in the raw template into genuine overflow after autosize. Found on slide
+                # 25's cost-estimate table (sz=700 throughout, scale=0.95 computed, floor would
+                # have forced sz=900) by rendering the autosized slide and comparing it against the
+                # raw template's render, per rule 8c - the font-size numbers alone looked like a
+                # harmless 95%-scale shrink and did not reveal that it was actually an enlargement.
                 if ($scale -lt 1.0) {
                     $szMatches = [regex]::Matches($tbl, '\bsz="(\d+)"')
                     foreach ($szm in $szMatches) {
                         $origSz = [int]$szm.Groups[1].Value
-                        $newSz = [Math]::Max(900, [Math]::Round(($origSz * $scale) / 50.0) * 50)
+                        $newSz = [Math]::Min($origSz, [Math]::Max(900, [Math]::Round(($origSz * $scale) / 50.0) * 50))
                         if ($newSz -ne $origSz) {
                             $g = $szm.Groups[1]
                             $plannedEdits += [pscustomobject]@{ Start = $tblMatch.Index + $g.Index; Length = $g.Length; Replacement = [string]([int]$newSz) }
@@ -906,7 +992,7 @@ function Set-PptxTableRowAutosize {
             }
 
             if ($plannedEdits.Count -eq 0) {
-                $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; Reason = 'already fits - no change needed' }
+                $report += [pscustomobject]@{ Position = $p; Applied = $false; RowsResized = 0; FontScale = 1.0; ShapeShiftedEmu = 0; StillOverflowsEmu = 0; Reason = 'already fits - no change needed' }
                 continue
             }
 
@@ -918,8 +1004,15 @@ function Set-PptxTableRowAutosize {
             }
             $cache[$entry] = $content
             $reason = $null
-            if ($minScaleApplied -lt 1.0) { $reason = "font shrunk to $([Math]::Round($minScaleApplied*100))% to fit" }
-            $report += [pscustomobject]@{ Position = $p; Applied = $true; RowsResized = $rowsResized; FontScale = $minScaleApplied; ShapeShiftedEmu = $totalShift; Reason = $reason }
+            if ($totalResidualOverflow -gt 0) {
+                # Honest failure case (see the comment above $residualOverflow's computation):
+                # the 9pt floor plus the maximum possible neighbor-shift still was not enough.
+                $overflowIn = [Math]::Round($totalResidualOverflow / 914400.0, 2)
+                $reason = "font floored at $([Math]::Round($minScaleApplied*100))% and neighbor shape shifted as far as the slide allows, but the table STILL needs ~${overflowIn}in more than the slide has - rows will be clipped off the bottom edge and never rendered. This table has too much content to fit on one slide at any font size; reduce the row count/content or split it across two slides (do not trust the FontScale/ShapeShiftedEmu alone - re-render and look)."
+            } elseif ($minScaleApplied -lt 1.0) {
+                $reason = "font shrunk to $([Math]::Round($minScaleApplied*100))% to fit"
+            }
+            $report += [pscustomobject]@{ Position = $p; Applied = $true; RowsResized = $rowsResized; FontScale = $minScaleApplied; ShapeShiftedEmu = $totalShift; StillOverflowsEmu = $totalResidualOverflow; Reason = $reason }
         }
     } finally { $zip.Dispose() }
 
@@ -947,6 +1040,14 @@ function Test-PptxTableOverflowRisk {
         Returns one object per table found, with Position, RowCount, NaturalHeightEmu,
         BudgetEmu, FontScaleNeeded (1.0 = fits as-is) and AtRisk (bool - true when
         FontScaleNeeded < 1.0, meaning even using all the slide's free room wasn't enough).
+        Also returns UnfixableAtAutosizeFloor (bool) and FlooredHeightEmu: whether the SAME
+        content, measured at Set-PptxTableRowAutosize's real 0.6 font-size floor (not a linear
+        guess), would still be taller than the slide has room for. AtRisk alone conflates two
+        different situations - a cosmetic gap between this heuristic and the floor that the
+        render usually turns out fine (rule 8c's documented precedent) vs. a table that is
+        provably too big to fit on one slide at any font size supported by the floor. Only the
+        latter sets UnfixableAtAutosizeFloor, and validate-deck.ps1 treats that one as a hard
+        failure, not a WARN.
     #>
     param(
         [Parameter(Mandatory)][string]$Pptx,
@@ -978,8 +1079,21 @@ function Test-PptxTableOverflowRisk {
                 $selfXfrms = [regex]::Matches($beforeTbl, $xfrmPattern)
                 if ($selfXfrms.Count -eq 0) { continue }
                 $selfXfrm = $selfXfrms[$selfXfrms.Count - 1]
+                $tableX = [int64]$selfXfrm.Groups[1].Value
                 $tableY = [int64]$selfXfrm.Groups[2].Value
+                $tableCx = [int64]$selfXfrm.Groups[3].Value
+                $tableDeclaredCy = [int64]$selfXfrm.Groups[4].Value
+                $tableBottom = $tableY + $tableDeclaredCy
 
+                # Same fix as Set-PptxTableRowAutosize: a candidate must have its top at or below
+                # the table's own DECLARED BOTTOM (not merely below its top - a shape co-located
+                # with a specific row, like a narrow left-margin row-label box, is not "below" the
+                # table just because its top edge happens to sit lower than the table's top), and
+                # must overlap the table's X-range by at least half of whichever is narrower (not
+                # merely touch it) to count as "below" it rather than beside it. See the fuller
+                # explanation in Set-PptxTableRowAutosize - this duplicated block had the identical
+                # bugs (slide 9: beside, not below; slide 35: row-label box inside the table's own
+                # vertical span, not below it).
                 $allXfrms = [regex]::Matches($content, $xfrmPattern)
                 $hasNextShape = $false
                 $nextShapeY = $SlideHeightEmu
@@ -987,7 +1101,11 @@ function Test-PptxTableOverflowRisk {
                 foreach ($nx in $allXfrms) {
                     if ($nx.Index -eq $selfXfrm.Index) { continue }
                     $candY = [int64]$nx.Groups[2].Value
-                    if ($candY -lt $tableY) { continue }
+                    if ($candY -lt $tableBottom) { continue }
+                    $candX = [int64]$nx.Groups[1].Value
+                    $candCx = [int64]$nx.Groups[3].Value
+                    $overlapWidth = [Math]::Min($tableX + $tableCx, $candX + $candCx) - [Math]::Max($tableX, $candX)
+                    if ($overlapWidth -lt (0.5 * [Math]::Min($tableCx, $candCx))) { continue }
                     if (-not $hasNextShape -or $candY -lt $nextShapeY) {
                         $hasNextShape = $true; $nextShapeY = $candY; $nextShapeH = [int64]$nx.Groups[4].Value
                     }
@@ -1009,6 +1127,28 @@ function Test-PptxTableOverflowRisk {
                     $scaleNeeded = 0.0
                 }
 
+                # $scaleNeeded above is a LINEAR estimate (extendedBudget / height-at-scale-1.0) and
+                # is not reliable on its own: wrapped-line count does not shrink linearly with font
+                # size (a narrow, content-dense cell can collapse by more than the font-scale ratio
+                # once a wrap line disappears, while a wide/simple cell collapses by less) - two
+                # tables both "needing" ~0.40-0.50 by this linear estimate can end up on opposite
+                # sides of actually fitting once Set-PptxTableRowAutosize's real 0.6-floor scale is
+                # applied (confirmed empirically: a 5-col/5-row Risks table fit fine at the floor,
+                # a 2-col/16-row Applicability table did not, despite similar linear estimates).
+                # So also compute the SAME floor-scale height Set-PptxTableRowAutosize would use and
+                # check THAT against extendedBudget - this is the authoritative "will the floor
+                # actually save it" signal, not the linear one.
+                $floorScale = 0.6
+                if ($extendedBudget -gt 0) { $floorScale = [Math]::Max(0.6, [Math]::Min(0.95, $extendedBudget / [double]$naturalTotal)) }
+                $flooredHeights = Measure-PptxTableRowHeightsInternal -Tbl $tbl -GridCols $gridCols -Scale $floorScale
+                $flooredTotal = [int64](($flooredHeights | Measure-Object -Sum).Sum)
+                # Only a genuine floor-clamp (ratio <= 0.6, same condition Set-PptxTableRowAutosize
+                # uses) counts as "unfixable" - a $floorScale that landed in (0.6, 0.95] from the
+                # linear estimate is not clamped, and a small residual there is the ordinary rule-8c
+                # heuristic-vs-render rounding gap (confirmed: flagged two fine TCC-approvers tables,
+                # scale ~0.94-0.95, before this check was added - see Set-PptxTableRowAutosize).
+                $unfixableAtFloor = ($naturalTotal -gt $extendedBudget) -and ($floorScale -le 0.6) -and ($flooredTotal -gt $extendedBudget)
+
                 $results += [pscustomobject]@{
                     Position          = $p
                     RowCount          = $naturalHeights.Count
@@ -1016,6 +1156,12 @@ function Test-PptxTableOverflowRisk {
                     BudgetEmu         = $extendedBudget
                     FontScaleNeeded   = [Math]::Round($scaleNeeded, 3)
                     AtRisk            = ($scaleNeeded -lt 0.999)
+                    # True only when even Set-PptxTableRowAutosize's 9pt-floor render would still
+                    # overflow the canvas (rows clipped, never rendered) - not merely the softer
+                    # "needs more than 100% but the floor probably saves it" case rule 8c already
+                    # documents. validate-deck.ps1 fails the build on this, not just WARN.
+                    UnfixableAtAutosizeFloor = $unfixableAtFloor
+                    FlooredHeightEmu  = $flooredTotal
                 }
             }
         }

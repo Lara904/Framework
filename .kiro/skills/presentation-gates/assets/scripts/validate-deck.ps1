@@ -106,14 +106,24 @@ foreach ($s in $slides) {
     $overflowRisks += @(Test-PptxTableOverflowRisk -Pptx $Pptx -Positions $s.Position)
 }
 $atRisk = @($overflowRisks | Where-Object AtRisk)
+$unfixable = @($atRisk | Where-Object UnfixableAtAutosizeFloor)
+$softRisk = @($atRisk | Where-Object { -not $_.UnfixableAtAutosizeFloor })
 if ($atRisk.Count -eq 0) {
     Write-Output "No table on a visible slide looks too tall for the room below it."
 }
 else {
-    foreach ($r in $atRisk) {
+    if ($unfixable.Count -gt 0) {
+        foreach ($r in $unfixable) {
+            Write-Output ("ERROR: Slide {0}'s table is too tall to fit even at Set-PptxTableRowAutosize's 9pt font floor (measured, not estimated) - rows will be clipped off the bottom of the slide and never rendered. Reduce the row count/content or split the table across two slides; a font-only fix cannot save this one." -f $r.Position)
+        }
+        $fail = $true
+    }
+    foreach ($r in $softRisk) {
         Write-Output ("WARN:  Slide {0}'s table may overflow into the next shape (needs ~{1}% font scale to fit even after using all free slide room) - run Set-PptxTableRowAutosize -Positions {0}, then re-render and look at the PNG." -f $r.Position, [Math]::Round($r.FontScaleNeeded * 100))
     }
-    Write-Output "(This is a heuristic WARNING, not a build failure - it does not fail the build on its own, because it estimates text wrapping rather than truly laying it out. Treat it as a cue to run Set-PptxTableRowAutosize and visually confirm, same as rule 8c.)"
+    if ($softRisk.Count -gt 0) {
+        Write-Output "(The WARN items above are a heuristic, not a build failure on their own - they estimate text wrapping rather than truly laying it out. Treat them as a cue to run Set-PptxTableRowAutosize and visually confirm, same as rule 8c. The ERROR items, if any, are not a heuristic: they are measured against Set-PptxTableRowAutosize's actual floor-scale height and fail the build - see rule 8f.)"
+    }
 }
 
 Write-Output ""

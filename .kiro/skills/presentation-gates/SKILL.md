@@ -222,6 +222,46 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    which is a sign the content itself may be too dense and worth shortening instead. Re-render
    the slide afterward and look at the PNG; this function's own report (FontScale, ShapeShiftedEmu)
    says what it did, but is not itself proof the fix landed - see rule 10's rendering requirement.
+8f. **`Set-PptxTableRowAutosize`'s report (FontScale, ShapeShiftedEmu, StillOverflowsEmu) is a
+   measured result, not a guarantee - always re-render and look (rule 10/8c), because a stress
+   test (filling real, edge-case-length content into every WARN-flagged table slide and actually
+   rendering the result, not just trusting the heuristic) found three distinct root-cause bugs in
+   this function and in `Test-PptxTableOverflowRisk`'s pre-render heuristic, now fixed in
+   `PptxGates.psm1`:
+   - **The font floor can silently fail to fit even after flooring.** Shrinking to the 9pt floor
+     plus shifting the neighbor shape as far down as the slide allows is still sometimes not
+     enough room for a genuinely dense table (found on a 16-row Applicability table with no
+     neighbor shape to push). When that happens the function now reports it honestly via the
+     `StillOverflowsEmu` field (> 0 EMU still needed) and an explicit Reason string, instead of
+     silently claiming `Applied=true, "...to fit"` while rows actually run off the bottom edge of
+     the canvas and are never rendered. `Test-PptxTableOverflowRisk` mirrors this with
+     `UnfixableAtAutosizeFloor` (measured at the real 0.6-floor scale, not a linear guess), which
+     `validate-deck.ps1` fails the build on - but only when the floor was genuinely reached
+     (`scale -le 0.6`); a residual from the ordinary heuristic-vs-render rounding gap in the
+     (0.6, 0.95] range is ordinary and stays a WARN, not an ERROR.
+   - **The "shape below the table" the function shifts out of the way must actually BE below the
+     table, not merely lower on the slide or merely intersecting its left edge.** The original
+     neighbor search only checked that a candidate shape's `y` was at or below the table's own
+     top `y`. That missed two real cases, both found by rendering an autosized slide and
+     comparing it against the raw template's render: (a) a shape positioned beside the table (a
+     free-floating "Business Capabilities" guidance box on slide 9) got treated as "the next
+     shape" and shifted ~2.9in down into an unrelated box further down the slide; (b) a narrow
+     free-floating label box meant to sit alongside a specific row (e.g. a "SIBS tribe lead"
+     left-margin annotation on slide 35) has a `y` that falls INSIDE the table's own declared
+     vertical span, not below it, and got shifted away from the row it was labelling. The
+     candidate filter now requires (1) the candidate's top to be at or below the table's own
+     declared BOTTOM, not just its top, and (2) the candidate's horizontal span to overlap the
+     table's by at least half of whichever is narrower - not merely touch it.
+   - **The 9pt font floor must never ENLARGE a run that was already smaller than 9pt by the
+     author's own deliberate choice.** The shrink-to-fit code clamped every run's new size to
+     `Max(9pt, computed)`, which is correct when starting from a larger font but silently grows a
+     run that was already set to e.g. 7pt (common on a dense sample table, such as the Costs
+     slide's "Example" table) up to 9pt - enlarging text that already fit and pushing a table that
+     rendered cleanly in the raw template into genuine overflow after "autosizing" it. Found by
+     rendering an autosized slide whose `FontScale` was reported as a harmless 95% (i.e. looked
+     like a shrink) and comparing it against the raw template's render: the actual `sz` in the XML
+     had gone from 700 to 900. The clamp is now `Min(origSz, Max(9pt, computed))` per run - the
+     floor still prevents shrinking below 9pt, but never raises a run above where it already was.
 9. **Always keep the gates checklist up to date.** It is structured BY GATE, and each gate lists
    (a) its **slides** with missing data / leftover guidance and (b) its **required annex
    deliverables** (documents behind the "Link to ..." fields) with a persisted status. A trailing
