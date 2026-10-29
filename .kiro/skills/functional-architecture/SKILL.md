@@ -138,6 +138,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
 11. **Output to `output/${project_name}/`** (see the `output-convention.md` steering): the
     `.drawio`, the README, and the FAD `.docx` (plus its optional `.model.json`). Create the
     folder if missing.
+12. **No unresolved "fill this in" markers from the template itself.** The bundled FAD template's
+    running header (`header1.xml`) carries a literal "Project name " label followed by a red
+    Wingdings "fill here" glyph (`w:sym char="F03F"`), meant for someone completing the template
+    by hand in Word. `FadDocx.psm1` resolves this automatically (using the model's `subtitle`,
+    falling back to `title`) when it clones the template - found during an end-to-end pipeline
+    verification pass (2026-10-29) where a generated FAD still showed this unfilled marker on
+    every page but the cover. Do not "simplify" the generator back to copying `header1.xml`
+    verbatim; that silently reintroduces this defect. If the template is ever replaced/updated,
+    re-check whether it still carries this marker and keep this resolution logic in sync.
 
 ## Quick workflow
 1. Ask the clarifying questions and gather the FAD inputs - see `references/questionnaire.md`.

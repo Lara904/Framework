@@ -297,6 +297,29 @@ function New-FadDocx {
               $bytes = $utf8.GetBytes($txt)
               $outS.Write($bytes, 0, $bytes.Length)
             }
+            elseif ($name -eq 'word/header1.xml') {
+              # The template's running header ("default" header, used on every page but the
+              # cover) carries a literal "Project name " label followed by a red Wingdings
+              # "fill this in" glyph (w:sym char F03F) - a manual-fill marker meant for someone
+              # completing the template by hand in Word. Left untouched, every generated FAD
+              # would show this unfilled "insert here" marker on every page. Resolve it here
+              # using the model's project name (subtitle, falling back to title) the same way
+              # the body/cover already do, instead of leaving a dangling template placeholder.
+              $s = New-Object System.IO.StreamReader($entry.Open()); $txt = $s.ReadToEnd(); $s.Close()
+              $projectName = Get-FadProp $Model 'subtitle'
+              if (-not $projectName -or [string]$projectName -eq '') { $projectName = Get-FadProp $Model 'title' }
+              if ($projectName) {
+                $symRx = [regex]'<w:r\b[^>]*><w:rPr>([\s\S]*?)</w:rPr><w:sym w:font="Wingdings"[^/]*/></w:r>'
+                $symMatch = $symRx.Match($txt)
+                if ($symMatch.Success) {
+                  $rprInner = $symMatch.Groups[1].Value -replace '<w:color w:val="FF0000"/>', ''
+                  $replacementRun = '<w:r><w:rPr>' + $rprInner + '</w:rPr><w:t xml:space="preserve">' + (ConvertTo-XmlText ([string]$projectName)) + '</w:t></w:r>'
+                  $txt = $txt.Replace($symMatch.Value, $replacementRun)
+                }
+              }
+              $bytes = $utf8.GetBytes($txt)
+              $outS.Write($bytes, 0, $bytes.Length)
+            }
             else {
               $inS = $entry.Open()
               try {
