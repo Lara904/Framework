@@ -137,6 +137,30 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    can tell the difference between an oversight and a genuine open question. If a field has no
    value yet, write `TBD` (or `n/a` when it is genuinely not applicable, as the same deck did
    correctly elsewhere) rather than leaving the line visually blank.
+8g. **Synthetic test/QA content is not exempt from rule 8 - and has an extra rule of its own:
+   never use a real, identifiable person's name.** This skill (and its scripts/validators) are
+   sometimes stress-tested by filling a COPY of the template with deliberately realistic-looking
+   fictional content - not for a real delivery, but to exercise table overflow, autosize, and
+   similar logic under real-world conditions. That is a legitimate and valuable way to find real
+   bugs (see `assets/scripts/PptxGates.psm1`'s own commit history for examples), but it is
+   filling in people-looking fields (names, roles, approvers) that rule 8 says must never be
+   invented for a real deck - so a synthetic test pass carries its own, stricter obligations:
+   - **Never reuse a real person's name, initials or identity as a fictional value** - including
+     the repository owner, the account/session user, or anyone else named anywhere in the
+     project's context (git config, file metadata, prior conversation). A real pass once
+     generated a fictional "Data PM" / TCC-approver name that happened to match the actual
+     project owner's own name, assigning them a role and responsibilities they have nothing to
+     do with - confusing and unacceptable even in throwaway test material. Draw fictional names
+     from a fixed, obviously-synthetic pool (common given name + surname combinations with no tie
+     to the project) and do not derive or "improvise" one from anything already present in the
+     repo or session.
+   - **Never call the result "the deck" or deliver/send it as if it were usable output.** A
+     synthetic test deck - especially one covering only some of the slides the real target gate
+     would require - must be named and described in a way that cannot be mistaken for a real,
+     deliverable Architecture Gates deck (e.g. a filename suffix like `_TEST_SYNTHETIC`, and
+     saved outside `output/${project_name}/`, never inside it). State plainly, every time such a
+     file is shared, that it is synthetic test material for exercising the automation, not a
+     deck anyone should review, approve, or treat as reflecting a real project or real people.
 8d. **Template examples are INDICATIVE, not a source of truth.** The pre-filled example rows/items
    the template ships with (e.g. the Risks table's "Gen AI / Accessibility / Lack of training /
    Data" rows, sample cost lines, example approvers) are prompts to consider - NOT content to
