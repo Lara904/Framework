@@ -96,30 +96,80 @@ function New-XlsxRow {
 
 function Get-XlsxSheetData {
   param([string[]]$Header, [object[]]$Rows, [string]$Title = '')
-  # StyleId 1 = title, 2 = header (bold + shaded), 0 = normal
+  # StyleId 1 = title, 2 = header (bold + shaded), 3 = data (wrap + top align + thin border -
+  # NOT 0/"normal": a flow-mapping row routinely carries a long free-text cell (data type,
+  # description) and a flat unwrapped/unbordered cell is unreadable without the reader manually
+  # resizing every column - found on a real delivered deck, 2026-11; see Get-XlsxStylesXml).
   $sb = New-Object System.Text.StringBuilder
   $r = 1
   if ($Title -ne '') {
     [void]$sb.Append((New-XlsxRow -RowNum $r -Values @($Title) -StyleId 1))
     $r += 2  # blank row after title
   }
+  $headerRow = $r
   [void]$sb.Append((New-XlsxRow -RowNum $r -Values $Header -StyleId 2))
   $r++
   foreach ($row in $Rows) {
-    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 0))
+    [void]$sb.Append((New-XlsxRow -RowNum $r -Values $row -StyleId 3))
     $r++
   }
-  return $sb.ToString()
+  [pscustomobject]@{ Xml = $sb.ToString(); HeaderRow = $headerRow; LastRow = ($r - 1) }
+}
+
+function Get-XlsxColumnWidths {
+  <#
+    One width per header column instead of a single flat width for every column (a real
+    delivered dataflow-mapping / threat-modeling workbook used width=24..26 for every column
+    including ones holding a port number AND ones holding a multi-hundred-character
+    countermeasure list - found 2026-11). Classifies by header keyword: a short
+    code/flag/date/port column gets a narrow width, a description/comment/countermeasure/name
+    column gets a wide one, everything else gets a medium default. Combined with wrapText (see
+    Get-XlsxSheetData) and a frozen header row, this is what actually makes a wide sheet usable
+    without the reader manually resizing every column.
+  #>
+  param([string[]]$Header)
+  $narrowRx = '(?i)^(frequency|port|protocol|dcp|party|banking|sensitive|confidentiality|type of|risk|occurrence|impact|id$|^id$)'
+  $wideRx   = '(?i)(description|comment|countermeasure|purpose|objective|assumption|data type|note|efficiency|scenario)'
+  $widths = @()
+  foreach ($h in $Header) {
+    if ($h -match $wideRx) { $widths += 55 }
+    elseif ($h -match $narrowRx) { $widths += 16 }
+    else { $widths += 28 }
+  }
+  $widths
 }
 
 function Get-XlsxWorksheetXml {
-  param([string]$SheetData, [int]$ColCount)
-  $lastCol = Get-XlsxColLetter -Index ([math]::Max(1, $ColCount))
+  param(
+    [string]$SheetData,
+    [int]$ColCount,
+    [int[]]$ColWidths,       # one per column, 1..ColCount; falls back to a flat 26 if omitted
+    [int]$FreezeHeaderRow = 0,   # 0 = no freeze; otherwise the header row number to freeze above
+    [int]$AutoFilterLastRow = 0  # 0 = no autofilter; otherwise the last data row
+  )
+  $lastColLetter = Get-XlsxColLetter -Index ([math]::Max(1, $ColCount))
+  if ($ColWidths -and $ColWidths.Count -eq $ColCount) {
+    $colsXml = ($ColWidths | ForEach-Object -Begin { $i = 0 } -Process {
+      $i++; '<col min="{0}" max="{0}" width="{1}" customWidth="1"/>' -f $i, $_
+    }) -join ''
+  } else {
+    $colsXml = '<col min="1" max="' + $ColCount + '" width="26" customWidth="1"/>'
+  }
+  $sheetViewsXml = ''
+  if ($FreezeHeaderRow -gt 0) {
+    $sheetViewsXml = ('<sheetViews><sheetView workbookViewId="0"><pane ySplit="{0}" topLeftCell="A{1}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' -f $FreezeHeaderRow, ($FreezeHeaderRow + 1))
+  }
+  $autoFilterXml = ''
+  if ($AutoFilterLastRow -gt 0 -and $FreezeHeaderRow -gt 0) {
+    $autoFilterXml = ('<autoFilter ref="A{0}:{1}{2}"/>' -f $FreezeHeaderRow, $lastColLetter, $AutoFilterLastRow)
+  }
 @"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <cols><col min="1" max="$ColCount" width="26" customWidth="1"/></cols>
+  $sheetViewsXml
+  <cols>$colsXml</cols>
   <sheetData>$SheetData</sheetData>
+  $autoFilterXml
 </worksheet>
 "@
 }
@@ -143,10 +193,11 @@ function Get-XlsxStylesXml {
     <border><left style="thin"><color rgb="FF999999"/></left><right style="thin"><color rgb="FF999999"/></right><top style="thin"><color rgb="FF999999"/></top><bottom style="thin"><color rgb="FF999999"/></bottom><diagonal/></border>
   </borders>
   <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-  <cellXfs count="3">
+  <cellXfs count="4">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
     <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
     <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>
   </cellXfs>
   <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>
@@ -314,7 +365,8 @@ function New-FlowMappingXlsx {
     )
   }
   $funcData = Get-XlsxSheetData -Header $fHeader -Rows $fRows
-  $funcXml = Get-XlsxWorksheetXml -SheetData $funcData -ColCount $fHeader.Count
+  $funcXml = Get-XlsxWorksheetXml -SheetData $funcData.Xml -ColCount $fHeader.Count `
+    -ColWidths (Get-XlsxColumnWidths -Header $fHeader) -FreezeHeaderRow $funcData.HeaderRow -AutoFilterLastRow $funcData.LastRow
 
   # ---- Sheet 3: Technical Flow Pattern (official columns) ----
   $tHeader = @('Functional flow name','Technical flow name','Type of flow','Source Service/App','Hostname Source','Destination Service/App','Hostname Destination','Frequency','Data confidentiality (C1/C2/C3/C4)','DCP (Yes/No)','Port','Protocol','Token supplier if API','Exposition End Point','APIC Product')
@@ -329,7 +381,8 @@ function New-FlowMappingXlsx {
     )
   }
   $techData = Get-XlsxSheetData -Header $tHeader -Rows $tRows
-  $techXml = Get-XlsxWorksheetXml -SheetData $techData -ColCount $tHeader.Count
+  $techXml = Get-XlsxWorksheetXml -SheetData $techData.Xml -ColCount $tHeader.Count `
+    -ColWidths (Get-XlsxColumnWidths -Header $tHeader) -FreezeHeaderRow $techData.HeaderRow -AutoFilterLastRow $techData.LastRow
 
   $sheetNames = @('Cover sheet', 'Functional Flow Pattern', 'Technical Flow Pattern')
   $sheetCount = $sheetNames.Count

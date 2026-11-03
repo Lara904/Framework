@@ -34,6 +34,28 @@ Multi-select fields with their allowed values:
 - DORA note: business-critical cloud applications require an exit plan; state the
   substitutability of the service provider.
 
+## Project Summary / Objectives (pos 16) - known template defect: decorative photos
+The template ships this slide with two decorative stock photos ("Image 2" over the "Current
+situation" callout, "Image 13" over the "Target situation" callout - auto-shapes "Carré corné
+25"/"Carré corné 27") sitting ON TOP of those two callouts' text area. With the template's own
+short "Example:" placeholder this is invisible; once real "Current situation"/"Target situation"
+paragraphs are filled in, the photos cover the text and it becomes unreadable (confirmed on a
+real delivered deck, 2026-11 - `validate-deck.ps1` now reports this as a WARN via
+`Get-PptxImageTextOverlaps`, but it cannot auto-fix it: resizing/moving an unrelated decorative
+photo safely needs a judgment call this skill should not make blind).
+**Before marking this slide validated:**
+1. Fill "Carré corné 25"/"Carré corné 27" with the real Current/Target situation text (see
+   Project Synthesis below for the content - this slide's two callouts are a 2-3 line summary
+   of it, not a duplicate of the full text).
+2. Check the two photos against the now-filled callouts (`Get-PptxImageTextOverlaps -Pptx
+   <file>` or a real LibreOffice render). If they still overlap the text area (they almost always
+   will, since the callouts and photos share the same vertical band by template design): either
+   `Remove-PptxImagesFromSlide -Position 16` (the photos are generic stock illustration, not
+   project content - removing them loses nothing specific to this project), or resize/reposition
+   them into the free margin to the slide's right if the user wants to keep them for visual
+   balance. Do NOT leave both the full text and the unmoved photos in place.
+3. Re-run the overlap check after the fix to confirm it is clear before clearing the banner.
+
 ## Project Synthesis / DICT (pos 12)
 CIAT = Confidentiality, Integrity, Availability, Traceability (equivalent to (D/A)ICT).
 Values must align with the target CMDB application; note "no change" or "changed from ...".

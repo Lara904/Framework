@@ -110,6 +110,19 @@ instead of it sitting as a `<PRD>` placeholder indefinitely.
 2. **Never add, modify or remove a profile, column, comment or drop-down list.** The 15
    technical profiles and the 19 business columns are the fixed SFS catalogue. Profile
    applicability / scoping is documented in the README, not by deleting columns.
+2b. **"Technical profiles not used for this scope: not decided" is an OPEN QUESTION, not just a
+   status note.** The README's free-text "Profile scope decisions" section (see
+   `references/readme-template.md`) is NOT scanned by `open-questions-consolidation` -
+   only its "Open questions" / "Missing information" / "Assumptions" / "Arbitrary default"
+   headers are. A real project shipped "Technical profiles not used for this scope: not
+   decided (all 15 profiles kept...)" in "Profile scope decisions" ONLY, with no matching row in
+   "Missing information" - so the consolidated questionnaire never carried it, and the generic
+   template profiles (CICD DEV/OPS/RELEASE with `<REFLEX_NAME>` unfilled) shipped with no
+   question anywhere asking anyone to confirm or scope them. Whenever this decision is "not
+   decided" / left at the template default, add a numbered row for it under "Missing
+   information" too, tagged `- **Ask:** Security` (who validates technical profile scope - see
+   `references/questionnaire.md` item 10), not only the free-text note. The free-text note and
+   the tracked question both exist; one without the other is the gap.
 3. **Never invent a value.** PRD code, REFLEX names, DICT, description come from the
    user / MOA / the DICT deliverable. Any unknown stays as its template placeholder
    (`<PRD>`, `<REFLEX_NAME ...>`) and is listed as an Open question in the README.

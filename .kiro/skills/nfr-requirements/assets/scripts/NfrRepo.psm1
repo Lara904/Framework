@@ -106,6 +106,12 @@ function Read-NfrRepository {
         SOX          = ('' + $ws.Cells.Item($r, $script:COL.SOX).Value2)
         Relevant     = ('' + $ws.Cells.Item($r, $script:COL.Relevant).Value2)
         Status       = ('' + $ws.Cells.Item($r, $script:COL.Status).Value2)
+        # Comments/Valorization (col 12) - added because nothing previously surfaced this column
+        # to the review step: a real project's decisions file commented only 22 of 102 relevant
+        # NFRs, and the gap went unnoticed because export-nfr.ps1's "re-dump to confirm" (SKILL.md
+        # quick workflow step 5) never showed Comments, even though $script:COL.Comments = 12 was
+        # already defined - the column map existed, reading it did not.
+        Comments     = ('' + $ws.Cells.Item($r, $script:COL.Comments).Value2)
         Row          = $r
       }
     }

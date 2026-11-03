@@ -23,6 +23,17 @@ After building or modifying components, perform a geometry double-check to ensur
 - Labels should not overlap adjacent icons (check `verticalLabelPosition` offset)
 
 **Edge geometry** validation:
+- **Every `<mxPoint>` waypoint must have BOTH `x` and `y` as actual numbers - never `y=""` or
+  `x=""`.** A real delivered diagram shipped several waypoints like `<mxPoint x="1020" y=""/>`
+  (technical architecture diagram edges `e13`/`e14`, data flow diagram edge `F12`) - well-formed
+  XML, so no tool flagged it, but draw.io treats the missing coordinate as 0, which can snap the
+  waypoint far from where it was intended and visibly kink the routed line. Before delivering a
+  `.drawio` file, self-check with:
+  `grep -En '<mxPoint[^>]*\b(x|y)=""' <file>.drawio` (also catches the reverse, `x=""`) - it must
+  return nothing. If a waypoint's coordinate is genuinely not meant to constrain that axis, omit
+  the `<mxPoint>` entirely (or the whole `<Array as="points">` if it had only one point) rather
+  than writing a half-filled one; draw.io's orthogonal router computes that axis on its own only
+  when the point is absent, not when it is present-but-empty.
 - For `edgeStyle=orthogonalEdgeStyle`: verify that intermediate `<mxPoint>` waypoints don't cross through unrelated components
 - **No overlapping edges**: no two edges may share the same segment or sit on top of each other. When multiple flows connect the same pair of components or run through the same corridor, separate them: use different source/target ports (0, 0.25, 0.5, 0.75, 1), add distinct waypoints, or offset one edge by at least ~20px. Line crossings are tolerated only when unavoidable; collinear overlaps are not.
 - After removing a cell, check all edges — any edge with a `source=` or `target=` referencing a deleted cell ID must also be removed

@@ -126,8 +126,17 @@ The skill bundles everything it needs - no external file is required:
 5. **Respect dispensation (via Status).** `No dispense possible` = mandatory (never Status Not
    relevant; use Not feasible + contingency if truly impossible). A conditional dispensation may
    be applied only when its condition holds - record which condition applies.
-6. **Justify every decision.** Each Not relevant / Not feasible needs a one-line reason tied to
-   the trigger and/or dispensation (it is audited at the gate).
+6. **Justify every decision - including a plain `Proposed`/`Accepted`, not only Not relevant /
+   Not feasible.** Each Not relevant / Not feasible needs a one-line reason tied to the trigger
+   and/or dispensation (it is audited at the gate) - but leaving Comments BLANK on a merely
+   `Proposed`/`Accepted` relevant NFR is not a neutral default either: a real project shipped a
+   decisions file covering only 22 of 102 relevant NFRs with any comment at all, so 80 rows sat
+   at the template's default Status with an empty Comments cell. Rule 10's "Missing information"
+   table only catches a literal `TBC`/`TBD` string, so a BLANK comment is invisible to it and to
+   the consolidated questionnaire - worse than writing `TBC`, which at least gets tracked. Write
+   a comment for every relevant NFR, even a short one (a reference to the applicable control, a
+   one-line "why this status now", or an explicit `TBC` if truly undecided) - never leave it
+   blank.
 7. **Flag security gaps.** A relevant Security NFR left unimplemented at Go-Live must be
    validated by the right CRIS member (RDMI too if DICT >= 3). Surface it, never hide it.
 8. **Keep output `.xlsm`, UTF-8/ASCII-safe.** Write it to the per-project output folder
@@ -148,10 +157,13 @@ The skill bundles everything it needs - no external file is required:
     could be declared done while real open items sit unseen inside a spreadsheet cell. The README
     needs only: the system context used (DICT/RTO/SOX/data privacy, and whether it was confirmed
     or is itself a `- **Ask:**`-tagged assumption), a one-line status summary (counts per Status),
-    and a **Missing information** table listing every NFR reference whose Comments/Valorization
-    column contains `TBC`/`TBD`, each tagged `- **Ask:** <Role>` per
-    `.kiro/steering/open-questions-convention.md` (the NFR's own "Responsible role" column is a
-    good default role hint, mapped to the fixed vocabulary).
+    and a **Missing information** table listing every relevant NFR reference whose
+    Comments/Valorization column is **EMPTY OR contains `TBC`/`TBD`** (not "contains TBC/TBD"
+    alone - a blank cell is a missing justification too, see rule 6), each tagged
+    `- **Ask:** <Role>` per `.kiro/steering/open-questions-convention.md` (the NFR's own
+    "Responsible role" column is a good default role hint, mapped to the fixed vocabulary).
+    Before writing this table, `export-nfr.ps1`'s dump is the authoritative source for which
+    cells are actually empty - do not rely on memory of which ones you already commented.
 
 ## Quick workflow
 1. Gather the system context: DICT, RTO, SOX, data-privacy level, and the app's functional/

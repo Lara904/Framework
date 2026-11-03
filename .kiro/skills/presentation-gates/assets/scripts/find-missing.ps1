@@ -48,6 +48,26 @@ foreach ($s in $allSlides) {
     if ($markers.Count -gt 0) { $findings[$s.Position] = $markers }
 }
 
+# Second detection pass: slides whose text never changed from the template at all. The
+# keyword scan above misses leftover guidance written as coherent prose with no TBD/Link/
+# Example/Insert/... substring (e.g. slide 48's "Create others diagrams or slides to focus
+# on: Monitoring..., Backup strategy..." - found untouched in a real deck, 2026-11). An
+# unedited VISIBLE slide is always a defect on a delivered deck, independent of its wording,
+# so it is added to the same $findings map under its own label rather than silently passing.
+# Non-fatal: a deck built from a different template revision just gets no extra findings here.
+$templatePptx = Join-Path $PSScriptRoot '..\templates\SIBS_Architecture_Gates_Template_V5.2.pptx'
+if (Test-Path $templatePptx) {
+    try {
+        foreach ($p in (Get-UneditedSlidePositions -Pptx $Pptx -ReferencePptx $templatePptx)) {
+            $label = 'Unedited template slide (no project content)'
+            if ($findings.ContainsKey($p)) { if ($findings[$p] -notcontains $label) { $findings[$p] += $label } }
+            else { $findings[$p] = @($label) }
+        }
+    } catch {
+        Write-Warning "Unedited-slide check skipped: $($_.Exception.Message)"
+    }
+}
+
 # --- Persisted deliverable status: read prior statuses from the existing -Out file -----------
 $outPath = ''
 if ($Out -ne '') {

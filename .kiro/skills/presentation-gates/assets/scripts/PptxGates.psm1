@@ -401,6 +401,52 @@ function Get-PptxSlides {
     } finally { $zip.Dispose() }
 }
 
+function Get-UneditedSlidePositions {
+    <#
+        Compare every VISIBLE slide of a filled deck against the same display position of the
+        read-only reference template, text-for-text. Returns the positions whose text is
+        identical (after whitespace normalisation) to the template at that position: leftover,
+        untouched template guidance that $script:MissingPatterns' keyword regexes do NOT catch,
+        because the text is coherent, well-formed prose written for the AUTHOR filling the deck
+        rather than for the ARB reviewer - e.g. slide 48's "Create others diagrams or slides to
+        focus on: Monitoring..., Backup strategy..., Exit and reversibility plan" contains no
+        TBD/Link/Example/Insert/Describe/List/Mention/Complete substring, so it shipped silently
+        in a real deck (found 2026-11, see Kiro_Analyse_Rendu_Reel). This closes that gap: a
+        slide whose content never changed from the template is ALWAYS a defect on a delivered
+        deck, whatever its wording - SKILL.md rule 5d.
+
+        Position-based, not content-based: relies on the filled deck never inserting, deleting
+        or reordering slides vs the template (true for every skill-produced deck, which always
+        starts from a COPY of the template and only hides slides or edits their text in place -
+        see references/gates.md). A hidden unedited slide is correctly out of scope (hiding IS
+        the edit) and is skipped, not reported.
+
+        SKIP positions of $script:SlideMap (front matter, dividers, the "Reference & examples"
+        section - see Get-SlideMap) are excluded on purpose: those pages are deliberately left
+        as the template wrote them (that is what "SKIP" already means), so flagging them would
+        be a false positive on every single filled deck, not just this project's.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][string]$ReferencePptx
+    )
+    if (-not (Test-Path $ReferencePptx)) { throw "Reference not found: $ReferencePptx" }
+    $filled = @(Get-PptxSlides -Pptx $Pptx)
+    $template = @(Get-PptxSlides -Pptx $ReferencePptx)
+    $templateByPos = @{}
+    foreach ($t in $template) { $templateByPos[$t.Position] = ($t.Text -replace '\s+', ' ').Trim() }
+    $hits = @()
+    foreach ($s in $filled) {
+        if (-not $s.Visible) { continue }
+        if (-not $templateByPos.ContainsKey($s.Position)) { continue }
+        $tags = if ($script:SlideMap.ContainsKey($s.Position)) { $script:SlideMap[$s.Position].G } else { @() }
+        if ($tags -contains 'SKIP') { continue }
+        $norm = ($s.Text -replace '\s+', ' ').Trim()
+        if ($norm -ne '' -and $norm -eq $templateByPos[$s.Position]) { $hits += $s.Position }
+    }
+    $hits
+}
+
 # --- Batch text replacement (single zip open) ----------------------------------------------
 function Set-PptxSlideReplacements {
     <#
@@ -1079,6 +1125,105 @@ function Get-PptxLeftoverHighlightCount {
     $count
 }
 
+function Get-PptxImageTextOverlaps {
+    <#
+        Flag TOP-LEVEL pictures that visually overlap a TOP-LEVEL text-bearing shape on the same
+        slide, by bounding-box area (axis-aligned, no rotation/group support - conservative on
+        purpose). This is a WARNING-grade signal, not a hard fail: validate-deck.ps1 surfaces it
+        for a human/visual check, it never blocks delivery by itself, because this check cannot
+        see z-order (an image genuinely BEHIND semi-transparent text is not a defect) or confirm
+        legibility - only real rendering (LibreOffice -> PNG) can.
+
+        Why this exists: slide 16 of the SIBS V5.2 template ships with two decorative photos
+        ("Image 2", "Image 13") positioned on top of its two "Example:" text placeholders
+        (Carré corné 25/27) - a layout that is invisible with the template's own short "Example:"
+        text but becomes a real legibility defect once a filling pass puts a full paragraph of
+        real "Current situation" / "Target situation" text into those same boxes (found 2026-11,
+        see Kiro_Analyse_Rendu_Reel). The overlap is BASELINE TEMPLATE GEOMETRY, not something a
+        filling pass introduces - so this check also runs on the untouched template and finds it
+        there too; that confirms slide 16 needs a standing remediation step (see
+        references/filling-guidance.md), not a one-off content fix.
+
+        Returns one object per (slide, image, text-shape) overlapping pair:
+          Position, ImageName, TextShapeName, TextPreview, OverlapRatio (0..1, overlap area over
+          the smaller shape's area).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [double]$MinOverlapRatio = 0.3
+    )
+    $slides = @(Get-PptxSlides -Pptx $Pptx)
+    $hits = @()
+    foreach ($s in $slides) {
+        if (-not $s.Visible) { continue }
+        $xml = Get-PptxSlideXml -Pptx $Pptx -Position $s.Position
+        # Top-level shapes only: a <p:sp>/<p:pic> that is a DIRECT child of <p:spTree>, i.e. not
+        # nested inside a <p:grpSp>. Walking that distinction precisely needs a real XML parser
+        # (regex cannot count nesting depth), so this uses one.
+        $doc = New-Object System.Xml.XmlDocument
+        $doc.LoadXml($xml)
+        $ns = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
+        $ns.AddNamespace('p', 'http://schemas.openxmlformats.org/presentationml/2006/main')
+        $ns.AddNamespace('a', 'http://schemas.openxmlformats.org/drawingml/2006/main')
+        $spTree = $doc.SelectSingleNode('//p:cSld/p:spTree', $ns)
+        if (-not $spTree) { continue }
+        function Get-Rect($node, $ns) {
+            $off = $node.SelectSingleNode('.//p:spPr/a:xfrm/a:off', $ns)
+            $ext = $node.SelectSingleNode('.//p:spPr/a:xfrm/a:ext', $ns)
+            if (-not $off -or -not $ext) { return $null }
+            [pscustomobject]@{
+                X = [double]$off.GetAttribute('x'); Y = [double]$off.GetAttribute('y')
+                W = [double]$ext.GetAttribute('cx'); H = [double]$ext.GetAttribute('cy')
+            }
+        }
+        $images = @()
+        foreach ($pic in $spTree.ChildNodes | Where-Object { $_.LocalName -eq 'pic' }) {
+            $r = Get-Rect $pic $ns
+            if ($r) {
+                $name = $pic.SelectSingleNode('.//p:nvPicPr/p:cNvPr', $ns)
+                $images += [pscustomobject]@{ Name = $(if ($name) { $name.GetAttribute('name') } else { 'Picture' }); Rect = $r }
+            }
+        }
+        $texts = @()
+        foreach ($sp in $spTree.ChildNodes | Where-Object { $_.LocalName -eq 'sp' }) {
+            # Skip PLACEHOLDER shapes (<p:nvSpPr>/<p:nvPr>/<p:ph>): a body/content placeholder
+            # routinely spans almost the whole slide, so comparing it to any picture on the
+            # slide would flag nearly every slide that has one - pure noise. Only AUTO_SHAPE /
+            # TEXT_BOX shapes (no <p:ph>) are checked, matching the actual slide-16 defect
+            # (the "Carré corné" callouts are auto-shapes, not placeholders).
+            if ($sp.SelectSingleNode('.//p:nvSpPr/p:nvPr/p:ph', $ns)) { continue }
+            $runs = @($sp.SelectNodes('.//a:t', $ns) | ForEach-Object { $_.InnerText })
+            $txt = ($runs -join ' ').Trim()
+            if ($txt -eq '') { continue }
+            $r = Get-Rect $sp $ns
+            if ($r) {
+                $name = $sp.SelectSingleNode('.//p:nvSpPr/p:cNvPr', $ns)
+                $texts += [pscustomobject]@{ Name = $(if ($name) { $name.GetAttribute('name') } else { 'Shape' }); Rect = $r; Text = $txt }
+            }
+        }
+        foreach ($img in $images) {
+            foreach ($txt in $texts) {
+                $ir = $img.Rect; $tr = $txt.Rect
+                $ox = [Math]::Max(0, [Math]::Min($ir.X + $ir.W, $tr.X + $tr.W) - [Math]::Max($ir.X, $tr.X))
+                $oy = [Math]::Max(0, [Math]::Min($ir.Y + $ir.H, $tr.Y + $tr.H) - [Math]::Max($ir.Y, $tr.Y))
+                $overlapArea = $ox * $oy
+                if ($overlapArea -le 0) { continue }
+                $smallerArea = [Math]::Min($ir.W * $ir.H, $tr.W * $tr.H)
+                if ($smallerArea -le 0) { continue }
+                $ratio = $overlapArea / $smallerArea
+                if ($ratio -ge $MinOverlapRatio) {
+                    $hits += [pscustomobject]@{
+                        Position = $s.Position; ImageName = $img.Name; TextShapeName = $txt.Name
+                        TextPreview = $(if ($txt.Text.Length -gt 60) { $txt.Text.Substring(0, 60) + '...' } else { $txt.Text })
+                        OverlapRatio = [Math]::Round($ratio, 2)
+                    }
+                }
+            }
+        }
+    }
+    $hits
+}
+
 function Remove-PptxHighlight {
     <#
         Remove text highlight (the template's yellow guidance highlight, <a:highlight>...</a:highlight>)
@@ -1605,11 +1750,11 @@ function Copy-PptxSlideFromDeck {
 
 Export-ModuleMember -Function `
     Assert-NotTemplate, ConvertTo-XmlText, Set-PptxParts, `
-    Get-PptxSlides, Get-PptxSlideRuns, Set-PptxSlideReplacements, Set-PptxSlideRuns, `
+    Get-PptxSlides, Get-UneditedSlidePositions, Get-PptxSlideRuns, Set-PptxSlideReplacements, Set-PptxSlideRuns, `
     Set-PptxSlideVisibility, Remove-PptxHighlight, Set-PptxSlideBanner, Set-PptxHyperlink, `
     Get-SyncedSharePointUrl, `
     Add-PptxImageToSlide, Remove-PptxImagesFromSlide, Copy-PptxSlideFromDeck, `
     Get-SlideMap, Get-SlideTitle, Get-SlideGateTags, Find-SlidesByTitleRole, `
     Get-Deliverables, Resolve-DeliverableSlide, Get-MissingPatterns, Get-MissingMarkers, `
-    Get-HardFailMarkers, Test-PptxRunIsLightText, Get-PptxLeftoverHighlightCount, Get-PptxSlideXml, `
+    Get-HardFailMarkers, Test-PptxRunIsLightText, Get-PptxLeftoverHighlightCount, Get-PptxImageTextOverlaps, Get-PptxSlideXml, `
     Test-PptxIntegrity, Test-GateSlidesPresent

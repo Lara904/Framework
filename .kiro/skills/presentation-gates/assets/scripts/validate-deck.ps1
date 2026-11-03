@@ -18,6 +18,10 @@
 #     TBD/TODO/Yes-No-to-decide and similar are NOT checked here (SKILL.md rule 8 allows them
 #     as a deliberate marker for a genuinely unknown value) - only find-missing.ps1 reports those,
 #     as an informational checklist, not a build failure.
+#   - GEOMETRY WARNING (never fails the build - Get-PptxImageTextOverlaps): a picture that
+#     visually overlaps a filled text shape (e.g. a decorative photo the template itself placed
+#     on top of a callout - slide 16). Confirm with a real render before acting; this is a
+#     bounding-box heuristic, not a legibility verdict.
 # Exit code 0 = OK, 1 = problems found.
 param(
     [Parameter(Mandatory = $true)][string]$Pptx,
@@ -70,6 +74,24 @@ if ($hlHits.Count -eq 0 -and $markerHits.Count -eq 0) {
 else {
     foreach ($h in $hlHits) { Write-Output ("ERROR: Slide {0} still has {1} leftover highlighted run(s) - run Remove-PptxHighlight before delivery." -f $h.Position, $h.Count) }
     foreach ($m in $markerHits) { Write-Output ("ERROR: Slide {0} still has leftover template instruction text: {1}" -f $m.Position, ($m.Markers -join ', ')) }
+}
+
+Write-Output ""
+Write-Output "== Image / text overlap (geometry warning, not a hard fail) =="
+# WARNING-grade only (Get-PptxImageTextOverlaps docstring): a bounding-box overlap cannot see
+# z-order or confirm legibility, only real rendering can. Still worth surfacing automatically -
+# this is exactly how slide 16's decorative photos sitting on top of its "Current situation" /
+# "Target situation" callouts shipped unnoticed in a real deck (the overlap is baseline template
+# geometry, present even in the untouched template - see Get-PptxImageTextOverlaps and
+# references/filling-guidance.md for the remediation step).
+$overlaps = @(Get-PptxImageTextOverlaps -Pptx $Pptx)
+if ($overlaps.Count -eq 0) {
+    Write-Output "No image/text overlap detected."
+}
+else {
+    foreach ($o in $overlaps) {
+        Write-Output ("WARN:  Slide {0} - picture '{1}' overlaps text shape '{2}' ({3:P0} of the smaller shape) - text: `"{4}`" - confirm with a real render (LibreOffice) and resize/move/remove the picture if it hides the text." -f $o.Position, $o.ImageName, $o.TextShapeName, $o.OverlapRatio, $o.TextPreview)
+    }
 }
 
 Write-Output ""

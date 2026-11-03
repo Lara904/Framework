@@ -31,11 +31,12 @@ $Out = Resolve-FullPath $Out
 
 $rows = Read-NfrRepository -WorkbookPath $Workbook
 $sb = New-Object System.Text.StringBuilder
-[void]$sb.AppendLine("Reference`tRelevant`tStatus`tGroup`tDICTflags`tRTO`tDataPrivacy`tSOX`tTitle")
+[void]$sb.AppendLine("Reference`tRelevant`tStatus`tGroup`tDICTflags`tRTO`tDataPrivacy`tSOX`tComments`tTitle")
 foreach ($r in $rows) {
   $title = $r.Title -replace "`r?`n",' '
-  [void]$sb.AppendLine(("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}" -f `
-    $r.Reference,$r.Relevant,$r.Status,$r.Group,$r.DICTflags,$r.RTO,$r.DataPrivacy,$r.SOX,$title))
+  $comments = $r.Comments -replace "`r?`n",' '
+  [void]$sb.AppendLine(("{0}`t{1}`t{2}`t{3}`t{4}`t{5}`t{6}`t{7}`t{8}`t{9}" -f `
+    $r.Reference,$r.Relevant,$r.Status,$r.Group,$r.DICTflags,$r.RTO,$r.DataPrivacy,$r.SOX,$comments,$title))
 }
 [System.IO.File]::WriteAllText($Out, $sb.ToString(), (New-Object System.Text.UTF8Encoding($false)))
 
@@ -44,3 +45,16 @@ Write-Host "--- Status summary ---"
 $rows | Group-Object Status | Sort-Object Name | ForEach-Object { Write-Host ("  {0,-14} {1}" -f $_.Name, $_.Count) }
 Write-Host "--- Relevant summary ---"
 $rows | Group-Object Relevant | Sort-Object Name | ForEach-Object { Write-Host ("  {0,-14} {1}" -f $_.Name, $_.Count) }
+
+# Blank-comment check (SKILL.md rule 6/10): a relevant NFR left at Proposed/Accepted with an
+# EMPTY Comments cell is invisible to the README's Missing-information table unless that table
+# also treats "empty" as missing, not only a literal TBC/TBD string - surface it here so it is
+# never discovered only once the README is already written.
+$relevantNoComment = @($rows | Where-Object { $_.Relevant -eq 'Yes' -and [string]::IsNullOrWhiteSpace($_.Comments) })
+Write-Host "--- Relevant NFRs with an EMPTY Comments cell (must get a line in the README's Missing information table) ---"
+if ($relevantNoComment.Count -eq 0) {
+  Write-Host "  None - every relevant NFR has a comment."
+} else {
+  Write-Host ("  {0} of {1} relevant NFRs have no comment:" -f $relevantNoComment.Count, (@($rows | Where-Object { $_.Relevant -eq 'Yes' }).Count))
+  $relevantNoComment | ForEach-Object { Write-Host ("    {0} ({1})" -f $_.Reference, $_.Status) }
+}

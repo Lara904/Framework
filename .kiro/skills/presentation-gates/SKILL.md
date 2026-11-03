@@ -142,6 +142,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    the new diagram to the freed slot, preserving aspect ratio. Only use `Add-PptxImageToSlide` to
    add a picture on slides that genuinely have an empty area (e.g. slide 33's diagram zone). Never
    overlap the diagram with existing text/shapes.
+   **The same "never overlap" requirement also applies to pictures the TEMPLATE itself ships
+   pre-placed on a slide** (not just ones this skill adds) - e.g. slide 16's two decorative
+   stock photos sit on top of its "Current situation"/"Target situation" callouts by template
+   design, invisible with the template's own short placeholder text but a real legibility defect
+   once real paragraphs are filled in (found on a real delivered deck, 2026-11). After filling
+   any slide that already has a picture, check `Get-PptxImageTextOverlaps` (also run
+   automatically as a WARN by `validate-deck.ps1`) and resize/move/remove the picture if it now
+   overlaps filled text - see `references/filling-guidance.md`'s "Project Summary / Objectives
+   (pos 16)" section for the concrete remediation.
 8b. **On a "Link to ..." field, reference the OFFICIAL deliverable file/link, not a working copy.**
    The template's deliverable fields are meant to carry a link/reference to the authoritative
    document. Reference that official file by name/link on the slide - do NOT paste the document's
