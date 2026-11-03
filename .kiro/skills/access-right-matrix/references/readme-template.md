@@ -34,10 +34,22 @@ Use the structure below.
 - Business profiles: <list, or "No business profile for this scope">
 - Derogations: <e.g. DEV+OPS cumulative from Cloud Center Tools: yes/no>
 
+## Missing information (to be provided)
+| # | Missing information | Needed for | Owner / source |
+|---|---------------------|-----------|----------------|
+| M1 | <...> | <...> | - **Ask:** <Role> |
+
 ## Open questions (must be empty before deleting this README)
 - [ ] <question 1>
 - [ ] <question 2>
 ```
+
+**If "Technical profiles not used for this scope" above is "not decided" / left at the
+template default** (the 15 technical profiles kept generic, no `<REFLEX_NAME>` substituted),
+that is NOT just a status note: add a numbered row for it under "Missing information" too,
+tagged `- **Ask:** Security`, or it never reaches the consolidated questionnaire (rule 2b of
+`SKILL.md` - `open-questions-consolidation` only scans "Open questions" / "Missing
+information" / "Assumptions" / "Arbitrary default" headers, never "Profile scope decisions").
 
 ## Rule
 - Every `TBD` / unchecked open question here corresponds to a placeholder still visible

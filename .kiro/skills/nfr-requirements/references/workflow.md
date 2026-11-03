@@ -91,6 +91,26 @@ asking the user to: open the file, complete/verify the parameters, run the filte
 (click Oui), save, and come back so you can analyse the filtered NFRs. Never compute Relevant
 yourself in that case. Use `-NoHideFiltered` to keep all rows visible.
 
+## 5bis. Write the decisions file in BATCHES BY ISO 25010 CHAPTER, not one NFR at a time
+Writing the decisions TSV one NFR at a time (102+ separate little reasoning steps on a typical
+project) is both how the 80-blank-comment gap happened (reasoning effort spent per row with
+nothing to show for most of them) and needlessly expensive: the project context (DICT, RTO,
+architecture) does not change between NFR-1201 and NFR-1203, so there is no reason to re-derive
+it per row.
+- Group the relevant NFRs by their `Group` column (the 8 ISO 25010 chapters: Functional
+  Suitability, Performance efficiency, Compatibility, Usability, Reliability, Security,
+  Maintainability, Portability) - `export-nfr.ps1`'s dump already carries this column.
+- Within one chapter, read all its relevant NFRs' titles/descriptions together (`nfr-catalog.md`
+  / the `nfr-cards/` one-pagers) and write their Status + Comment in ONE pass, reusing the same
+  held context (the project's architecture, the dispensations already decided) instead of
+  reloading it per NFR.
+- A one-line comment is still required per NFR (rule 6) - batching changes how many reasoning
+  passes produce those lines, not whether each NFR gets one.
+- After each chapter's batch, `export-nfr.ps1`'s blank-comment check (see its output) confirms
+  nothing in that chapter was left without a comment before moving to the next one - catching a
+  gap chapter-by-chapter is far cheaper than discovering 80 blanks after the whole workbook is
+  built.
+
 ## 6. Golden rules
 - **Relevant is computed, never judged.** Do not hand-set it; let the filter decide from the
   system parameters. Put your applicability opinion in Status + Comment.

@@ -123,6 +123,26 @@ Module equivalents: `Test-PptxIntegrity` (includes the OPC open test) and `Test-
 Always run this on the WINDOWS/OPC layer - a deck can have perfectly well-formed XML in every
 part and still be "damaged" at the package level.
 
+## If you also render slides to images for a visual check, render INCREMENTALLY
+`validate-deck.ps1` and `Get-PptxImageTextOverlaps` catch a lot (integrity, leftover
+highlight/instruction text, unedited template slides, image/text bounding-box overlap), but
+none of them confirm actual legibility - only looking at the rendered slide does (e.g.
+LibreOffice `--convert-to pdf` then rasterising each page). That step is the most expensive
+part of a filling pass by far: converting and rasterising all 75 slides on every single
+correction cycle, when a typical pass only touches a handful of slides, burns far more time/
+tokens than the editing itself.
+- Track which positions you have touched since the last render (the edits you just applied -
+  `Set-PptxSlideReplacements`/`Set-PptxSlideRuns` already return a per-position result you can
+  collect for this).
+- Render only those positions: split a one-time full-deck PDF into per-page images once, or
+  (simpler) copy just the touched slide(s) into a throwaway single/few-slide `.pptx`
+  (`Copy-PptxSlideFromDeck`) and convert that small file - either way avoids re-converting and
+  re-rasterising the other ~70 untouched slides for a 2-slide fix.
+- Do one FULL-deck render only right before the final hand-off, as the last check - not after
+  every intermediate edit.
+- This does not replace `validate-deck.ps1` (still run that on the full deck every time - it is
+  cheap, no rendering involved) - it only changes how often you pay for a visual render.
+
 ## File encoding rules (avoid mojibake)
 - Save XML as UTF-8 **without BOM**.
 - Prefer ASCII in cell text. Avoid em dashes, en dashes, curly quotes and bullet glyphs; they

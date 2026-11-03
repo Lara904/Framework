@@ -34,6 +34,23 @@ Multi-select fields with their allowed values:
 - DORA note: business-critical cloud applications require an exit plan; state the
   substitutability of the service provider.
 
+## Project Summary / Objectives (pos 16)
+**Historical note, resolved at the template level (2026-11):** this slide used to ship with two
+decorative photos sitting on top of its "Current situation"/"Target situation" callouts
+("Carré corné 25"/27). On inspection they turned out not to be generic stock art but screenshots
+of an unrelated real Stellantis project ("Leapmotor") baked into the template itself - invisible
+behind the template's own short "Example:" placeholder, but a real legibility defect (and a
+content-leak risk: a foreign project's data on every deck built from this template) once real
+text was filled in. Removed from `assets/templates/SIBS_Architecture_Gates_Template_V5.2.pptx`
+directly (`Remove-PptxImagesFromSlide -Position 16` on the template, a one-time maintenance edit
+- not something a filling pass does; the template stays read-only during normal use). A deck
+built from the template from this point on has nothing to clean up here: just fill "Carré corné
+25"/"Carré corné 27" with the real Current/Target situation text (see Project Synthesis below for
+the content - this slide's two callouts are a 2-3 line summary of it, not a duplicate of the full
+text). `Get-PptxImageTextOverlaps` (run automatically by `validate-deck.ps1`) stays in place as a
+general-purpose check - it is what would catch a similar defect anywhere else, template or
+filling pass, before it ships again.
+
 ## Project Synthesis / DICT (pos 12)
 CIAT = Confidentiality, Integrity, Availability, Traceability (equivalent to (D/A)ICT).
 Values must align with the target CMDB application; note "no change" or "changed from ...".

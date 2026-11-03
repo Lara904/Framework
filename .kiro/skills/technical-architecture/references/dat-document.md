@@ -65,6 +65,20 @@ marks server/compute/backup sub-sections as "Not applicable" but keeps the headi
 - 1.3 Requirements (h2)
   - 1.3.1 Functional requirements (h3)
   - 1.3.2 Technical requirements (h3): Synthesis (h4), Volumetry (h4), Security (h4), Compatibility (h4)
+    - **Security (h4) - NFR count: always re-read, never recall.** If this paragraph cites the
+      NFR status counts (relevant / Proposed / Accepted), take them from the NFR workbook's
+      `Synthesis` sheet or the `*_nfr_requirements_README.md` **at the moment this DAT is
+      (re)generated** - never from an earlier pass's memory. The NFR workbook is commonly
+      reconciled (e.g. items moved from "Not relevant without a valid dispensation" to
+      "Proposed") AFTER a first DAT draft, and the DAT is not automatically refreshed when that
+      happens: a real delivered DAT shipped "94 relevant, 78 Proposed" while the NFR README
+      (same day, after reconciliation) already said "98 relevant, 82 Proposed" - a 4-item drift
+      invisible to any single-document check, found only by comparing both texts. Prefer citing
+      the NFR README **by reference** ("see the NFR README for the current status counts")
+      over duplicating a number here at all; if a number is still wanted inline, regenerate this
+      paragraph (do not hand-patch it) every time `nfr-requirements` reruns, and `grep` the
+      NFR README's own `Proposed | nn` / `Accepted | nn` lines rather than typing a remembered
+      figure.
 
 **2. Target Architecture** (h1)
 - 2.1 Applicative Architecture (h2)

@@ -82,7 +82,10 @@ $outDir = Split-Path $OutFull -Parent
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
 $ext = [System.IO.Path]::GetExtension($OutFull)
 if (-not $ext) { $ext = '.xlsm' }
-$work = Join-Path $env:TEMP ("nfr_build_" + [System.Guid]::NewGuid().ToString('N') + $ext)
+# $env:TEMP is a Windows-only convention and is unset on Linux/macOS PowerShell, where
+# [System.IO.Path]::GetTempPath() is the portable equivalent (also correct on Windows).
+$tempRoot = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
+$work = Join-Path $tempRoot ("nfr_build_" + [System.Guid]::NewGuid().ToString('N') + $ext)
 Copy-Item $Template $work -Force
 Write-Host "Working copy: $work"
 
@@ -115,9 +118,28 @@ if ($Decisions) {
 }
 
 # Validate the DICT format early (so we fail before opening Excel if it is malformed).
-[void](ConvertFrom-Dict $Dict)
+$dictParsed = ConvertFrom-Dict $Dict
 
 # --- 3. Open the working copy and fill it ------------------------------------------------
+# HEADLESS FALLBACK: no Excel COM on this host (every non-Windows host, including Kiro's own
+# sandbox - see NfrRepo.psm1's "HEADLESS (no-COM) path" section for why this is safe and what
+# it reproduces). Take it automatically rather than failing outright: a half-filled workbook
+# with blank Relevant/Status was the actual real-world outcome before this existed. Use
+# -ForceCom to require the real macro path and fail loudly instead (e.g. to double-check a
+# headless-built file once Excel is available).
+if (-not (Test-ExcelComAvailable)) {
+  Write-Warning "No Excel COM available on this host - using the headless (no-Excel) path. $(Write-NfrHeadlessNotice)"
+  $hResult = New-NfrWorkbookHeadless -Template $Template -OutFile $OutFull `
+    -Dict $dictParsed -Rto ([int]$Rto) -Sox ($Sox -match '^(?i)yes$') -DataPrivacy ($DataPrivacy -notmatch '^(?i)no$') `
+    -DictString $Dict -RtoString $Rto -SoxString $Sox -DataPrivacyString $DataPrivacy -AppName $AppName `
+    -DecisionMap $decisionMap -HideFiltered:(-not $NoHideFiltered)
+  Remove-Item $work -Force -ErrorAction SilentlyContinue
+  Write-Host ("Relevant: {0} Yes / {1} No. Project status set on {2} relevant NFR(s)." -f $hResult.RelevantYes, $hResult.RelevantNo, $hResult.WithStatus)
+  if ($hResult.Unknown) { Write-Warning ("Decision references not found in the model (ignored): " + ($hResult.Unknown -join ', ')) }
+  Write-Host "Deliverable written (headless path): $OutFull"
+  return
+}
+
 $xl = New-ExcelApp
 # msoAutomationSecurityLow (1): enable the workbook's macros without prompting, so we can run
 # the model's own filter macro (the human process: press the filter button).
