@@ -1134,15 +1134,17 @@ function Get-PptxImageTextOverlaps {
         see z-order (an image genuinely BEHIND semi-transparent text is not a defect) or confirm
         legibility - only real rendering (LibreOffice -> PNG) can.
 
-        Why this exists: slide 16 of the SIBS V5.2 template ships with two decorative photos
-        ("Image 2", "Image 13") positioned on top of its two "Example:" text placeholders
-        (Carré corné 25/27) - a layout that is invisible with the template's own short "Example:"
-        text but becomes a real legibility defect once a filling pass puts a full paragraph of
-        real "Current situation" / "Target situation" text into those same boxes (found 2026-11,
-        see Kiro_Analyse_Rendu_Reel). The overlap is BASELINE TEMPLATE GEOMETRY, not something a
-        filling pass introduces - so this check also runs on the untouched template and finds it
-        there too; that confirms slide 16 needs a standing remediation step (see
-        references/filling-guidance.md), not a one-off content fix.
+        Why this exists: slide 16 of the SIBS V5.2 template used to ship with two decorative
+        photos ("Image 2", "Image 13") positioned on top of its two "Example:" text placeholders
+        (Carré corné 25/27) - invisible with the template's own short "Example:" text but a real
+        legibility defect once a filling pass put a full paragraph of real "Current situation" /
+        "Target situation" text into those same boxes (found 2026-11, see Kiro_Analyse_Rendu_Reel
+        - on inspection the photos turned out to be screenshots of an unrelated real Stellantis
+        project, not generic stock art, so this was also a content-leak risk). Removed from the
+        bundled template directly once found (one-time maintenance edit, not a per-deck fix) - see
+        references/filling-guidance.md's historical note. This check stays as a general-purpose
+        safety net: it is what would catch the same class of defect anywhere else, template or
+        filling pass, before it ships again.
 
         Returns one object per (slide, image, text-shape) overlapping pair:
           Position, ImageName, TextShapeName, TextPreview, OverlapRatio (0..1, overlap area over

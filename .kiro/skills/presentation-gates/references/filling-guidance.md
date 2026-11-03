@@ -34,27 +34,22 @@ Multi-select fields with their allowed values:
 - DORA note: business-critical cloud applications require an exit plan; state the
   substitutability of the service provider.
 
-## Project Summary / Objectives (pos 16) - known template defect: decorative photos
-The template ships this slide with two decorative stock photos ("Image 2" over the "Current
-situation" callout, "Image 13" over the "Target situation" callout - auto-shapes "Carré corné
-25"/"Carré corné 27") sitting ON TOP of those two callouts' text area. With the template's own
-short "Example:" placeholder this is invisible; once real "Current situation"/"Target situation"
-paragraphs are filled in, the photos cover the text and it becomes unreadable (confirmed on a
-real delivered deck, 2026-11 - `validate-deck.ps1` now reports this as a WARN via
-`Get-PptxImageTextOverlaps`, but it cannot auto-fix it: resizing/moving an unrelated decorative
-photo safely needs a judgment call this skill should not make blind).
-**Before marking this slide validated:**
-1. Fill "Carré corné 25"/"Carré corné 27" with the real Current/Target situation text (see
-   Project Synthesis below for the content - this slide's two callouts are a 2-3 line summary
-   of it, not a duplicate of the full text).
-2. Check the two photos against the now-filled callouts (`Get-PptxImageTextOverlaps -Pptx
-   <file>` or a real LibreOffice render). If they still overlap the text area (they almost always
-   will, since the callouts and photos share the same vertical band by template design): either
-   `Remove-PptxImagesFromSlide -Position 16` (the photos are generic stock illustration, not
-   project content - removing them loses nothing specific to this project), or resize/reposition
-   them into the free margin to the slide's right if the user wants to keep them for visual
-   balance. Do NOT leave both the full text and the unmoved photos in place.
-3. Re-run the overlap check after the fix to confirm it is clear before clearing the banner.
+## Project Summary / Objectives (pos 16)
+**Historical note, resolved at the template level (2026-11):** this slide used to ship with two
+decorative photos sitting on top of its "Current situation"/"Target situation" callouts
+("Carré corné 25"/27). On inspection they turned out not to be generic stock art but screenshots
+of an unrelated real Stellantis project ("Leapmotor") baked into the template itself - invisible
+behind the template's own short "Example:" placeholder, but a real legibility defect (and a
+content-leak risk: a foreign project's data on every deck built from this template) once real
+text was filled in. Removed from `assets/templates/SIBS_Architecture_Gates_Template_V5.2.pptx`
+directly (`Remove-PptxImagesFromSlide -Position 16` on the template, a one-time maintenance edit
+- not something a filling pass does; the template stays read-only during normal use). A deck
+built from the template from this point on has nothing to clean up here: just fill "Carré corné
+25"/"Carré corné 27" with the real Current/Target situation text (see Project Synthesis below for
+the content - this slide's two callouts are a 2-3 line summary of it, not a duplicate of the full
+text). `Get-PptxImageTextOverlaps` (run automatically by `validate-deck.ps1`) stays in place as a
+general-purpose check - it is what would catch a similar defect anywhere else, template or
+filling pass, before it ships again.
 
 ## Project Synthesis / DICT (pos 12)
 CIAT = Confidentiality, Integrity, Availability, Traceability (equivalent to (D/A)ICT).

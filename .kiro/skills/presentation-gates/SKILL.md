@@ -143,13 +143,16 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    add a picture on slides that genuinely have an empty area (e.g. slide 33's diagram zone). Never
    overlap the diagram with existing text/shapes.
    **The same "never overlap" requirement also applies to pictures the TEMPLATE itself ships
-   pre-placed on a slide** (not just ones this skill adds) - e.g. slide 16's two decorative
-   stock photos sit on top of its "Current situation"/"Target situation" callouts by template
-   design, invisible with the template's own short placeholder text but a real legibility defect
-   once real paragraphs are filled in (found on a real delivered deck, 2026-11). After filling
-   any slide that already has a picture, check `Get-PptxImageTextOverlaps` (also run
-   automatically as a WARN by `validate-deck.ps1`) and resize/move/remove the picture if it now
-   overlaps filled text - see `references/filling-guidance.md`'s "Project Summary / Objectives
+   pre-placed on a slide** (not just ones this skill adds). Slide 16 used to ship with two
+   decorative photos sitting on top of its "Current situation"/"Target situation" callouts -
+   on inspection they turned out to be screenshots of an unrelated real Stellantis project baked
+   into the template, invisible behind the template's own short placeholder text but a real
+   legibility (and content-leak) defect once real paragraphs were filled in; removed from the
+   bundled template directly in 2026-11 (see `references/filling-guidance.md`'s historical note).
+   The general check stays: after filling any slide that already has a picture, run
+   `Get-PptxImageTextOverlaps` (also run automatically as a WARN by `validate-deck.ps1`) and
+   resize/move/remove the picture if it now overlaps filled text - see
+   `references/filling-guidance.md`'s "Project Summary / Objectives
    (pos 16)" section for the concrete remediation.
 8b. **On a "Link to ..." field, reference the OFFICIAL deliverable file/link, not a working copy.**
    The template's deliverable fields are meant to carry a link/reference to the authoritative
