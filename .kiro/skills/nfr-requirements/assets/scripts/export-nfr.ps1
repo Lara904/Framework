@@ -29,7 +29,16 @@ $Workbook = Resolve-FullPath $Workbook
 if (-not $Out) { $Out = [System.IO.Path]::ChangeExtension($Workbook, $null).TrimEnd('.') + '_dump.tsv' }
 $Out = Resolve-FullPath $Out
 
-$rows = Read-NfrRepository -WorkbookPath $Workbook
+# Auto-detect COM (same test new-nfr-workbook.ps1 uses) instead of calling the COM-only
+# Read-NfrRepository unconditionally: that threw immediately on every non-Windows host ("A
+# parameter cannot be found that matches parameter name 'ComObject'"), so a workbook built by
+# the headless write path could never be reviewed on the same host that built it.
+if (Test-ExcelComAvailable) {
+  $rows = Read-NfrRepository -WorkbookPath $Workbook
+} else {
+  Write-Warning "No Excel COM available on this host - reading via the headless (no-Excel) XML path (Read-NfrRepositoryXml)."
+  $rows = Read-NfrRepositoryXml -WorkbookPath $Workbook
+}
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("Reference`tRelevant`tStatus`tGroup`tDICTflags`tRTO`tDataPrivacy`tSOX`tComments`tTitle")
 foreach ($r in $rows) {

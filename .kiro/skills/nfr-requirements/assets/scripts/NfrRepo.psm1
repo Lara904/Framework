@@ -343,6 +343,17 @@ function Read-NfrRepositoryXml {
       RTO         = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.RTO) + $rowNum) -SharedStrings $shared)
       DataPrivacy = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.DataPrivacy) + $rowNum) -SharedStrings $shared)
       SOX         = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.SOX) + $rowNum) -SharedStrings $shared)
+      # Relevant/Status/Comments (cols 8/9/12) - added so a headless-built workbook (no Excel
+      # COM) can also be READ BACK, not only written: export-nfr.ps1 unconditionally called the
+      # COM-only Read-NfrRepository, which throws immediately on any non-Windows host ("A
+      # parameter cannot be found that matches parameter name 'ComObject'") - so a workbook
+      # produced by the headless write path (New-NfrWorkbookHeadless) could never be reviewed on
+      # the same host that built it. Same root cause as the Comments-column gap already fixed on
+      # the COM path (Read-NfrRepository): a reader that cannot see Status/Comments cannot catch
+      # a blank one either.
+      Relevant    = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.Relevant) + $rowNum) -SharedStrings $shared)
+      Status      = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.Status) + $rowNum) -SharedStrings $shared)
+      Comments    = (Get-XlsxCellTextNfr -SheetXml $rowXml -CellRef ((Get-XlsxColLetterNfr -Index $script:COL.Comments) + $rowNum) -SharedStrings $shared)
       Row         = $rowNum
     }
   }
