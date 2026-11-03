@@ -1150,8 +1150,19 @@ function Get-PptxImageTextOverlaps {
     #>
     param(
         [Parameter(Mandatory)][string]$Pptx,
-        [double]$MinOverlapRatio = 0.3
+        [double]$MinOverlapRatio = 0.3,
+        [double]$MaxTextShapeAreaRatio = 0.3
     )
+    # Slide area, read once, to exclude body/content shapes from the "text" side (see below).
+    $full = (Resolve-Path $Pptx).Path
+    $zip0 = [System.IO.Compression.ZipFile]::OpenRead($full)
+    $slideArea = 0.0
+    try {
+        $presXml = Read-ZipEntryText -Archive $zip0 -EntryName 'ppt/presentation.xml'
+        $m = [regex]::Match($presXml, '<p:sldSz[^>]*cx="(\d+)"[^>]*cy="(\d+)"')
+        if (-not $m.Success) { $m = [regex]::Match($presXml, '<p:sldSz[^>]*cy="(\d+)"[^>]*cx="(\d+)"') }
+        if ($m.Success) { $slideArea = [double]$m.Groups[1].Value * [double]$m.Groups[2].Value }
+    } finally { $zip0.Dispose() }
     $slides = @(Get-PptxSlides -Pptx $Pptx)
     $hits = @()
     foreach ($s in $slides) {
@@ -1186,17 +1197,24 @@ function Get-PptxImageTextOverlaps {
         }
         $texts = @()
         foreach ($sp in $spTree.ChildNodes | Where-Object { $_.LocalName -eq 'sp' }) {
-            # Skip PLACEHOLDER shapes (<p:nvSpPr>/<p:nvPr>/<p:ph>): a body/content placeholder
-            # routinely spans almost the whole slide, so comparing it to any picture on the
-            # slide would flag nearly every slide that has one - pure noise. Only AUTO_SHAPE /
-            # TEXT_BOX shapes (no <p:ph>) are checked, matching the actual slide-16 defect
-            # (the "Carré corné" callouts are auto-shapes, not placeholders).
+            # Skip PLACEHOLDER shapes (<p:nvSpPr>/<p:nvPr>/<p:ph>) - but a body/content
+            # placeholder is not reliably tagged <p:ph> once a filling pass has touched it: on a
+            # real deck "Espace réservé du contenu 1" (the body placeholder, meant to legitimately
+            # HOST a diagram image as its content, not be covered by one) had been turned into a
+            # plain text box (txBox="1", empty <p:nvPr/>) by whatever edited it, so the <p:ph>
+            # check alone let it through and flagged 20+ intentional diagram-in-body-zone slides
+            # as "overlap" false positives. The second, decisive filter is AREA: a shape covering
+            # most of the slide is a container the picture is meant to sit inside (SKILL.md rule
+            # 8c), never a small dedicated callout like slide 16's "Carré corné" boxes (~20% of
+            # slide area here, vs. ~70% for the body placeholder) - skip anything above
+            # $MaxTextShapeAreaRatio of the slide regardless of its <p:ph>/name status.
             if ($sp.SelectSingleNode('.//p:nvSpPr/p:nvPr/p:ph', $ns)) { continue }
             $runs = @($sp.SelectNodes('.//a:t', $ns) | ForEach-Object { $_.InnerText })
             $txt = ($runs -join ' ').Trim()
             if ($txt -eq '') { continue }
             $r = Get-Rect $sp $ns
             if ($r) {
+                if ($slideArea -gt 0 -and (($r.W * $r.H) / $slideArea) -gt $MaxTextShapeAreaRatio) { continue }
                 $name = $sp.SelectSingleNode('.//p:nvSpPr/p:cNvPr', $ns)
                 $texts += [pscustomobject]@{ Name = $(if ($name) { $name.GetAttribute('name') } else { 'Shape' }); Rect = $r; Text = $txt }
             }

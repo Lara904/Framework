@@ -85,6 +85,12 @@ Write-Output "== Image / text overlap (geometry warning, not a hard fail) =="
 # geometry, present even in the untouched template - see Get-PptxImageTextOverlaps and
 # references/filling-guidance.md for the remediation step).
 $overlaps = @(Get-PptxImageTextOverlaps -Pptx $Pptx)
+# SKIP slides (front matter, dividers, the approval-process diagrams on slides 4/5) carry
+# template-authored callouts deliberately sitting on their diagram - not something a filling
+# pass can or should touch, so they are excluded here the same way the highlight/instruction
+# check above already excludes SKIP positions.
+$skipPositions = @($slideMap.Keys | Where-Object { $slideMap[$_].G -contains 'SKIP' })
+$overlaps = @($overlaps | Where-Object { $skipPositions -notcontains $_.Position })
 if ($overlaps.Count -eq 0) {
     Write-Output "No image/text overlap detected."
 }
