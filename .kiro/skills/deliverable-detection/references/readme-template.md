@@ -15,7 +15,22 @@ render it from the JSON so the two never drift.
 
 Version: <x.y>  |  Date: <YYYY-MM-DD>  |  Author: <name>
 Scanned folder: <path> (read-only)   |   Categories source: references/categories.json
-Status: <Draft / Reviewed with user>
+Status: <Draft / Reviewed with user / BLOCKED - scope mismatch>
+
+<if the scope-consistency check (references/scope-consistency-check.md) found a mismatch, insert
+this section here, BEFORE "Coverage summary", and nothing below it should be reported as a ready
+or usable result until the blocker is resolved:>
+
+## BLOCKER - project identity mismatch
+<one row per conflicting file>
+| File | Name used | One-line purpose | Technical nature (UI/API/DB/batch) |
+|------|-----------|-------------------|-------------------------------------|
+| <path> | <name> | <purpose in your own words> | <facts> |
+
+<one paragraph, plain language: what concretely disagrees and why it blocks the run>
+
+**Question for the user:** <the exact question - which narrative is the real project, or are
+these two different projects dropped into the same folder>
 
 ## Coverage summary
 | Category | Consumer skill | Required | Status | Best confidence |
@@ -56,3 +71,7 @@ Rules:
   moved, renamed or modified.
 - Keep the category rows in sync with `references/categories.json` (render, don't duplicate).
 - Every re-run appends a change-history row; keep user-set resolutions across runs.
+- A project-identity mismatch (core rule 10, `references/scope-consistency-check.md`) is NOT an
+  "Open questions" row - it gets its own "BLOCKER" section above "Coverage summary" and a
+  `Status: BLOCKED - scope mismatch` header, and the run must report the blocker first, not a
+  coverage percentage, until the user resolves it.

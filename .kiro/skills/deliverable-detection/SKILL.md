@@ -61,6 +61,8 @@ file, an explicit question to the user.
 ## Bundled assets
 - `references/categories.json` - the authoritative category -> consumer-skill map + signals.
 - `references/detection-method.md` - the 3-pass method (cheap signals, content check, resolve).
+- `references/scope-consistency-check.md` - the mandatory cross-file project-identity check and
+  the STOP protocol when sources describe more than one project (see core rule 10).
 - `references/readme-template.md` - the detection README format (the deliverable).
 - `assets/scripts/detect-deliverables.ps1` - read-only scanner that reads `categories.json` and
   emits per-file candidates + per-category coverage as JSON. Holds no category table of its own.
@@ -83,6 +85,19 @@ file, an explicit question to the user.
    user's resolutions of earlier open questions across runs.
 9. **Work files under `.kiro/.temp_ai/`.** The script's JSON output is a work artefact; write it
    there, not to `output/`.
+10. **A cross-file project-identity mismatch is a BLOCKER, not an open question.** Categorizing
+    files correctly is not the same question as "do these files actually describe the same
+    project". A category mismatch (file X looks like NFR but reads like cost data) stays an
+    ordinary "Open question" per rule 3. A **project-identity mismatch** - the application name,
+    the business purpose, or the core technical nature disagree across two or more source files
+    (e.g. one file's narrative describes a real-time API-driven app while another describes a
+    batch file-transfer app, under the same project folder) - is categorically different: every
+    downstream skill will silently inherit whichever source it happens to read first, and the
+    entire run becomes unusable without anyone noticing until a human compares the output to
+    ground truth. See `references/scope-consistency-check.md` for the mandatory check and the
+    STOP protocol. This check runs BEFORE Pass 3 resolves anything into "Detected" - a run with an
+    unresolved identity mismatch produces NO downstream deliverables, only the detection README
+    with the mismatch flagged at the top and a `Status: BLOCKED - scope mismatch` line.
 
 ## Quick workflow
 1. Confirm the folder to scan (e.g. `sources/tcc-reel/`) and the `${project_name}`.
@@ -90,11 +105,18 @@ file, an explicit question to the user.
    `powershell -ExecutionPolicy Bypass -File assets/scripts/detect-deliverables.ps1 -Path "<folder>" -Out ".kiro/.temp_ai/<project>_detection.json"`.
 3. For every file left ambiguous or only Medium/Low, do a content check (Pass 2 in
    `references/detection-method.md`) to confirm or reject - never promote to High without evidence.
-4. Resolve: Detected (clear) / Missing (required, no file) / Open question (still ambiguous ->
+4. **Run the scope-consistency check** (`references/scope-consistency-check.md`) across every
+   file that was read with Pass 2 content, before resolving anything. If it finds a
+   project-identity mismatch, STOP here: write the detection README with `Status: BLOCKED - scope
+   mismatch`, the mismatch evidence at the top, and do not proceed to step 5 of any consumer skill
+   until the user resolves it. This is not optional and not deferrable to "Open questions" (core
+   rule 10).
+5. Resolve: Detected (clear) / Missing (required, no file) / Open question (still ambiguous ->
    ask the user).
-5. Write `${project_name}_deliverables_detection_README.md` to the per-project output folder
+6. Write `${project_name}_deliverables_detection_README.md` to the per-project output folder
    `output/${project_name}/` (create it if missing - see the `output-convention.md` steering,
    single source of truth for output location), using `references/readme-template.md`, rendering
    the category rows from `categories.json`.
-6. Report coverage (detected/total, required missing, open questions) and the questions the user
-   must answer before the downstream skills run.
+7. Report coverage (detected/total, required missing, open questions) and the questions the user
+   must answer before the downstream skills run. If step 4 triggered a STOP, report that first and
+   do not report a coverage summary as if the run were usable.

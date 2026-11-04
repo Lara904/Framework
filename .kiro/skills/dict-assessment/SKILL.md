@@ -45,6 +45,8 @@ validated by the business owner (MOA) and kept up to date; it feeds the SIBS Arc
 - `references/personal-data-gdpr.md` - the GDPR floor rule for personal data and
   `DICT = max(DICT standard risks, DICT GDPR)`.
 - `references/rto-rpo.md` - RTO/RPO scales (CMDB-aligned) that accompany the DICT on the gate.
+- `references/no-input-fallback.md` - the fixed fallback rule for a criterion with no business
+  input at all, and how to record it as an auditable "Arbitrary default choice" (core rule 2b).
 - `references/readme-template.md` - the DICT README deliverable format.
 - `references/faq.md` - common DICT/CIAT questions and precise answers.
 
@@ -64,6 +66,12 @@ history. Use `references/readme-template.md`. Regenerate/update it whenever the 
    as final. Tag each open item `- **Ask:** MOA`/`DPO` per
    `.kiro/steering/open-questions-convention.md` so `open-questions-consolidation` routes it to
    the right person instead of it waiting, unasked, in this README.
+2b. **When a criterion has NO business input at all (not "unclear", genuinely absent from every
+   source), do not improvise a number case-by-case.** Apply the fixed fallback rule in
+   `references/no-input-fallback.md` and record the result as an "Arbitrary default choice" per
+   the steering convention (not as a bare `TBD`, not as a silently-chosen number) - this keeps
+   every run's fallback behaviour identical and auditable instead of depending on whatever
+   reasoning the agent happens to produce that day.
 3. **Apply the GDPR floor.** If the application processes personal data, apply the minimum DICT
    from `references/personal-data-gdpr.md`, then `DICT = max(standard-risk DICT, GDPR DICT)`.
 4. **A legal/regulatory traceability constraint forces T = 4.**
@@ -78,7 +86,11 @@ history. Use `references/readme-template.md`. Regenerate/update it whenever the 
 1. Gather inputs: what the app does, data handled (esp. personal data), availability need,
    integrity/confidentiality stakes, traceability/regulatory needs, CMDB references.
 2. Rate each criterion 1..4 using `references/dict-scales.md` (propose values as assumptions to
-   validate when the business input is missing).
+   validate when the business input is missing). For a criterion with SOME business input but an
+   unclear exact level, propose the best-supported level with its reasoning as usual (rule 2). For
+   a criterion with NO business input anywhere in the sources, do not freestyle a number - apply
+   `references/no-input-fallback.md` instead (rule 2b) and record it as an "Arbitrary default
+   choice", not a bare TBD.
 3. Apply the GDPR floor and `max()` rule - `references/personal-data-gdpr.md`.
 4. Add RTO/RPO/SLA context - `references/rto-rpo.md`.
 5. Write/update `${project_name}_DICT_README.md` in `output/${project_name}/` -

@@ -31,6 +31,7 @@ For each AWS service used, include its Landing Zone dependencies:
 | **S3** (any bucket) | -> KMS (encryption), CloudWatch (metrics) |
 | **ECS** | -> ECR, Inspector, CloudWatch (container logs), Secret Manager |
 | **Any compute** | -> VPC (with subnets), Internet Gateway, Network Firewall (ingress), Egress Account (outbound) |
+| **EC2 (Legacy/Simple Compute Pattern)** | -> VPC (subnet per the source - do not silently move it to "private"/"isolated" if the source states public), KMS (EBS encryption), CloudWatch; **ECR/Inspector/Secret Manager are NOT automatic here** (those are container-oriented) - include them only if the source material actually names container images or runtime secrets in AWS Secrets Manager |
 | **Any on-premise call** | -> Transit Gateway, Direct Connect, On-Premise Data Center boundary |
 
 For Pattern 3 (Static Web Hosting) with **no backend**, the complete LZ diagram includes:
@@ -48,16 +49,34 @@ For Pattern 3 (Static Web Hosting) with **no backend**, the complete LZ diagram 
 Ask the user:
 - What does the application do? (API, frontend, batch, file exchange?)
 - What external systems does it integrate with? (APIC, MTS2, LDAP, Kafka?)
-- What databases are needed? (RDS, MongoDB Atlas?)
+- What databases are needed? (RDS, MongoDB Atlas, or explicitly none?)
 - Does it need authentication? (OIDC via Ping Federate, mTLS?)
 - Is there a frontend? (Static web hosting via CloudFront+S3?)
+- **Is this a lift-and-shift / replatforming of an existing on-premise batch job, with its
+  existing scheduler and file-transfer tooling carried over unchanged, rather than a cloud-native
+  redesign?** This is the question that selects the Legacy/Simple Compute Pattern below instead
+  of Pattern 2 or File Handling - ask it explicitly, do not infer it only from "there's a batch
+  job" (a cloud-native batch redesign and a carried-over legacy batch job both "have a batch job"
+  but need different patterns).
 
 ## Step 2 — Pattern Selection
 - REST API consumers -> Pattern 1 (REST API Exposition)
-- Containerized backend -> Pattern 2 (ECS Fargate)
+- Containerized backend, cloud-native design -> Pattern 2 (ECS Fargate)
 - Static frontend -> Pattern 3 (Static Web Hosting)
-- File exchange -> File Handling Pattern
-- Multiple patterns can coexist in one diagram
+- File exchange with a cloud-native design (S3 staging, event-driven triggering, Transfer Family)
+  -> File Handling Pattern
+- **Single-instance compute with no containers, no managed database, and/or a legacy/on-host
+  scheduler carried over from an on-premise design (Dollar Universe, cron, AutoSys, Control-M...)
+  -> Legacy/Simple Compute Pattern.** This is the default for a straight lift-and-shift or
+  light replatforming of an existing batch application - do NOT reach for Pattern 2 or File
+  Handling just because "it runs jobs" or "it exchanges files"; those patterns assume a
+  cloud-native redesign (containers, S3 staging, event-driven triggers) that a lift-and-shift
+  explicitly does not do. If the source material explicitly rules out a database, do not add RDS
+  "to be safe" - say there is no database and name the actual storage (e.g. EBS) instead.
+- Multiple patterns can coexist in one diagram (Legacy/Simple Compute can appear alongside
+  Pattern 1 if, say, the same application also exposes a REST API - but a single application
+  does not usually need BOTH Legacy/Simple Compute AND File Handling AND Pattern 2, since each
+  represents a different generation of design for the same role)
 
 See `patterns.md` for each pattern's required components.
 
@@ -152,6 +171,8 @@ From the template inventory (`architecture-context.md`):
 ### AWS Icon Reference (latest shapes to use)
 | Service | Shape |
 |---------|-------|
+| EC2 instance | `mxgraph.aws4.ec2` (or `mxgraph.aws4.instance` for a generic instance icon) |
+| EBS volume | `mxgraph.aws4.elastic_block_store` |
 | ECS | `mxgraph.aws4.ecs` |
 | ECS Service | `mxgraph.aws4.ecs_service` |
 | ECS Task | `mxgraph.aws4.ecs_task` |

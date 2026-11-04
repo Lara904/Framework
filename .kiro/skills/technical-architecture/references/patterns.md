@@ -60,6 +60,59 @@ application's needs. Multiple patterns can coexist in one diagram.
 
 **Connection flow**: User -> Route 53 -> CloudFront (WAF + Shield) -> S3 (OAC)
 
+## Legacy/Simple Compute Pattern
+
+**Use when**: The application runs on a single (non-clustered) compute instance with no
+containerization, no managed database, and a legacy/on-host batch scheduler - typically a
+rehosted or lightly-replatformed legacy on-premise batch job, not a cloud-native redesign. Signals
+that point here rather than to Pattern 2 (ECS Fargate) or the File Handling Pattern: the source
+material explicitly states there is "no database" (data lives in local/attached storage only,
+with a retention window rather than a managed data store), the scheduler is named and is not
+AWS-native (e.g. Dollar Universe / $Universe, cron, AutoSys, Control-M - anything that predates
+the cloud move and is being carried over unchanged), and file exchange with other systems goes
+through an existing enterprise file-transfer service (e.g. CFT/CFTS) directly to/from the
+instance's local or attached storage, with no S3 staging bucket in the loop. **Do not force this
+case into the File Handling Pattern** just because files are exchanged - that pattern assumes an
+S3 Inbox/Outbox plus Transfer Family plus event-driven (EventBridge/Step Functions) triggering,
+which is a different, more cloud-native design than "the legacy scheduler still runs the jobs on
+a single instance, the file-transfer tool is unchanged, and the only thing that moved is the
+hosting". Applying File Handling's required components here would silently invent an S3 staging
+layer, an event-driven trigger and a Transfer Family endpoint that the real solution does not
+have.
+
+**Required components**:
+1. EC2 instance (single instance, sized per the application's actual job profile - not an Auto
+   Scaling Group unless the source material says the workload is horizontally scaled)
+2. EBS volume(s) (attached storage for input/output files and any local working data; if there is
+   genuinely no database, say so explicitly rather than leaving the data-layer question open)
+3. The legacy/on-host scheduler, named as given by the source (do not substitute
+   EventBridge/Step Functions - those belong to the File Handling Pattern's different design)
+4. The existing enterprise file-transfer service used for inbound/outbound files (e.g. CFTS),
+   connecting directly to the instance - not through an S3 Inbox/Outbox unless the source material
+   says files land in S3 first
+5. CloudWatch (instance + application-level monitoring, consistent with whatever on-premise
+   monitoring approach is being carried over)
+6. KMS (EBS volume encryption at rest)
+7. Backup mechanism as stated by the source (this may be a non-AWS-native service such as an
+   existing enterprise backup tool, carried over unchanged - do not assume AWS Backup /
+   aws_backup_retention tagging unless the source says so)
+
+**Known limitations**:
+- A single EC2 instance with no clustering is a single point of failure; if the source material's
+  stated Availability/RTO/RPO targets look inconsistent with that (e.g. a tight RTO alongside no
+  stated failover mechanism), flag it as an open item rather than silently upgrading the design to
+  Multi-AZ or adding redundancy the source never mentioned.
+- Public-subnet placement of the instance (when the source states this) is itself a security
+  signal worth flagging as a Missing-information / open item, not a silent pass-through - the
+  question of why a batch-only instance with no inbound web traffic sits in a public subnet
+  deserves an explicit answer from the project team or Cloud-Infra.
+
+**Connection flow**:
+- Inbound: Upstream system -> (enterprise file-transfer service, e.g. CFT/CFTS) -> EC2 instance
+  (reads from local/attached storage) -> scheduler-triggered job processes the file
+- Outbound: Scheduler-triggered job writes to local/attached storage -> (enterprise file-transfer
+  service) -> Downstream system
+
 ## File Handling Pattern
 
 **Use when**: Application exchanges files with external systems via SFTP/MTS2.

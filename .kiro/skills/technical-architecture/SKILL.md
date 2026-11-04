@@ -53,7 +53,7 @@ Activate this skill when the user wants to:
 - Create a new AWS architecture diagram for an application on the SFS NG Landing Zone
 - Modify or extend an existing `.drawio` architecture diagram
 - Validate a diagram against the template and the SIBS patterns
-- Apply a specific pattern (REST API exposition, ECS Fargate, static web hosting, file handling, CI/CD)
+- Apply a specific pattern (REST API exposition, ECS Fargate, static web hosting, file handling, legacy/simple compute lift-and-shift, CI/CD)
 - Define or update the application **technical stack** (products/frameworks/runtime/OS with versions) and produce the **Frameworks diagram** that feeds the DAT and the gates Deck
 
 ## Bundled assets (inside this skill)
@@ -110,7 +110,7 @@ it in sync whenever any deliverable changes. See `references/readme-template.md`
 Read the relevant reference file(s) in `references/` for the task at hand:
 - `references/questionnaire.md` — clarifying questions to ask the user before generating
 - `references/architecture-context.md` — accounts, network topology, subnets, component inventory
-- `references/patterns.md` — the SIBS patterns (REST API, ECS Fargate, static hosting, file handling, CI/CD) with required components and flows
+- `references/patterns.md` — the SIBS patterns (REST API, ECS Fargate, static hosting, file handling, legacy/simple compute lift-and-shift, CI/CD) with required components and flows
 - `references/data-flow-diagram.md` — the separate Data Flow Diagram spec (inter/intra flows, C1/C2/C3/C4 confidentiality scale, DCP flag, TLS/mTLS encryption labels, legend, node/edge conventions)
 - `references/data-flow-mapping.md` — the Data Flow Mapping `.xlsx` spec (official Stellantis workbook: Cover + Functional/Technical Flow Pattern, C1-C4 + DCP, JSON model schema)
 - `references/generation-process.md` — step-by-step generation (strategies, LZ integration points, component selection, style conventions, AWS icon reference, encoding rules)

@@ -18,15 +18,31 @@ assumption + open question, with a matching `C?` / TBC marker on the diagram.
 ## 2. Pattern selection (drives the diagram)
 - Does it serve a **static frontend** (SPA / web component)? -> Static Web Hosting (S3 + CloudFront).
 - Does it expose **REST APIs** to external consumers? -> REST API Exposition (APIC / mTLS).
-- Does it run **containers / backend services**? -> ECS Fargate.
-- Does it **exchange files** with external systems (SFTP / MTS2)? -> File Handling.
+- Does it run **containers / backend services** as part of a cloud-native redesign? -> ECS Fargate.
+- Does it **exchange files** with external systems through a cloud-native design (S3 staging,
+  event-driven triggering)? -> File Handling.
+- **Is this a lift-and-shift or light replatforming of an existing on-premise batch job - same
+  scheduler, same file-transfer tooling, moved onto a single compute instance with no
+  containerization?** -> Legacy/Simple Compute Pattern. Ask this explicitly rather than assuming
+  "it has a batch job" means File Handling or ECS Fargate - a carried-over legacy design needs a
+  different pattern than a cloud-native one, even though both involve batch jobs and files.
 - More than one may apply. If none of the above, ask the user to describe the runtime.
 
 ## 3. Backend / compute
 - Is there any backend tier at all, or is it front-only? (A front-only app has no VPC, subnets,
   Transit Gateway, Egress account, etc.)
-- If backend: which compute (ECS Fargate, Lambda, Batch)? How many services? Sizing known?
-- Any database (RDS Postgres/MySQL, MongoDB Atlas)? Any cache?
+- If backend: which compute? Do not assume ECS Fargate/Lambda/Batch by default - explicitly ask
+  whether it is a **single EC2 instance (or small fixed number of instances) with no
+  orchestration**, which points to the Legacy/Simple Compute Pattern instead. How many
+  services/instances? Sizing known?
+- Any database (RDS Postgres/MySQL, MongoDB Atlas)? **Explicitly confirm "none" rather than
+  defaulting to RDS** - some lift-and-shift batch applications genuinely have no database, only
+  file-based storage with a retention window; if the user or source material says "no database",
+  record that as the stated fact, not as an unanswered question. Any cache?
+- If there is no managed database and no containers: what holds working/input/output data (local
+  disk, an attached EBS volume)? What scheduler triggers the jobs (an AWS-native one like
+  EventBridge/Step Functions, or a legacy one carried over, e.g. Dollar Universe, cron, AutoSys,
+  Control-M)?
 
 ## 4. Integrations & auth
 - Which external systems does it call? (APIC, MTS2/Secur-IT, LDAP, SMTP, Kafka/MSK, Bedrock,
