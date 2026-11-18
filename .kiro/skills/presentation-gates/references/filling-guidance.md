@@ -33,8 +33,23 @@ Multi-select fields with their allowed values:
   primary business domain (e.g. CORF) and other domains (SMKG, EDSC...).
 - DORA note: business-critical cloud applications require an exit plan; state the
   substitutability of the service provider.
+- **"End users" classification is not always "internal" just because the people are SFS staff
+  (found 2026-11, forensic-tooling deck).** The real, team-validated deck classified "SFS CISO
+  analysts" under **"External Stellantis users like Partners"**, not "Internal Stellantis
+  employees" - a generated deck defaulted the same analysts to "internal users" without checking.
+  Do not assume the obvious category for a mixed/contractor-staffed team (e.g. DFIR-EXT); confirm
+  the multi-select value the project previously used (or ask) rather than picking the category
+  that merely sounds right from the team name.
 
 ## Project Summary / Objectives (pos 16)
+**Keep the Scope line, even though it looks redundant with slide 9 (found 2026-11,
+forensic-tooling deck).** Slide 9's "Scope coverage" is about where the TOOLING is hosted/
+processes data (narrower); this slide's "Scope" is about the breadth of what the solution covers
+end-to-end (e.g. "all SFS-managed applications: SaaS, cloud-hosted AWS & Azure make-applications,
+on-premise, both HQ & local" for a forensic tool whose log SOURCES are far broader than its own
+AWS hosting). A generated deck dropped this line entirely while correctly keeping the narrower
+slide-9 wording - re-check both fields are present and that neither silently absorbed the other.
+
 **Historical note, resolved at the template level (2026-11):** this slide used to ship with two
 decorative photos sitting on top of its "Current situation"/"Target situation" callouts
 ("Carré corné 25"/27). On inspection they turned out not to be generic stock art but screenshots
@@ -83,6 +98,20 @@ Values must align with the target CMDB application; note "no change" or "changed
   refuse data transfer (manual process or embedded feature). Ask the DPO in case of doubt.
 - AI Act (AIU-14): guarantee privacy across the AI system lifecycle; remove/obfuscate PII
   before use in an AI system.
+- **Do not substitute PIA for TIA (found 2026-11, forensic-tooling deck).** The template's own
+  footnote on this slide asks for "**DPA + PIA** (Privacy impact assessment)" when contracting a
+  supplier. A **PIA/DPIA** (Data Protection Impact Assessment) and a **TIA** (Transfer Impact
+  Assessment, for personal data leaving the EU/EEA) are two different GDPR deliverables - a
+  generated deck wrote "DPA and transfer impact assessment (TIA)" where the real, team-validated
+  deck wrote "DPA + PIA" for the same project. Default to **PIA** (it is what the template asks
+  for and is almost always required); only add/also require a TIA when the project actually
+  involves an international data transfer outside the EU/EEA - do not swap one for the other by
+  assumption.
+- **Carry the read/write invariant forward if it is already established elsewhere in the deck
+  (found 2026-11).** If Objectives (pos 8) or Project Summary (pos 16) already states a hard
+  privacy-relevant invariant (e.g. "no change on data, read-only access, confidentiality kept via
+  encryption"), repeat it here too - a generated deck stated it once on slide 8 and then dropped
+  it from the Data Privacy slide itself, where a reviewer looks for it first.
 
 ## NFR (pos 18)
 Mandatory link to the NFR document(s). NFR topics: Security, Compliance (privacy, SOX),
@@ -136,6 +165,17 @@ the ITSM tool; no 24/7 on-call if criticality (DICT) is low.
 - AWS estimate per environment (Multi-AZ) using the AWS Calculator: region(s), service, monthly,
   annual, currency, configuration summary. Link the shared AWS calculator estimation.
 - G3: update planned cost and highlight differences vs G2.
+- **Verify the column a known figure lands in, cell by cell (found 2026-11, forensic-tooling
+  deck).** The global-view table's "Costs types" rows are MERGED across a quarter PLUS a
+  "Next year recurrent costs" column; `Set-PptxSlideReplacements` matches the FIRST occurrence
+  of the find-text in the slide's raw XML, which is NOT necessarily the run under the intended
+  column header if the row's cells share similar placeholder text (several "TBD"/"Xxx K€" runs in
+  a row). A real figure (the project's "2.8 K€" IT cost) shipped in the generated deck under the
+  wrong column (it landed next to Q2/Q3 instead of the real deck's Q4-with-0-recurrent mapping).
+  After filling this table, re-dump the slide (`inspect-slides.ps1`) and check each filled figure
+  against its COLUMN HEADER, not just that a value was written - prefer `Set-PptxSlideRuns`
+  (run-index addressed, unambiguous) over `Set-PptxSlideReplacements` for this table whenever two
+  cells in the same row start as identical placeholder text.
 
 ## Risks (pos 23 Risks, pos 65 Residual Risks)
 Risk of the current solution (not the demand - that lives in DigitalMe). Table columns: Risk name,
@@ -145,6 +185,8 @@ plan, Comments. Slide 65 = residual risk (net risk AFTER mitigation).
 The template ships four EXAMPLE rows (Gen AI / Accessibility / Lack of training / Data) - these
 are indicative prompts, not content to keep (see SKILL.md rule 8d). For each: if applicable,
 replace with the real risk; if NOT applicable, **delete the whole row** (do not keep it as "N/A").
+Use `Remove-PptxTableRow -ContainsText '<marker>'` (or `-RowIndex`) for the deletion - do not leave
+the row's cells blank/empty either, that is still "keeping the row", just invisibly.
 Then ADD the project-specific rows the examples miss, keeping the SAME font/size as the body rows.
 Never invent Impact/Likelihood scores - propose them as values to validate with the MOA and the
 security team.
@@ -152,6 +194,28 @@ Example for a static browser front-end (S3 + CloudFront, no back-end): Gen AI ro
 applicable); real risks are accessibility (visible UI), host-site integration conflicts, CDN/
 hosting availability, client-side security, and data handling (personal data local to the browser,
 handed to the host site).
+
+**Do not thin out the risk register vs. what the project already knows (found 2026-11,
+forensic-tooling deck).** A generated deck shipped only 4 risk rows, most scored "TBC", for a
+project whose real/validated deck already carried 8 fully-scored, specific risks (tooling
+overtake by group-wide tooling, cloud-cost fluctuation, licence-cost escalation, integration
+difficulties, log-volume performance, forced supplier change with its own mitigation, AWS
+unavailability, forensic-team-member unavailability). If earlier project material (threat
+modeling, cost notes, architecture discussions) already surfaces a risk with a concrete
+mitigation, carry it into this table scored - do not drop it to "TBC" or omit it because the
+gate-fill pass did not independently re-derive it. "TBC" is for a risk that is genuinely new and
+unscored yet, not a default for every row.
+
+## Impacted Applications Service (pos 22, 41) / Interactions details (pos 40)
+These three tables ship with the template's own EXAMPLE rows pre-filled with an UNRELATED real
+project's data (e.g. "PingFederate (PASSEXT/IDP2)", "AWS GLZ Dublin / Websphere zOS",
+"Onprem HR / Linux", "OMS VN | Queue / Kafka:8886") - rule 8d applies here exactly as it does to
+Risks: if the example row does not apply to this project, **delete it** with
+`Remove-PptxTableRow`, do not leave it verbatim. A generated forensic-tooling deck shipped these
+example rows untouched on BOTH slides - leaking an unrelated project's application names and
+protocols into the delivered deck. `validate-deck.ps1` now hard-fails this
+(`Get-PptxLeftoverExampleRowHits` / the "Leftover EXAMPLE table rows" check) - treat a hit there
+the same way as a leftover-highlight or leftover-instruction-text failure (rule 10).
 
 ## Technical architecture diagram (pos 42 global view, pos 33 application flows)
 Must include: services/tools for security and logging; flow security (https, mTLS/TLS, SFTP,

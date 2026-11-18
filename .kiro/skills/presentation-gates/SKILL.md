@@ -122,9 +122,15 @@ Read the relevant reference file(s) in `references/` for the task at hand:
    Data" rows, sample cost lines, example approvers) are prompts to consider - NOT content to
    keep. For each example, decide with the project context whether it is applicable:
    - applicable -> replace the example text with the real project value;
-   - NOT applicable -> **DELETE the example row/item entirely** (remove the whole `<a:tr>` / bullet),
-     do NOT keep it marked "N/A" (e.g. if Gen AI is not applicable to the project, remove its row
-     rather than leaving it as "N/A").
+   - NOT applicable -> **DELETE the example row/item entirely** (remove the whole `<a:tr>` / bullet)
+     with `Remove-PptxTableRow -ContainsText '<marker>'` (or `-RowIndex`) - do NOT keep it marked
+     "N/A" or leave its cells blank (e.g. if Gen AI is not applicable to the project, remove its
+     row rather than leaving it as "N/A"). This applies to every example-seeded table in the
+     template, not only Risks: the "Impacted Applications Service" (pos 22/41) and "interactions
+     details" (pos 40) tables ship with an UNRELATED real project's rows pre-filled
+     ("PingFederate (PASSEXT/IDP2)", "AWS GLZ Dublin / Websphere zOS", etc.) and a delivered deck
+     once shipped those verbatim because the toolkit had no row-deletion primitive at the time -
+     `validate-deck.ps1` now hard-fails on `Get-PptxLeftoverExampleRowHits` for exactly this.
    Add project-specific rows the examples did not cover. Keep formatting UNIFORM across the
    rows/items you add (same font family and size as the existing body rows - reuse the run
    properties `<a:rPr sz=...>` already present, do not introduce a different font/size).

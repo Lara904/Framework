@@ -913,6 +913,117 @@ function Get-HardFailMarkers {
     @(Get-MissingMarkers -Text $Text | Where-Object { $script:HardFailLabels -contains $_ })
 }
 
+# --- Leftover EXAMPLE table rows (SINGLE SOURCE OF TRUTH) ----------------------------------
+# Literal text that only ever occurs in the V5.2 template's own pre-filled EXAMPLE table rows
+# (NOT genuine project data for any real SFS project). Found verbatim, unedited, in a delivered
+# forensic-tooling deck on two different tables - the "Impacted Applications Service" slide
+# (pos 22/41: "AWS GLZ Dublin, Websphere zOS" / "Onprem HR, Linux" / "PingFederate (PASSEXT/IDP2)"
+# example rows) and the "interactions details" slide (pos 40: the "OMS VN | Queue / Kafka:8886"
+# example row) - because SKILL.md rule 8d ("delete the whole example row if not applicable")
+# had NO primitive to act on: the toolkit could overwrite a cell's text but had no way to
+# remove the row itself, so a non-applicable example row had nowhere to go and shipped as-is.
+# Remove-PptxTableRow (below) is that primitive; this list + Get-PptxLeftoverExampleRowHits is
+# the automated check (wired into validate-deck.ps1) that catches a recurrence, including of a
+# future template's own new example rows (add the marker text here when one is spotted).
+$script:LeftoverExampleRowMarkers = @(
+    'PingFederate (PASSEXT/IDP2)',
+    'Websphere zOS',
+    'Onprem HR',
+    'OMS VN',
+    'Queue / Kafka:8886',
+    'MTS2'
+)
+
+function Get-PptxLeftoverExampleRowHits {
+    <#
+        Return the subset of $script:LeftoverExampleRowMarkers found verbatim in the given text
+        (a slide's joined <a:t> text, e.g. from Get-PptxSlides). A hit means the template's own
+        EXAMPLE row content survived unedited on a delivered slide (SKILL.md rule 8d violation) -
+        it should have been replaced with the real project row or removed entirely with
+        Remove-PptxTableRow. Used by validate-deck.ps1 to hard-fail, the same way
+        Get-HardFailMarkers does for leftover instruction text.
+    #>
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Text)
+    @($script:LeftoverExampleRowMarkers | Where-Object { $Text -match [regex]::Escape($_) })
+}
+
+function Remove-PptxTableRow {
+    <#
+        Delete one or more table rows (<a:tr>...</a:tr>) from a slide, addressed either by
+        -RowIndex (0-based, across every table on the slide, in document order - as printed by
+        an inspect/probe step) or by -ContainsText (deletes every row on this slide whose OWN
+        text, not the rest of the slide, contains the given substring, case-insensitive). OPC-safe
+        (Create rewrite via Set-PptxParts) - never re-serializes the slide XML.
+
+        WHY THIS EXISTS: SKILL.md rule 8d requires DELETING a template EXAMPLE row that does not
+        apply to the project (never keeping it, never marking it "N/A"). Before this function, the
+        toolkit could only overwrite a cell's TEXT (Set-PptxSlideReplacements / Set-PptxSlideRuns)
+        - there was no primitive to remove the ROW itself. That gap is exactly how the template's
+        own "PingFederate (PASSEXT/IDP2)" / "AWS GLZ Dublin, Websphere zOS" / "Onprem HR, Linux"
+        example rows (Impacted Applications Service, pos 22/41) and the "OMS VN | Queue /
+        Kafka:8886" example row (interactions details, pos 40) shipped verbatim - unrelated to the
+        project - in a delivered forensic-tooling deck. See Get-PptxLeftoverExampleRowHits /
+        validate-deck.ps1 for the automated check that now catches a recurrence.
+
+        Throws (does not silently no-op) if a -RowIndex is out of range or a -ContainsText marker
+        matches no row on this slide, and refuses to edit the template. Does not resize the
+        enclosing <a:tbl>/<p:graphicFrame> (its declared height is cosmetic, not structural) -
+        re-run the visual QA render after deleting rows.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Pptx,
+        [Parameter(Mandatory)][int]$Position,
+        [int[]]$RowIndex,
+        [string]$ContainsText
+    )
+    if (-not (Test-Path $Pptx)) { throw "File not found: $Pptx" }
+    if (-not $RowIndex -and -not $ContainsText) { throw "Specify -RowIndex or -ContainsText." }
+    Assert-NotTemplate -Path $Pptx
+    $full = (Resolve-Path $Pptx).Path
+
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($full)
+    $slideEntry = $null
+    $slideXml = $null
+    try {
+        $order = Get-PptxSlideOrderFromArchive -Archive $zip
+        if ($Position -lt 1 -or $Position -gt $order.Count) { throw "Position out of range (1..$($order.Count))." }
+        $slideEntry = $order[$Position - 1]
+        $slideXml = Read-ZipEntryText -Archive $zip -EntryName $slideEntry
+    } finally { $zip.Dispose() }
+
+    $rowMatches = @([regex]::Matches($slideXml, '<a:tr\b[\s\S]*?</a:tr>'))
+    if ($rowMatches.Count -eq 0) { throw "No table rows (<a:tr>) found on slide at position $Position." }
+
+    $toRemove = New-Object System.Collections.Generic.List[int]
+    if ($RowIndex) {
+        foreach ($i in $RowIndex) {
+            if ($i -lt 0 -or $i -ge $rowMatches.Count) { throw "RowIndex $i out of range (0..$($rowMatches.Count - 1)) on slide $Position." }
+            $toRemove.Add($i)
+        }
+    }
+    if ($ContainsText) {
+        $found = $false
+        for ($i = 0; $i -lt $rowMatches.Count; $i++) {
+            $wrapped = '<root xmlns:a="' + $script:DrawingNs + '" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' + $rowMatches[$i].Value + '</root>'
+            $rowText = Get-SlideTextFromXml -Xml $wrapped -Joined -Delimiter ' '
+            if ($rowText -match [regex]::Escape($ContainsText)) { $toRemove.Add($i); $found = $true }
+        }
+        if (-not $found) { throw "No row on slide $Position contains '$ContainsText'." }
+    }
+
+    # Remove from the LAST index to the FIRST so earlier matches' offsets stay valid as we splice
+    # (same pattern as Set-PptxSlideRuns).
+    $uniqueDesc = @($toRemove | Select-Object -Unique | Sort-Object -Descending)
+    $newXml = $slideXml
+    foreach ($i in $uniqueDesc) {
+        $m = $rowMatches[$i]
+        $newXml = $newXml.Substring(0, $m.Index) + $newXml.Substring($m.Index + $m.Length)
+    }
+
+    Set-PptxParts -Pptx $full -Edits @{ $slideEntry = $newXml }
+    return [pscustomobject]@{ Position = $Position; RemovedRowIndexes = @($uniqueDesc | Sort-Object) }
+}
+
 # --- Output validation (maximise PowerPoint compatibility) ---------------------------------
 function Test-PptxIntegrity {
     <#
@@ -1777,4 +1888,5 @@ Export-ModuleMember -Function `
     Get-SlideMap, Get-SlideTitle, Get-SlideGateTags, Find-SlidesByTitleRole, `
     Get-Deliverables, Resolve-DeliverableSlide, Get-MissingPatterns, Get-MissingMarkers, `
     Get-HardFailMarkers, Test-PptxRunIsLightText, Get-PptxLeftoverHighlightCount, Get-PptxImageTextOverlaps, Get-PptxSlideXml, `
+    Get-PptxLeftoverExampleRowHits, Remove-PptxTableRow, `
     Test-PptxIntegrity, Test-GateSlidesPresent

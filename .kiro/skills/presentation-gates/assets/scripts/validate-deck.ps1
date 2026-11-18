@@ -77,6 +77,28 @@ else {
 }
 
 Write-Output ""
+Write-Output "== Leftover EXAMPLE table rows (rule 8d) =="
+# A template EXAMPLE row (Impacted Applications Service's "PingFederate" / "Websphere zOS" /
+# "Onprem HR" rows, interactions-details' "OMS VN | Kafka" row, etc.) that survives verbatim on a
+# delivered slide means rule 8d was skipped: it should have been replaced with the real project
+# row, or deleted entirely with Remove-PptxTableRow - never left with the template's own,
+# unrelated example content. See Get-PptxLeftoverExampleRowHits.
+$rowHits = @()
+foreach ($s in $slides) {
+    if (-not $s.Visible) { continue }
+    $tags = @(Get-SlideGateTags -Slide $s -SlideMap $slideMap)
+    if ($tags -contains 'SKIP') { continue }
+    $rm = @(Get-PptxLeftoverExampleRowHits -Text $s.Text)
+    if ($rm.Count -gt 0) { $rowHits += [pscustomobject]@{ Position = $s.Position; Markers = $rm }; $fail = $true }
+}
+if ($rowHits.Count -eq 0) {
+    Write-Output "No leftover template EXAMPLE table rows on in-scope slides."
+}
+else {
+    foreach ($r in $rowHits) { Write-Output ("ERROR: Slide {0} still has a template EXAMPLE row (rule 8d): {1} - replace it with the real project row or delete it with Remove-PptxTableRow." -f $r.Position, ($r.Markers -join ', ')) }
+}
+
+Write-Output ""
 Write-Output "== Image / text overlap (geometry warning, not a hard fail) =="
 # WARNING-grade only (Get-PptxImageTextOverlaps docstring): a bounding-box overlap cannot see
 # z-order or confirm legibility, only real rendering can. Still worth surfacing automatically -

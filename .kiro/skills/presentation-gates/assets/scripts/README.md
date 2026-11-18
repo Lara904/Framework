@@ -18,7 +18,15 @@ Exported functions (import with
 `Get-PptxSlides` (`-IncludeNotes`), `Get-PptxSlideRuns`, `Set-PptxSlideReplacements`,
 `Set-PptxSlideRuns`, `Add-PptxImageToSlide`, `Assert-NotTemplate`, `ConvertTo-XmlText`,
 `Set-PptxSlideBanner`, `Set-PptxHyperlink`, `Get-SyncedSharePointUrl`, `Get-SlideMap`,
-`Get-MissingPatterns`, `Get-MissingMarkers`, `Test-PptxIntegrity`, `Test-GateSlidesPresent`.
+`Get-MissingPatterns`, `Get-MissingMarkers`, `Remove-PptxTableRow`,
+`Get-PptxLeftoverExampleRowHits`, `Test-PptxIntegrity`, `Test-GateSlidesPresent`.
+
+Deleting a table row: `Remove-PptxTableRow -Pptx <copy> -Position <n> -ContainsText '<marker>'`
+(or `-RowIndex <i>`) removes the whole `<a:tr>` - use this for a template EXAMPLE row that does
+not apply to the project (SKILL.md rule 8d), instead of leaving it or blanking its cells. Throws
+if the marker matches no row. `Get-PptxLeftoverExampleRowHits -Text <slide text>` detects the
+known template example-row markers (`$script:LeftoverExampleRowMarkers`) still present verbatim;
+`validate-deck.ps1` runs this on every in-scope slide and hard-fails on a hit.
 
 Inserting an image: `Add-PptxImageToSlide -Pptx <copy> -Position <n> -ImagePath <png/jpeg>
 -EmuX -EmuY -EmuCx -EmuCy [-Name]` adds the media part + slide relationship + `<p:pic>` shape

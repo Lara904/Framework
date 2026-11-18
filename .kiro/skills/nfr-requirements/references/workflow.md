@@ -22,6 +22,17 @@ The relevance of most NFRs is driven by the system parameters entered on the **S
 - **Data privacy risk level** (No / A / B / C / D) - does it process personal data, and at what
   risk level? (This also raises a GDPR floor on the DICT - see the `dict-assessment` skill.)
 
+**If a DICT digit carries a "fallback" / "pending validation" annotation** (per
+`dict-assessment/references/no-input-fallback.md` rule 2b - a criterion the project stated no
+business input for at all, so `dict-assessment` applied its fixed no-input default), run the
+filter macro with that value exactly like any other DICT digit (do not skip or round it), but
+**propagate the annotation**: any `Relevant`/`Status` decision that the filter macro reaches
+because of that specific digit inherits "pending validation" too - note it in the NFR README's
+own open-items/notes section (not silently as a confirmed Relevant=Yes), so a later correction of
+that DICT digit by the MOA/DPO is a flagged recomputation, not a silent one. This is the
+nfr-requirements side of the no-input-fallback propagation rule; do not treat a fallback DICT
+value as equivalent in confidence to a project-stated one.
+
 Also note the application's functional/technical nature (batch? database? user sessions?
 internet-exposed? cloud-hosted? multilingual UI? on-call?) because many generic NFRs are
 assessed on applicability, not on DICT.
